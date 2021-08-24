@@ -1,0 +1,218 @@
+#' @title Parsing an MassQL query
+#'
+#' Various functions are used to parse and extract the various elements from an
+#' MassQL query:
+#'
+#' - `.what`: extracts what should be returned. It's the field betwee `QUERY`
+#'   and `WHERE` or `FILTER`.
+#' - `.where`: extracts the individual `WHERE` conditions.
+#' - `.parse_where`: is used to process an individual `WHERE` condition to
+#'   separate all fields and extract the variables and their values.
+#' - `.group_min_max`: groups min and max values for conditions.
+#'
+#' @noRd
+NULL
+
+#' *Translate* MassQL query to filter functions.
+#'
+#' @param x `character` with the MassQL query.
+#'
+#' @return `list` with `ProcessingStep` objects, each representing one filter
+#'     for a `Spectra` object.
+#' 
+#' @author Johannes Rainer
+#'
+#' @noRd
+.query_to_filters <- function(x) {
+    qry <- lapply(.where(x), .parse_where)
+    names(qry) <- vapply(qry, function(z) names(z)[1], character(1))
+    qry <- .group_min_max(qry, name = "SCAN")
+    qry <- .group_min_max(qry, name = "RT")
+    res <- vector("list", length = length(qry))
+    for (i in seq_along(qry)) {
+        fun <- .CONDITION_FUNCTIONS[names(qry)[i]]
+        if (is.na(fun) | length(fun) == 0)
+            stop("Condition '", names(qry)[i], "' not supported.")
+        res[[i]] <- do.call(fun, qry[i])
+    }
+    res[lengths(res) > 0]
+}
+
+#' What should be returned? This returns the part of the query which is between
+#' `QUERY` and either the end of the line, `WHERE` or `FILTER`.
+#'
+#' @author Johannes Rainer
+#' 
+#' @noRd
+.what <- function(x) {
+    res <- sub(".*?query[[:space:]]*(.*?)[[:space:]]*(where.*|filter.*|$)",
+               "\\1", x, ignore.case = TRUE)
+    res[res == x] <- NA_character_
+    res
+}
+
+.validate_what <- function(x) {
+    if (any(is.na(x)))
+        stop("Syntax error: unable to extract type of data from query",
+             call. = FALSE)
+    x
+}
+
+#' Condition(s): everything between WHERE and end of line or FILTER.
+#' individual conditions are additionally split by `AND`.
+#'
+#' @author Johannes Rainer
+#'
+#' @noRd
+.where <- function(x) {
+    res <- sub(".*?where[[:space:]]*(.*?)[[:space:]]*(filter.*|$)",
+               "\\1", x, ignore.case = TRUE)
+    res[res == x] <- NA_character_
+    res <- unlist(strsplit(res, split = "[[:space:]]*(and|AND)[[:space:]]*"))
+    res[nchar(res) > 0]
+}
+
+#' group elements with name `*MIN` and `*MAX` into pairs of two.
+#'
+#' @author Johannes Rainer
+#' 
+#' @noRd
+.group_min_max <- function(x, name = "RT") {
+    mini <- which(names(x) == paste0(name, "MIN"))
+    lmini <- length(mini)
+    maxi <- which(names(x) == paste0(name, "MAX"))
+    lmaxi <- length(maxi)
+    l <- max(lmini, lmaxi)
+    if (!l)
+        return(x)
+    res <- list()
+    for (i in seq_len(l)) {
+        if (i <= lmini & i <= lmaxi)
+            res[[i]] <- c(x[[mini[i]]], x[[maxi[i]]])
+        if (i <= lmini & i > lmaxi)
+            res[[i]] <- x[[mini[i]]]
+        if (i > lmini & i <= lmaxi)
+            res[[i]] <- x[[maxi[i]]]
+    }
+    names(res) <- rep(name, length(res))
+    c(res, x[-union(mini, maxi)])
+}
+
+#' This function parses the where condition of a MassQL query. The string will
+#' be parsed by first splitting by `:` (separating the main variable/condition
+#' from *qualifiers*). Consecutively each element is splitted by `"="` to
+#' extract the names of the variables and qualifiers as well as their value. 
+#'
+#' Examples for x:
+#' - WHERE RTMIN = 123
+#' - WHERE MS2PROD=321.2:TOLERANCEMZ=0.1:TOLERANCEPPM=20
+#'
+#' @param x `character(1)` with (one!) *where* part of a MassQL query (e.g. one
+#'     element of what is returned from `.where`.
+#' 
+#' @return named `character`, names being the variable name(s) and elements
+#'     their value.
+#'
+#' @author Johannes Rainer
+#'
+#' @noRd
+.parse_where <- function(x) {
+    if (!length(x))
+        return(character())
+    spl <- unlist(strsplit(x, split = "[[:space:]]*:[[:space:]]*"),
+                  use.names = FALSE)
+    spl <- unlist(lapply(spl, strsplit, split = "[[:space:]]*=[[:space:]]*"),
+                  recursive = FALSE, use.names = FALSE)
+    vals <- unlist(lapply(spl, `[`, 2), use.names = FALSE)
+    names(vals) <- toupper(unlist(lapply(spl, `[`, 1), use.names = FALSE))
+    vals
+}
+
+#' Mapping between variables (MassQL conditions) and the function that can
+#' "translate" that into a Spectra filter.
+#'
+#' @noRd
+.CONDITION_FUNCTIONS <- c(
+    RT = ".translate_filter_rt",
+    SCAN = ".translate_filter_scan",
+    CHARGE = ".translate_filter_charge",
+    POLARITY = ".translate_filter_polarity",
+    MS2PROD = ".translate_filter_ms2prod",
+    MS2PREC = ".translate_filter_ms2prec",
+    MS2NL = ".translate_filter_ms2nl"
+)
+
+#' Convert the RT condition to a `ProcessingStep` with a filter function
+#' for `Spectra` objects.
+#'
+#' @param ... the parameters (rtmin and rtmax) for the filter.
+#'
+#' @return `ProcessingStep`
+#'
+#' @importFrom ProtGenerics ProcessingStep
+#'
+#' @importFrom Spectra filterRt
+#' 
+#' @author Johannes Rainer
+#' 
+#' @noRd
+.translate_filter_rt <- function(...) {
+    parms <- list(...)[[1L]]
+    rtmin <- -Inf
+    rtmax <- Inf
+    if (any(names(parms) == "RTMIN"))
+        rtmin <- as.numeric(parms["RTMIN"])
+    ## Could eventually also call eval(parse(parms["RTMIN"])) to support
+    ## numeric operations as input, such as "3 * 5"
+    if (any(names(parms) == "RTMAX"))
+        rtmax <- as.numeric(parms["RTMAX"])
+    if (is.na(rtmin) | is.na(rtmax))
+        stop("Non-numeric value for 'RTMIN' or 'RTMAX': got RTMIN=",
+             rtmin, " RTMAX=", rtmax, call. = FALSE)
+    ProcessingStep(filterRt, ARGS = list(rt = c(rtmin, rtmax)))
+}
+
+#' Filter a `Spectra` based on provided scan numbers.
+#'
+#' @importMethodsFrom Spectra acquisitionNum
+#'
+#' @author Johannes Rainer
+#' 
+#' @noRd
+.translate_filter_scan <- function(...) {
+    parms <- list(...)[[1L]]
+    scan_min <- -Inf
+    scan_max <- Inf
+    if (any(names(parms) == "SCANMIN"))
+        scan_min <- as.numeric(parms["SCANMIN"])
+    if (any(names(parms) == "SCANMAX"))
+        scan_max <- as.numeric(parms["SCANMAX"])
+    if (is.na(scan_min) | is.na(scan_max))
+        stop("Non-numeric value for 'SCANMIN' or 'SCANMAX': got SCANMIN=",
+             scan_min, " SCANMAX=", scan_max, call. = FALSE)
+    filt_fun <- function(x, scan) {
+        acq <- acquisitionNum(x)
+        x[which(acq >= scan[1L] & acq <= scan[2L])]
+    }
+    ProcessingStep(filt_fun, ARGS = list(scan = c(scan_min, scan_max)))
+}
+
+.translate_filter_charge <- function(...) {
+    stop("Condition CHARGE not yet supported", call. = FALSE)
+}
+
+.translate_filter_polarity <- function(...) {
+    stop("Condition POLARITY not yet supported", call. = FALSE)
+}
+
+.translate_filter_ms2prod <- function(...) {
+    stop("Condition MS2PROD not yet supported", call. = FALSE)
+}
+
+.translate_filter_ms2prec <- function(...) {
+    stop("Condition MS2PREC not yet supported", call. = FALSE)
+}
+
+.translate_filter_ms2nl <- function(...) {
+    stop("Condition MS2NL not yet supported", call. = FALSE)
+}
