@@ -19,7 +19,7 @@ NULL
 #'
 #' @return `list` with `ProcessingStep` objects, each representing one filter
 #'     for a `Spectra` object.
-#' 
+#'
 #' @author Johannes Rainer
 #'
 #' @noRd
@@ -42,7 +42,7 @@ NULL
 #' `QUERY` and either the end of the line, `WHERE` or `FILTER`.
 #'
 #' @author Johannes Rainer
-#' 
+#'
 #' @noRd
 .what <- function(x) {
     res <- sub(".*?query[[:space:]]*(.*?)[[:space:]]*(where.*|filter.*|$)",
@@ -75,7 +75,7 @@ NULL
 #' group elements with name `*MIN` and `*MAX` into pairs of two.
 #'
 #' @author Johannes Rainer
-#' 
+#'
 #' @noRd
 .group_min_max <- function(x, name = "RT") {
     mini <- which(names(x) == paste0(name, "MIN"))
@@ -101,7 +101,7 @@ NULL
 #' This function parses the where condition of a MassQL query. The string will
 #' be parsed by first splitting by `:` (separating the main variable/condition
 #' from *qualifiers*). Consecutively each element is splitted by `"="` to
-#' extract the names of the variables and qualifiers as well as their value. 
+#' extract the names of the variables and qualifiers as well as their value.
 #'
 #' Examples for x:
 #' - WHERE RTMIN = 123
@@ -109,7 +109,7 @@ NULL
 #'
 #' @param x `character(1)` with (one!) *where* part of a MassQL query (e.g. one
 #'     element of what is returned from `.where`.
-#' 
+#'
 #' @return named `character`, names being the variable name(s) and elements
 #'     their value.
 #'
@@ -152,9 +152,9 @@ NULL
 #' @importFrom ProtGenerics ProcessingStep
 #'
 #' @importFrom Spectra filterRt
-#' 
+#'
 #' @author Johannes Rainer
-#' 
+#'
 #' @noRd
 .translate_filter_rt <- function(...) {
     parms <- list(...)[[1L]]
@@ -177,7 +177,7 @@ NULL
 #' @importMethodsFrom Spectra acquisitionNum
 #'
 #' @author Johannes Rainer
-#' 
+#'
 #' @noRd
 .translate_filter_scan <- function(...) {
     parms <- list(...)[[1L]]
@@ -209,8 +209,28 @@ NULL
     stop("Condition MS2PROD not yet supported", call. = FALSE)
 }
 
+#' @importFrom MsCoreUtils ppm
+#'
+#' @importMethodsFrom Spectra filterPrecursorMz
+#'
+#' @author Johannes Rainer
+#'
+#' @noRd
 .translate_filter_ms2prec <- function(...) {
-    stop("Condition MS2PREC not yet supported", call. = FALSE)
+    parms <- list(...)[[1L]]
+    pmz <- numeric()
+    ppm <- 0
+    tolerance <- 0
+    if (any(names(parms) == "MS2PREC"))
+        pmz <- as.numeric(parms["MS2PREC"])
+    if (any(names(parms) == "TOLERANCEMZ"))
+        tolerance <- as.numeric(parms["TOLERANCEMZ"])
+    if (any(names(parms) == "TOLERANCEPPM"))
+        ppm <- as.numeric(parms["TOLERANCEPPM"])
+    if (length(pmz)) {
+        mzr <- pmz + c(-1, 1) * (tolerance + ppm(pmz, ppm = ppm))
+        ProcessingStep(filterPrecursorMz, ARGS = list(mz = mzr))
+    } else ProcessingStep(identity)
 }
 
 .translate_filter_ms2nl <- function(...) {

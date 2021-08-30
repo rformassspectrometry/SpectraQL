@@ -68,7 +68,7 @@ test_that(".translate_filter_rt works", {
     expect_true(inherits(res, "ProcessingStep"))
     expect_equal(res@FUN, filterRt)
     expect_equal(res@ARGS, list(rt = c(-Inf, 124)))
-    
+
     res <- .translate_filter_rt(RT = c(RTMAX = "124", RTMIN = "23"))
     expect_true(inherits(res, "ProcessingStep"))
     expect_equal(res@FUN, filterRt)
@@ -85,7 +85,7 @@ test_that(".translate_filter_scan works", {
     res <- .translate_filter_scan(SCAN = c(SCANMAX = "124"))
     expect_true(inherits(res, "ProcessingStep"))
     expect_equal(res@ARGS, list(scan = c(-Inf, 124)))
-    
+
     res <- .translate_filter_scan(SCAN = c(SCANMAX = "124", SCANMIN = "23"))
     expect_true(inherits(res, "ProcessingStep"))
     expect_equal(res@ARGS, list(scan = c(23, 124)))
@@ -108,6 +108,27 @@ test_that(".query_to_filter works", {
 
     q <- "QUERY * WHERE RTMIN > 123"
     expect_error(.query_to_filters(q), "not supported")
+})
+
+test_that(".translate_filter_ms2prec works", {
+    res <- .translate_filter_ms2prec(4)
+    expect_true(inherits(res, "ProcessingStep"))
+    res <- .translate_filter_ms2prec(MS2PREC = c(MS2PREC = 123))
+    expect_true(inherits(res, "ProcessingStep"))
+    expect_equal(res@FUN, filterPrecursorMz)
+    expect_equal(res@ARGS, list(mz = c(123, 123)))
+
+    res <- .translate_filter_ms2prec(MS2PREC = c(MS2PREC = 123, TOLERANCEMZ = 2))
+    expect_true(inherits(res, "ProcessingStep"))
+    expect_equal(res@FUN, filterPrecursorMz)
+    expect_equal(res@ARGS, list(mz = c(121, 125)))
+
+    res <- .translate_filter_ms2prec(
+        MS2PREC = c(MS2PREC = 123, TOLERANCEMZ = 2, TOLERANCEPPM = 10))
+    expect_true(inherits(res, "ProcessingStep"))
+    expect_equal(res@FUN, filterPrecursorMz)
+    expect_equal(
+        res@ARGS, list(mz = c(123 - 2 - ppm(123, 10), 123 + 2 + ppm(123, 10))))
 })
 
 ## query <- "QUERY * WHERE RTMIN = 123 AND RTMAX = 130  AND MZPREC = 312.2:TOLERANCEMZ = 0.1:TOLERANCEPPM=10"

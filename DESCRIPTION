@@ -17,7 +17,8 @@ Depends:
     R (>= 4.1.0),
     ProtGenerics (>= 1.25.1)
 Imports:
-    Spectra
+    Spectra,
+    MsCoreUtils
 Suggests:
     testthat,
     msdata (>= 0.19.3),

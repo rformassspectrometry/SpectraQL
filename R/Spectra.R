@@ -19,17 +19,42 @@
 #' 
 #' @exportMethod query
 setMethod("query", "Spectra", function(x, query = character(), ...) {
+    if (length(query) != 1L)
+        stop("'query' is expected to be a single character string.",
+             call. = FALSE)
     ## Filter the Spectra
     res <- .query_spectra(x, query, ...)
     ## Decide what data to return.
 })
 
+#' Parse all conditions from the query and filter/subset the `Spectra` object.
+#'
+#' @param x `Spectra`
+#'
+#' @param query `character(1)` with the MassQL query
+#'
+#' @return filtered `Spectra`
+#'
+#' @author Johannes Rainer
+#'
+#' @noRd
 .query_spectra <- function(x, query = character(), ...) {
-    if (length(query) != 1L)
-        stop("'query' is expected to be a single character string.",
-             call. = FALSE)
     flt <- .query_to_filters(query)
     for (pstep in flt)
         x <- do.call(pstep@FUN, args = c(list(x), pstep@ARGS))
     x
+}
+
+#' Interpret the MassQL query to extract the requested type of data.
+#'
+#' @param x `Spectra` that was eventually filtered.
+#'
+#' @param query `character(1)` with the MassQL query.
+#'
+#' @return depending on the MassQL query.
+#'
+#' @author Johannes Rainer
+#'
+#' @noRd
+.query_what <- function(x, query = character(), ...) {
 }
