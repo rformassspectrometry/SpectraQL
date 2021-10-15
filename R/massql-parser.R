@@ -206,6 +206,7 @@ NULL
 }
 
 .translate_filter_ms2prod <- function(...) {
+    ## use containsMz, parameters: mz, tolerance, ppm, which (any, all)
     stop("Condition MS2PROD not yet supported", call. = FALSE)
 }
 
