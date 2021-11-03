@@ -131,6 +131,15 @@ test_that(".translate_filter_ms2prec works", {
         res@ARGS, list(mz = c(123 - 2 - ppm(123, 10), 123 + 2 + ppm(123, 10))))
 })
 
+test_that(".extract_what works", {
+    df <- S4Vectors::DataFrame(msLevel = c(1L, 2L), rtime = c(2, 3.2))
+    sps_tmp <- Spectra::Spectra(df)
+
+    expect_error(.extract_what(sps_tmp, "what"), "not supported")
+    res <- .extract_what(sps_tmp, "*")
+    expect_equal(sps_tmp, res)
+})
+
 ## query <- "QUERY * WHERE RTMIN = 123 AND RTMAX = 130  AND MZPREC = 312.2:TOLERANCEMZ = 0.1:TOLERANCEPPM=10"
 ## x <- .where(query)
 ## res <- lapply(x, .parse_where)

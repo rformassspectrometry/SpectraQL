@@ -32,3 +32,11 @@ test_that(".query_spectra works", {
         sps_dda, "QUERY * WHERE RTMIN=420 AND MS2PREC=304.1131:TOLERANCEPPM=20")
     expect_equal(length(res), 3)
 })
+
+test_that(".query_what works", {
+    res <- .query_what(sps_dda, "QUERY * ")
+    expect_equal(res, sps_dda)
+
+    expect_error(.query_what(sps_dda, "QUERY other WHERE RTIME = 300"),
+                 "not supported")
+})

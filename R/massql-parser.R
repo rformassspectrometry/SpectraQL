@@ -58,6 +58,32 @@ NULL
     x
 }
 
+#' This maps data type "keywords" to a function to extract the data.
+#'
+#' @noRd
+.WHAT_FUNCTIONS <- c(
+    `*` = "identity"
+)
+
+#' Extracts the data as requested. The function to extract the data is retrieved
+#' from the .WHAT_FUNCTIONS character vector grepping for the name.
+#'
+#' @author Johannes Rainer
+#'
+#' @noRd
+.extract_what <- function(x, what = character()) {
+    ## identify the function that should be applied.
+    idx <- grep(paste0("^", what), names(.WHAT_FUNCTIONS),
+                ignore.case = TRUE)
+    if (!length(idx))
+        stop("Specified type of data '", what, "' is not supported.",
+             call. = FALSE)
+    if (length(idx) > 1L)
+        stop("Specified type of data '", what, "' is ambiguous.", call. = FALSE)
+    fun <- .WHAT_FUNCTIONS[idx]
+    do.call(fun, list(x))
+}
+
 #' Condition(s): everything between WHERE and end of line or FILTER.
 #' individual conditions are additionally split by `AND`.
 #'

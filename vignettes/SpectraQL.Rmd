@@ -1,0 +1,171 @@
+---
+title: "Mass Spec Query Language Support for Spectra Objects"
+package: SpectraQL
+output:
+  BiocStyle::html_document:
+    toc_float: true
+vignette: >
+  %\VignetteIndexEntry{Mass Spec Query Language Support for Spectra Objects}
+  %\VignetteEngine{knitr::rmarkdown}
+  %%\VignetteKeywords{Mass Spectrometry, MS, MSMS, Metabolomics, Infrastructure}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteDepends{Spectra,SpectraQL,msdata}
+---
+
+```{r style, echo = FALSE, results = 'asis'}
+BiocStyle::markdown()
+```
+
+**Package**: `r BiocStyle::Biocpkg("SpectraQL")`<br />
+**Authors**: `r packageDescription("SpectraQL")[["Author"]] `<br />
+**Last modified:** `r file.info("SpectraQL.Rmd")$mtime`<br />
+**Compiled**: `r date()`
+
+
+# Introduction
+
+The `SpectraQL` package adds support for the Mass Spec Query Language
+[MassQL](https://mwang87.github.io/MassQueryLanguage_Documentation/) to the
+[`Spectra`](https://rformassspectrometry.github.io/Spectra) package. `Spectra`
+objects can thus be filtered and data extracted using queries expressed in the
+`MassQL` language.
+
+
+# Installation
+
+Until added to Bioconductor, the package can be installed with `devtools::install_github("RforMassSpectrometry/SpectraQL")`.
+
+The package can be installed with the `BiocManager` package. To
+install `BiocManager` use `install.packages("BiocManager")` and, after that,
+`BiocManager::install("SpectraQL")` to install this package.
+
+
+# Filtering `Spectra` objects with MassQL
+
+The `SpectraQL` package adds support for most of the Mass Spec Query Language
+functionality to `Spectra` objects hence allowing to filter and extract data
+using platform independent and data storage agnostic queries. At present,
+`SpectraQL` supports most but not all of the conditions and expressions of the
+MassQL definition. In particular, numeric operations in query fields such as
+`MS2PROD=100+14` are not yet supported.
+
+Below we load MS data from an example mzML file. Note also that `Spectra`
+objects can represent MS data from a very large variety of sources including but
+not limited to mzML or mzXML files, databases
+(e.g. [MsBackendMassbank](https://rformassspectrometry.github.io/MsBackendMassbank/))
+or MGF files
+([MsBackendMgf](https://rformassspectrometry.github.io/MsBackendMgf/)). The use
+of the `Spectra` an hence `SpectraQL` package is thus not restricted to
+mzML-backed MS data.
+
+```{r}
+library(Spectra)
+library(SpectraQL)
+library(msdata)
+
+fl <- system.file("TripleTOF-SWATH", "PestMix1_DDA.mzML", package = "msdata")
+dda <- Spectra(fl)
+```
+
+## MassQL definition
+
+A MassQL query consists of several parts: `QUERY <type of data> WHERE
+<condition> AND <condition> FILTER <filter> AND <filter>` (see its
+[definition](https://mwang87.github.io/MassQueryLanguage_Documentation/#definition-of-a-query)
+for more details). See the following sections for more information on each part
+of such an MassQL query. `SpectraQL` in general supports the MassQL query schema
+is however case insensitive (i.e. both `query` and `QUERY` is accepted) and is
+insensitive to white spaces (i.e. both `RTMIN=10` and `RTMIN = 10` is
+supported). Also, it should be mentioned that at present not all keywords,
+filters and operations are supported by `SpectraQL`.
+
+### Type of data
+
+The `<type of data>` defines what should be returned by the `query`
+function. The types of data that are currently supported by `SpectraQL` are:
+
+- `"*"`: returns the full data, i.e. returns a `Spectra` object.
+
+### Condition
+
+The `<condition>` allows to filter a `Spectra` object. Several conditions can be
+combined with `"and"`. The syntax for a condition is `<condition> = <value>`,
+e.g. `MS2PROD = 144.1`. `SpectraQL` supports the following conditions:
+
+- `RTMIN`
+- `RTMAX`
+- `SCANMIN`
+- `SCANMAX`
+
+### Filter
+
+Filters are currently not supported by `SpectraQL`.
+
+## Examples
+
+In this section we use MassQL queries to subset and extract data from our
+`Spectra` object `dda`. This object contains MS1 and MS2 spectra from a data
+dependent acquisition. Some general information is provided below.
+
+```{r}
+#' Number of MS1 and MS2 spectra
+table(msLevel(dda))
+
+#' retention time range
+range(rtime(dda))
+```
+
+To restrict the data to spectra measured between 200 and 300 seconds of the
+measurement run we can use a MassQL query with the `rtmin` and `rtmax`
+conditions.
+
+```{r}
+dda_rt <- query(dda, "QUERY * WHERE RTMIN = 200 AND RTMAX = 300")
+dda_rt
+```
+
+Internally, `SpectraQL` translates the MassQL query into filter functions that
+are applied to the `Spectra` object. The returned result is now a `Spectra`
+object with all spectra measured between 200 and 300 seconds.
+
+```{r}
+range(rtime(dda_rt))
+```
+
+To restrict to MS2 spectra with their precursor m/z matching a certain value, we
+can use the `MS2PREC` condition. Conditions on m/z values support also accuracy
+specifications. Using `TOLERANCEMZ` and `TOLERANCEPPM` it is thus possible to
+define an absolute and m/z relative acceptable difference. Below we use such a
+condition to select MS2 spectra with a precursor m/z matching 278.093 with a
+tolerance of 0 and ppm of 20. Since `SpectraQL` is case insensitive, we write
+the full MassQL query in lower case below.
+
+```{r}
+dda_rt <- query(dda_rt,
+                "query * where ms2prec = 278.093:toleancemz=0:toleranceppm=30")
+dda_rt
+```
+
+We thus selected 3 spectra from the data set with a precursor m/z matching our
+filter criteria.
+
+```{r}
+precursorMz(dda_rt)
+```
+
+We can obviously also combine the two queries into a single MassQL query. This
+time we also omit the `tolerancemz` field as we set that anyway to a value of 0.
+
+```{r}
+dda_rt <- query(dda,
+                paste0("query * where rtmin = 200 and rtmax = 300 and ",
+                       "ms2prec = 278.093:toleranceppm = 30"))
+dda_rt
+```
+
+
+# Session information {-}
+
+```{r sessioninfo, echo=FALSE}
+sessionInfo()
+```

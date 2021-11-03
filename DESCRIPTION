@@ -1,6 +1,6 @@
 Package: SpectraQL
 Title: MassQL support for Spectra
-Version: 0.99.0
+Version: 0.99.1
 Description: The SpectraQL package adds support for the MassQL query language
     to Spectra objects. The Mass Spec Query Language MassQL was defined as a
     general query language to extract information from mass spectrometry data.
@@ -12,7 +12,10 @@ Authors@R: c(person(given = "RforMassSpectrometry Package Maintainer",
              person(given = "Johannes", family = "Rainer",
                     email = "Johannes.Rainer@eurac.edu",
                     role = "aut",
-                    comment = c(ORCID = "0000-0002-6977-7147")))
+                    comment = c(ORCID = "0000-0002-6977-7147")),
+	     person(given = "Andrea", family = "Vicini",
+                    email = "andrea.vicini@eurac.edu",
+                    role = "aut"))
 Depends:
     R (>= 4.1.0),
     ProtGenerics (>= 1.25.1)
