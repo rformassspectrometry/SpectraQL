@@ -20,16 +20,21 @@ Depends:
     R (>= 4.1.0),
     ProtGenerics (>= 1.25.1)
 Imports:
+    methods,
     Spectra,
     MsCoreUtils
 Suggests:
     testthat,
     msdata (>= 0.19.3),
-    roxygen2
+    roxygen2,
+    rmarkdown,
+    knitr,
+    BiocStyle
 License: Artistic-2.0
 LazyData: false
+VignetteBuilder: knitr
 BugReports: https://github.com/RforMassSpectrometry/SpectraQL/issues
 URL: https://github.com/RforMassSpectrometry/SpectraQL
 biocViews: Infrastructure, Proteomics, MassSpectrometry, Metabolomics
 Roxygen: list(markdown=TRUE)
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
