@@ -1,11 +1,11 @@
 ---
-title: "Mass Spec Query Language Support for Spectra Objects"
+title: "Mass Spec Query Language Support to the Spectra Package"
 package: SpectraQL
 output:
   BiocStyle::html_document:
     toc_float: true
 vignette: >
-  %\VignetteIndexEntry{Mass Spec Query Language Support for Spectra Objects}
+  %\VignetteIndexEntry{Mass Spec Query Language Support to the Spectra Package}
   %\VignetteEngine{knitr::rmarkdown}
   %%\VignetteKeywords{Mass Spectrometry, MS, MSMS, Metabolomics, Infrastructure}
   %\VignetteEncoding{UTF-8}
@@ -33,7 +33,8 @@ objects can thus be filtered and data extracted using queries expressed in the
 
 # Installation
 
-Until added to Bioconductor, the package can be installed with `devtools::install_github("RforMassSpectrometry/SpectraQL")`.
+Until added to Bioconductor, the package can be installed with
+`devtools::install_github("RforMassSpectrometry/SpectraQL")`.
 
 The package can be installed with the `BiocManager` package. To
 install `BiocManager` use `install.packages("BiocManager")` and, after that,
@@ -72,12 +73,17 @@ dda <- Spectra(fl)
 A MassQL query consists of several parts: `QUERY <type of data> WHERE
 <condition> AND <condition> FILTER <filter> AND <filter>` (see its
 [definition](https://mwang87.github.io/MassQueryLanguage_Documentation/#definition-of-a-query)
-for more details). See the following sections for more information on each part
-of such an MassQL query. `SpectraQL` in general supports the MassQL query schema
-is however case insensitive (i.e. both `query` and `QUERY` is accepted) and is
-insensitive to white spaces (i.e. both `RTMIN=10` and `RTMIN = 10` is
-supported). Also, it should be mentioned that at present not all keywords,
-filters and operations are supported by `SpectraQL`.
+for more details). `<type of data>` defines which data should be extracted from
+the selected data, `<condition>` defines which spectra should be selected and
+`<filter>` allows to subset each individual spectrum (i.e. to which peaks in
+each spectrum the data should be subsetted). See the following sections for more
+information on each part of such an MassQL query. `SpectraQL` in general
+supports the MassQL query schema is however case insensitive (i.e. both `query`
+and `QUERY` is accepted) and is insensitive to white spaces (i.e. both
+`RTMIN=10` and `RTMIN = 10` is supported). Also, it should be mentioned that at
+present not all keywords, filters and operations are supported by
+`SpectraQL`. The supported types of data, conditions and filters are listed in
+the sections below.
 
 ### Type of data
 
@@ -88,18 +94,42 @@ function. The types of data that are currently supported by `SpectraQL` are:
 
 ### Condition
 
-The `<condition>` allows to filter a `Spectra` object. Several conditions can be
+The `<condition>` allows to subset a `Spectra` object. Several conditions can be
 combined with `"and"`. The syntax for a condition is `<condition> = <value>`,
-e.g. `MS2PROD = 144.1`. `SpectraQL` supports the following conditions:
+e.g. `MS2PROD = 144.1`. Such conditions can be further refined by additional
+expressions that allow for example to define acceptable tolerances for m/z
+differences (see further below for details). `SpectraQL` supports the following
+conditions:
 
-- `RTMIN`
-- `RTMAX`
-- `SCANMIN`
-- `SCANMAX`
+- `RTMIN`: minimum retention time (in **seconds**).
+- `RTMAX`: maximum retention time (in **seconds**).
+- `SCANMIN`: the minimum scan number (acquisition number).
+- `SCANMAX`: the maximum scan number (acquisition number).
+- `CHARGE`: the charge for MS2 spectra.
+- `POLARITY`: the polarity of the spectra (can be `"positive"`, `"negative"`,
+  `"pos"` or `"neg"`, case insensitive).
+- `MS2PROD`: allows to select MS2 spectra that contain a peak with a particular
+  m/z.
+- `MS2PREC`: allows to select MS2 spectra with the defined precursor m/z.
+- `MS2MZ`: allows to select MS1 spectra containing peaks with the defined m/z.
+
+All conditions involving m/z values allow to specify a mass accuracy using the
+optional fields `TOLERANCEMZ` and `TOLERANCEPPM` that define the absolute
+and m/z-relative acceptable difference in m/z values. One or both fields can be
+attached to a *condition* such as `MS2PREC=100:TOLERANCEMZ=0.1:TOLERANCEPPM=20`
+to select for example all MS2 spectra with a precursor m/z equal to 100
+accepting a difference of 0.1 and 20 ppm. Note that in contrast to MassQL, the
+default tolarance and ppm is 0 for all calls.
 
 ### Filter
 
 Filters are currently not supported by `SpectraQL`.
+
+
+### Differences of the `SpectraQL` implementation to the `MassQL` definition
+
+- Retention times (for `RTMIN`, `RTMAX`) are expressed in seconds, not minutes.
+- Default for `TOLERANCEMZ` is `0` instead of `0.1`.
 
 ## Examples
 
@@ -143,6 +173,7 @@ the full MassQL query in lower case below.
 ```{r}
 dda_rt <- query(dda_rt,
                 "query * where ms2prec = 278.093:toleancemz=0:toleranceppm=30")
+length(dda_rt)
 dda_rt
 ```
 
