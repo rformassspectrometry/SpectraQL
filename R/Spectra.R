@@ -2,10 +2,36 @@
 #'
 #' @aliases query
 #'
-#' The `query` function allows to query and filter a `Spectra` object using
-#' a Mass Spec Query Language
+#' The `query` function allows to query and subset/filter a `Spectra` object
+#' using a Mass Spec Query Language
 #' [MassQL](https://mwang87.github.io/MassQueryLanguage_Documentation/)
 #' expression.
+#'
+#' A MassQL query is expressed in the form `QUERY <type of data> WHERE
+#' <condition> AND <condition> FILTER <filter> AND <filter>`, multiple
+#' *conditions* and *filters* can be combined with logical *and* operations. In
+#' the MassQL definition, *conditions* subsets the data to specific spectra
+#' while *filter* restricts the data within a spectrum. Note that at present
+#' MassQL *filters* are not supported. Also note that MassQL queries are
+#' interpreted case insensitive in `SpectraQL`.
+#'
+#' See also the package vignette for more details.
+#'
+#' @section type of data:
+#'
+#' The `<type of data>` allows to define which data should be extracted from
+#' the selected spectra. `SpectraQL` supports:
+#'
+#' - `*`: select all data and return the data subset as a [Spectra()] object.
+#'
+#' @section conditions:
+#'
+#' Conditions define to which spectra the data set should be subsetted.
+#'
+#' @section filters:
+#'
+#' Filters subset the data within spectra, i.e. select which peaks within
+#' spectra should be retrieved. `SpectraQL` does not support filters yet.
 #'
 #' @param x The `Spectra` object to query.
 #'
@@ -13,9 +39,11 @@
 #'
 #' @param ... currently ignored.
 #'
+#' @return Depending on the `<type of data>` part of the MassQL query.
+#'
 #' @importClassesFrom Spectra Spectra
 #'
-#' @author Johannes Rainer
+#' @author Andrea Vicini, Johannes Rainer
 #'
 #' @exportMethod query
 setMethod("query", "Spectra", function(x, query = character(), ...) {
