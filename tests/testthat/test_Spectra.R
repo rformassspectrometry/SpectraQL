@@ -57,9 +57,5 @@ test_that(".query_spectra works", {
     #res ha 0 spectra and containsNeutralLoss(res, neutralLoss = 100, ppm = 5)
     # throws the error : Errore in value[[1L]] : subscript fuori limite. Is this 
     # ok or should containsNeutralLoss return a logical value?
-    
-    
-    
-    
 
 })

@@ -234,7 +234,7 @@ NULL
             stop("Invalid value for 'POLARITY'")
         polarity <- unname(alt[m])
     }
-    ProcessingStep(filterPolarity, ARGS = list(polarity = polarity))   
+    ProcessingStep(filterPolarity, ARGS = list(polarity = polarity))  
 }
 
 #' Filter a `Spectra` based on MS2 peak.
@@ -312,26 +312,27 @@ filt_fun <- function(x, pmz, tolerance, ppm) {
 ## res <- .group_min_max(res, name = "RT")
 ## res <- .group_min_max(res, name = "SCAN")
 
+#' @importFrom MsCoreUtils ppm
+#'
+#' @importMethodsFrom Spectra containsNeutralLoss
+#'
+#' @author Johannes Rainer
+#'
+#' @noRd
 .translate_filter_ms2nl <- function(...) {
     parms <- list(...)[[1L]]
     nl <- numeric(0)
     ppm <- 0
     tolerance <- 0
     if (any(names(parms) == "MS2NL"))
-        nl <- as.numeric(.parse_or(parms["MS2NL"]))
-    if(length(nl) && any(is.na(nl)))
-        stop("Non-numeric values for 'MS2NL'")
-    if(length(nl) > 1)
-        stop("OR not yet supported for 'MS2NL'")
+        nl <- .tonumeric(.parse_or(parms["MS2NL"]), "'MS2NL'")
     if (any(names(parms) == "TOLERANCEMZ"))
-        tolerance <- as.numeric(parms["TOLERANCEMZ"])
-    if(any(is.na(tolerance)))
-        stop("Non-numeric values for 'TOLERANCEMZ'")
+        tolerance <- .tonumeric(parms["TOLERANCEMZ"], "'TOLERANCEMZ'")
     if (any(names(parms) == "TOLERANCEPPM"))
-        ppm <- as.numeric(parms["TOLERANCEPPM"])
-    if(any(is.na(ppm)))
-        stop("Non-numeric values for 'TOLERANCEMZ'")
+        ppm <- .tonumeric(parms["TOLERANCEPPM"], "'TOLERANCEPPM'")
     if (length(nl)) {
+        if(length(nl) > 1)
+            stop("OR not yet supported for 'MS2NL'")
         filt_ms2nl <- function(x, neutralLoss, tolerance, ppm) {
             x[containsNeutralLoss(x, neutralLoss, tolerance, ppm)]
         }
@@ -346,6 +347,23 @@ filt_fun <- function(x, pmz, tolerance, ppm) {
 # }
 
 .parse_or <- function(x) {
-    unlist(strsplit(gsub("\\(|\\)", "", trimws(gsub("\\s+", " ", x))), 
+    unlist(strsplit(gsub("\\(|\\)", "", trimws(gsub("\\s+", " ", x))),
                     split = " OR "))
+}
+
+# Like as.numeric but checks if x contains strings equal to "NA" and if they can
+# be converted to numeric. Otherwise it throws an error. Not sure it is helpful
+# but that way is possible maybe to reduce the code (I used it only for the
+# last filter because I'm not sure it is ok but could be used also for the others)
+.tonumeric <- function(x, nmx = "", naadmit = FALSE) {
+    res <- numeric(length(x))
+    NAs <- x == "NA"
+    if(!naadmit && any(NAs))
+        stop("NA value/s not admitted ", ifelse(nmx == "", "", paste("for", nmx)))
+    tmp <- gsub("(+||-)[0-9]", "", sub("\\.", "", x))
+    res[NAs] <- NA
+    if (any(tmp[!NAs] != ""))
+        stop("Non-numeric value/s ", ifelse(nmx == "", "", paste("for", nmx)))
+    res[!NAs] <- as.numeric(x[!NAs])
+    res
 }
