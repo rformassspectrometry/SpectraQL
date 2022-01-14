@@ -134,11 +134,11 @@ test_that(".translate_filter_polarity works", {
     
     res <- .translate_filter_polarity(POLARITY = c(POLARITY = "Positive")) 
     expect_true(inherits(res, "ProcessingStep"))
-    expect_equal(res@ARGS, list(polarity = 1))
+    expect_equal(res@ARGS, list(polarity = 1L))
     
     res <- .translate_filter_polarity(POLARITY = c(POLARITY = "Positive OR NA")) 
     expect_true(inherits(res, "ProcessingStep"))
-    expect_equal(res@ARGS, list(polarity = c(1, NA)))
+    expect_equal(res@ARGS, list(polarity = c(1L, -1)))
     
     expect_error(.translate_filter_polarity(POLARITY = c(POLARITY = "b")), 
                  "Invalid value")

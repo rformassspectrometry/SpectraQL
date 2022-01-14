@@ -209,7 +209,7 @@ NULL
     charge <- integer(0)
     if (any(names(parms) == "CHARGE")) {
         tmp <- .parse_or(parms["CHARGE"])
-        if(any(gsub("(+||-)[0-9]", "", tmp) != "" & tmp != "NA"))
+        if(any(!grepl("(^[+-]?[0-9]+)$|^NA$", tmp)))
             stop("Non-integer value for 'CHARGE'")
         charge <- as.integer(tmp)
     }
@@ -228,11 +228,10 @@ NULL
     polarity <- numeric(0)
     if (any(names(parms) == "POLARITY")) {
         polarity <- toupper(.parse_or(parms["POLARITY"]))
-        alt <- c("POSITIVE" = 1L, "NEUTRAL" = -1L, "NEGATIVE" = 0L, "NA" = NA)
-        m <- match(polarity, names(alt))
-        if(any(is.na(m)))
+        polarity <- unname(c("POSITIVE" = 1L, "NEGATIVE" = 0L, 
+                            "NA" = -1L)[polarity])
+        if(anyNA(polarity))
             stop("Invalid value for 'POLARITY'")
-        polarity <- unname(alt[m])
     }
     ProcessingStep(filterPolarity, ARGS = list(polarity = polarity))  
 }
@@ -251,16 +250,16 @@ NULL
     tolerance <- 0
     if (any(names(parms) == "MS2PROD"))
         pmz <- as.numeric(.parse_or(parms["MS2PROD"]))
-    if(any(is.na(pmz)))
+    if(anyNA(pmz))
         stop("Non-numeric values for 'MS2PROD'")
     if (any(names(parms) == "TOLERANCEMZ"))
         tolerance <- as.numeric(parms["TOLERANCEMZ"])
-    if(any(is.na(tolerance)))
-        stop("Non-numeric values for 'TOLERANCEMZ'")
+    if(is.na(tolerance))
+        stop("Non-numeric value for 'TOLERANCEMZ'")
     if (any(names(parms) == "TOLERANCEPPM"))
         ppm <- as.numeric(parms["TOLERANCEPPM"])
-    if(any(is.na(ppm)))
-        stop("Non-numeric values for 'TOLERANCEPPM'")
+    if(is.na(ppm))
+        stop("Non-numeric value for 'TOLERANCEPPM'")
     if (length(pmz)) {
         filt_ms2prod <- function(x, mz, tolerance, ppm) {
             x[containsMz(x, mz, tolerance, ppm)]
@@ -295,10 +294,16 @@ filt_fun <- function(x, pmz, tolerance, ppm) {
     tolerance <- 0
     if (any(names(parms) == "MS2PREC"))
         pmz <- as.numeric(parms["MS2PREC"])
+    if (is.na(pmz)) 
+        stop("Non-numeric value for 'MS2PREC'")
     if (any(names(parms) == "TOLERANCEMZ"))
         tolerance <- as.numeric(parms["TOLERANCEMZ"])
+    if (is.na(tolerance)) 
+        stop("Non-numeric value for 'TOLERANCEMZ'")
     if (any(names(parms) == "TOLERANCEPPM"))
         ppm <- as.numeric(parms["TOLERANCEPPM"])
+    if (is.na(ppm)) 
+        stop("Non-numeric value for 'TOLERANCEPPM'")
     if (length(pmz)) {
         mzr <- pmz + c(-1, 1) * (tolerance + ppm(pmz, ppm = ppm))
         ProcessingStep(filterPrecursorMz, ARGS = list(mz = mzr))
@@ -325,11 +330,17 @@ filt_fun <- function(x, pmz, tolerance, ppm) {
     ppm <- 0
     tolerance <- 0
     if (any(names(parms) == "MS2NL"))
-        nl <- .tonumeric(.parse_or(parms["MS2NL"]), "'MS2NL'")
+        nl <- as.numeric(.parse_or(parms["MS2NL"]))
+    if (anyNA(nl)) 
+        stop("Non-numeric value/s for 'MS2NL'")
     if (any(names(parms) == "TOLERANCEMZ"))
-        tolerance <- .tonumeric(parms["TOLERANCEMZ"], "'TOLERANCEMZ'")
+        tolerance <- as.numeric(parms["TOLERANCEMZ"])
+    if (is.na(tolerance)) 
+        stop("Non-numeric value for 'TOLERANCEMZ'")
     if (any(names(parms) == "TOLERANCEPPM"))
-        ppm <- .tonumeric(parms["TOLERANCEPPM"], "'TOLERANCEPPM'")
+        ppm <- as.numeric(parms["TOLERANCEPPM"])
+    if (is.na(ppm)) 
+        stop("Non-numeric value for 'TOLERANCEPPM'")
     if (length(nl)) {
         if(length(nl) > 1)
             stop("OR not yet supported for 'MS2NL'")
@@ -347,23 +358,6 @@ filt_fun <- function(x, pmz, tolerance, ppm) {
 # }
 
 .parse_or <- function(x) {
-    unlist(strsplit(gsub("\\(|\\)", "", trimws(gsub("\\s+", " ", x))),
+    unlist(strsplit(gsub("^\\s+|\\s+$|\\(|\\)", "", gsub("\\s+", " ", x)),
                     split = " OR "))
-}
-
-# Like as.numeric but checks if x contains strings equal to "NA" and if they can
-# be converted to numeric. Otherwise it throws an error. Not sure it is helpful
-# but that way is possible maybe to reduce the code (I used it only for the
-# last filter because I'm not sure it is ok but could be used also for the others)
-.tonumeric <- function(x, nmx = "", naadmit = FALSE) {
-    res <- numeric(length(x))
-    NAs <- x == "NA"
-    if(!naadmit && any(NAs))
-        stop("NA value/s not admitted ", ifelse(nmx == "", "", paste("for", nmx)))
-    tmp <- gsub("(+||-)[0-9]", "", sub("\\.", "", x))
-    res[NAs] <- NA
-    if (any(tmp[!NAs] != ""))
-        stop("Non-numeric value/s ", ifelse(nmx == "", "", paste("for", nmx)))
-    res[!NAs] <- as.numeric(x[!NAs])
-    res
 }
