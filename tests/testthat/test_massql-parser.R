@@ -202,30 +202,38 @@ test_that(".extract_what works", {
     expect_equal(sps_tmp, res)
 })
 
-test_that(".extract_ms1data works", {
-    expect_error(.extract_ms1data(sps_dda, "something"), "not supported")
-    res <- .extract_ms1data(sps_dda, "MS1DATA")
-    expect_equal(res$rtime, filterMsLevel(sps_dda, 1L)$rtime)
-
-    ## query with MS1DATA
-    res <- query(sps_dda, "query ms1data  where RTMIN = 200 and rtmax=300")
-})
-
-test_that(".extract_ms2data works", {
-    expect_error(.extract_ms2data(sps_dda, "something"), "not supported")
-    res <- .extract_ms2data(sps_dda, "MS2DATA")
-    expect_equal(res$rtime, filterMsLevel(sps_dda, 2L)$rtime)
-
-    ## query with MS2DATA
-    res <- query(sps_dda, "query ms2data  where RTMIN = 200 and rtmax=300")
-})
-
-test_that(".extract_all works", {
-    expect_error(.extract_all(sps_dda, "*+-"), "not supported")
-    res <- .extract_all(sps_dda, "*")
+test_that(".what_data works", {
+    ## *
+    res <- .what_data(sps_dda, "*")
+    expect_s4_class(res, "Spectra")
     expect_equal(length(res), length(sps_dda))
 
-    res <- query(sps_dda, "query * where RTMIN = 200 and rtmax=300")
+    res <- .what_data(sps_dda, "scaninfo(*)")
+    expect_s4_class(res, "Spectra")
+    expect_equal(length(res), length(sps_dda))
+
+    expect_error(.what_data(sps_dda, "scaninfo(*"), "not supported")
+    expect_error(.what_data(sps_dda, "other"), "not supported")
+
+    res <- .what_data(sps_dda, "ms1data")
+    expect_s4_class(res, "Spectra")
+    expect_true(all(msLevel(res) == 1L))
+
+    res <- .what_data(sps_dda, "other(ms1data)")
+    expect_s4_class(res, "Spectra")
+    expect_true(all(msLevel(res) == 1L))
+
+    expect_error(.what_data(sps_dda, "ms1data)"), "not supported")
+
+    res <- .what_data(sps_dda, "ms2data")
+    expect_s4_class(res, "Spectra")
+    expect_true(all(msLevel(res) == 2L))
+
+    res <- .what_data(sps_dda, "other(ms2data)")
+    expect_s4_class(res, "Spectra")
+    expect_true(all(msLevel(res) == 2L))
+
+    expect_error(.what_data(sps_dda, "ms2datas"), "not supported")
 })
 
 ## query <- "QUERY * WHERE RTMIN = 123 AND RTMAX = 130  AND MZPREC = 312.2:TOLERANCEMZ = 0.1:TOLERANCEPPM=10"

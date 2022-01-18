@@ -58,41 +58,7 @@ NULL
     x
 }
 
-#' This maps data type "keywords" to a function to extract the data.
-#'
-#' @noRd
-.WHAT_FUNCTIONS <- c(
-    `*` = ".extract_all",
-    `ms1data` = ".extract_ms1data",
-    `ms2data` = ".extract_ms2data"
-)
-
-#' Extracts the data as requested. The function to extract the data is retrieved
-#' from the .WHAT_FUNCTIONS character vector grepping for the name.
-#'
-#' @author Johannes Rainer
-#'
-#' @noRd
-.extract_what <- function(x, what = character()) {
-    ## identify the function that should be applied.
-    idx <- grep(tolower(what), names(.WHAT_FUNCTIONS), fixed = TRUE)
-    if (!length(idx))
-        stop("Specified type of data '", what, "' is not supported.",
-             call. = FALSE)
-    if (length(idx) > 1L)
-        stop("Specified type of data '", what, "' is ambiguous.", call. = FALSE)
-    fun <- .WHAT_FUNCTIONS[idx]
-    do.call(fun, list(x, what = what))
-}
-
-.extract_all <- function(x, what = character()) {
-    what <- gsub("[[:space:]]", "", what)
-    if (!what == "*")
-        stop("Syntax error: data type '", what, "' not supported.")
-    x
-}
-
-#' @importMethodsFrom Spectra filterMsLevel
+#' Extracts the data as requested.
 #'
 #' @param x `Spectra` object.
 #'
@@ -103,18 +69,31 @@ NULL
 #' @author Johannes Rainer
 #'
 #' @noRd
-.extract_ms1data <- function(x, what = character()) {
-    what <- gsub("[[:space:]]", "", what)
-    if (!tolower(what) == "ms1data")
-        stop("Syntax error: data type '", what, "' not supported.")
-    filterMsLevel(x, msLevel. = 1L)
+.extract_what <- function(x, what = character()) {
+    what <- gsub("[[:space:]]", "", tolower(what))
+    ## Define what type of data (all, MS1, MS2) should be returned.
+    .what_data(x, what)
+    ## Define if and how the data should be transformed.
 }
 
-.extract_ms2data <- function(x, what = character()) {
-    what <- gsub("[[:space:]]", "", what)
-    if (!tolower(what) == "ms2data")
-        stop("Syntax error: data type '", what, "' not supported.")
-    filterMsLevel(x, msLevel. = 2L)
+#' @importMethodsFrom Spectra filterMsLevel
+#'
+#' Define which data to extract. Supported are *, ms1data, ms2data.
+#'
+#' @author Johannes Rainer
+#'
+#' @noRd
+.what_data <- function(x, what = character()) {
+    res <- NULL
+    if (length(grep("(^\\*$|\\(\\*\\))", what)))
+        res <- x
+    if (length(grep("(^ms1data$|\\(ms1data\\))", what)))
+        res <- filterMsLevel(x, msLevel. = 1L)
+    if (length(grep("(^ms2data$|\\(ms2data\\))", what)))
+        res <- filterMsLevel(x, msLevel. = 2L)
+    if (is.null(res))
+        stop("data definition '", what, "' not supported.", call. = FALSE)
+    res
 }
 
 #' Condition(s): everything between WHERE and end of line or FILTER.
