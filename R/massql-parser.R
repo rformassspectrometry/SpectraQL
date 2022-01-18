@@ -62,7 +62,7 @@ NULL
 #'
 #' @noRd
 .WHAT_FUNCTIONS <- c(
-    `*` = "identity",
+    `*` = ".extract_all",
     `ms1data` = ".extract_ms1data",
     `ms2data` = ".extract_ms2data"
 )
@@ -75,8 +75,7 @@ NULL
 #' @noRd
 .extract_what <- function(x, what = character()) {
     ## identify the function that should be applied.
-    idx <- grep(paste0("^", what), names(.WHAT_FUNCTIONS),
-                ignore.case = TRUE)
+    idx <- grep(tolower(what), names(.WHAT_FUNCTIONS), fixed = TRUE)
     if (!length(idx))
         stop("Specified type of data '", what, "' is not supported.",
              call. = FALSE)
@@ -84,6 +83,13 @@ NULL
         stop("Specified type of data '", what, "' is ambiguous.", call. = FALSE)
     fun <- .WHAT_FUNCTIONS[idx]
     do.call(fun, list(x, what = what))
+}
+
+.extract_all <- function(x, what = character()) {
+    what <- gsub("[[:space:]]", "", what)
+    if (!what == "*")
+        stop("Syntax error: data type '", what, "' not supported.")
+    x
 }
 
 #' @importMethodsFrom Spectra filterMsLevel

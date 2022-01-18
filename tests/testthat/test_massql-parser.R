@@ -10,6 +10,9 @@ test_that(".what works", {
 
     res <- .what("query *  ")
     expect_equal(res, "*")
+
+    res <- .what("QUERY * WHERE RTMIN = 200 AND RTMAX = 300")
+    expect_equal(res, "*")
 })
 
 test_that(".validate_what works", {
@@ -156,6 +159,14 @@ test_that(".extract_ms2data works", {
 
     ## query with MS2DATA
     res <- query(sps_dda, "query ms2data  where RTMIN = 200 and rtmax=300")
+})
+
+test_that(".extract_all works", {
+    expect_error(.extract_all(sps_dda, "*+-"), "not supported")
+    res <- .extract_all(sps_dda, "*")
+    expect_equal(length(res), length(sps_dda))
+
+    res <- query(sps_dda, "query * where RTMIN = 200 and rtmax=300")
 })
 
 ## query <- "QUERY * WHERE RTMIN = 123 AND RTMAX = 130  AND MZPREC = 312.2:TOLERANCEMZ = 0.1:TOLERANCEPPM=10"

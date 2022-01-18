@@ -91,6 +91,8 @@ The `<type of data>` defines what should be returned by the `query`
 function. The types of data that are currently supported by `SpectraQL` are:
 
 - `"*"`: returns the full data, i.e. returns a `Spectra` object.
+- `"MS1DATA"` (case insensitive): returns MS1 data.
+- `"MS2DATA"` (case insensitive): returns MS2 data.
 
 ### Condition
 
