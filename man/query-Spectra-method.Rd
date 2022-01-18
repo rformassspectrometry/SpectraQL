@@ -96,7 +96,7 @@ Depending on the \verb{<type of data>} part of the MassQL query.
 \description{
 Query a Spectra object using MassQL
 }
-\section{type of data}{
+\section{Type of data}{
 
 
 The \verb{<type of data>} allows to define which data should be extracted from
@@ -118,13 +118,41 @@ spectra.
 }
 }
 
-\section{conditions}{
+\section{Conditions}{
 
 
-Conditions define to which spectra the data set should be subsetted.
+Conditions define to which spectra the data set should be subsetted. Several
+conditions can be combined with \code{"and"} (case insensitive). The syntax for a
+condition is \verb{<condition> = <value>}, e.g. \code{MS2PROD = 144.1}. Such conditions
+can be further refined by additional expressions that allow for example to
+define acceptable tolerances for m/z differences. \code{SpectraQL} supports (case
+insensitive):
+\itemize{
+\item \code{RTMIN}: minimum retention time (in \strong{seconds}).
+\item \code{RTMAX}: maximum retention time (in \strong{seconds}).
+\item \code{SCANMIN}: the minimum scan number (acquisition number).
+\item \code{SCANMAX}: the maximum scan number (acquisition number).
+\item \code{CHARGE}: the charge for MS2 spectra.
+\item \code{POLARITY}: the polarity of the spectra (can be \code{"positive"}, \code{"negative"},
+\code{"pos"} or \code{"neg"}, case insensitive).
+\item \code{MS2PROD}: allows to select MS2 spectra that contain a peak with a
+particular m/z.
+\item \code{MS2PREC}: allows to select MS2 spectra with the defined precursor m/z.
+\item \code{MS2MZ}: allows to select MS1 spectra containing peaks with the defined
+m/z.
 }
 
-\section{filters}{
+All conditions involving m/z values allow to specify a mass accuracy using
+the optional fields \code{TOLERANCEMZ} and \code{TOLERANCEPPM} that define the absolute
+and m/z-relative acceptable difference in m/z values. One or both fields can
+be attached to a \emph{condition} such as
+\code{MS2PREC=100:TOLERANCEMZ=0.1:TOLERANCEPPM=20} to select for example all
+MS2 spectra with a precursor m/z equal to 100 accepting a difference of 0.1
+and 20 ppm. Note that in contrast to MassQL, the default tolarance and ppm
+is 0 for all calls.
+}
+
+\section{Filters}{
 
 
 Filters subset the data within spectra, i.e. select which peaks within

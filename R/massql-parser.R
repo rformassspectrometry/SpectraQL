@@ -259,7 +259,7 @@ NULL
 #' Filter a `Spectra` based on provided charge.
 #'
 #' @importFrom Spectra filterPrecursorCharge
-#' 
+#'
 #' @author Johannes Rainer, Andrea Vicini
 #'
 #' @noRd
@@ -278,7 +278,7 @@ NULL
 #' Filter a `Spectra` based on provided polarity.
 #'
 #' @importFrom Spectra filterPolarity
-#' 
+#'
 #' @author Johannes Rainer, Andrea Vicini
 #'
 #' @noRd
@@ -287,18 +287,18 @@ NULL
     polarity <- numeric(0)
     if (any(names(parms) == "POLARITY")) {
         polarity <- toupper(.parse_or(parms["POLARITY"]))
-        polarity <- unname(c("POSITIVE" = 1L, "NEGATIVE" = 0L, 
+        polarity <- unname(c("POSITIVE" = 1L, "NEGATIVE" = 0L,
                             "NA" = -1L)[polarity])
         if(anyNA(polarity))
             stop("Invalid value for 'POLARITY'")
     }
-    ProcessingStep(filterPolarity, ARGS = list(polarity = polarity))  
+    ProcessingStep(filterPolarity, ARGS = list(polarity = polarity))
 }
 
 #' Filter a `Spectra` based on MS2 peak.
 #'
 #' @importFrom Spectra containsMz
-#' 
+#'
 #' @author Johannes Rainer, Andrea Vicini
 #'
 #' @noRd
@@ -334,11 +334,6 @@ filt_fun <- function(x, pmz, tolerance, ppm) {
                                                       ARGS = list(mz = v))))
 }
 
-# .translate_filter_ms2prod <- function(...) {
-#     ## use containsMz, parameters: mz, tolerance, ppm, which (any, all)
-#     stop("Condition MS2PROD not yet supported", call. = FALSE)
-# }
-
 #' @importFrom MsCoreUtils ppm
 #'
 #' @importMethodsFrom Spectra filterPrecursorMz
@@ -353,15 +348,15 @@ filt_fun <- function(x, pmz, tolerance, ppm) {
     tolerance <- 0
     if (any(names(parms) == "MS2PREC"))
         pmz <- as.numeric(parms["MS2PREC"])
-    if (is.na(pmz)) 
+    if (is.na(pmz))
         stop("Non-numeric value for 'MS2PREC'")
     if (any(names(parms) == "TOLERANCEMZ"))
         tolerance <- as.numeric(parms["TOLERANCEMZ"])
-    if (is.na(tolerance)) 
+    if (is.na(tolerance))
         stop("Non-numeric value for 'TOLERANCEMZ'")
     if (any(names(parms) == "TOLERANCEPPM"))
         ppm <- as.numeric(parms["TOLERANCEPPM"])
-    if (is.na(ppm)) 
+    if (is.na(ppm))
         stop("Non-numeric value for 'TOLERANCEPPM'")
     if (length(pmz)) {
         mzr <- pmz + c(-1, 1) * (tolerance + ppm(pmz, ppm = ppm))
@@ -390,15 +385,15 @@ filt_fun <- function(x, pmz, tolerance, ppm) {
     tolerance <- 0
     if (any(names(parms) == "MS2NL"))
         nl <- as.numeric(.parse_or(parms["MS2NL"]))
-    if (anyNA(nl)) 
+    if (anyNA(nl))
         stop("Non-numeric value/s for 'MS2NL'")
     if (any(names(parms) == "TOLERANCEMZ"))
         tolerance <- as.numeric(parms["TOLERANCEMZ"])
-    if (is.na(tolerance)) 
+    if (is.na(tolerance))
         stop("Non-numeric value for 'TOLERANCEMZ'")
     if (any(names(parms) == "TOLERANCEPPM"))
         ppm <- as.numeric(parms["TOLERANCEPPM"])
-    if (is.na(ppm)) 
+    if (is.na(ppm))
         stop("Non-numeric value for 'TOLERANCEPPM'")
     if (length(nl)) {
         if(length(nl) > 1)
@@ -411,10 +406,6 @@ filt_fun <- function(x, pmz, tolerance, ppm) {
                                                         ppm = ppm))
     } else ProcessingStep(identity)
 }
-
-# .translate_filter_ms2nl <- function(...) {
-#     stop("Condition MS2NL not yet supported", call. = FALSE)
-# }
 
 .parse_or <- function(x) {
     unlist(strsplit(gsub("^\\s+|\\s+$|\\(|\\)", "", gsub("\\s+", " ", x)),

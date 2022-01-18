@@ -17,7 +17,7 @@
 #'
 #' See also the package vignette for more details.
 #'
-#' @section type of data:
+#' @section Type of data:
 #'
 #' The `<type of data>` allows to define which data should be extracted from
 #' the selected spectra. MassQL defines *type of data* being `MS1DATA` or
@@ -36,11 +36,38 @@
 #' - `scannum(MS1DATA)`, `scannum(MS2DATA)`: the scan number(s) of the selected
 #'   spectra.
 #'
-#' @section conditions:
+#' @section Conditions:
 #'
-#' Conditions define to which spectra the data set should be subsetted.
+#' Conditions define to which spectra the data set should be subsetted. Several
+#' conditions can be combined with `"and"` (case insensitive). The syntax for a
+#' condition is `<condition> = <value>`, e.g. `MS2PROD = 144.1`. Such conditions
+#' can be further refined by additional expressions that allow for example to
+#' define acceptable tolerances for m/z differences. `SpectraQL` supports (case
+#' insensitive):
 #'
-#' @section filters:
+#' - `RTMIN`: minimum retention time (in **seconds**).
+#' - `RTMAX`: maximum retention time (in **seconds**).
+#' - `SCANMIN`: the minimum scan number (acquisition number).
+#' - `SCANMAX`: the maximum scan number (acquisition number).
+#' - `CHARGE`: the charge for MS2 spectra.
+#' - `POLARITY`: the polarity of the spectra (can be `"positive"`, `"negative"`,
+#'   `"pos"` or `"neg"`, case insensitive).
+#' - `MS2PROD`: allows to select MS2 spectra that contain a peak with a
+#'   particular m/z.
+#' - `MS2PREC`: allows to select MS2 spectra with the defined precursor m/z.
+#' - `MS2MZ`: allows to select MS1 spectra containing peaks with the defined
+#'   m/z.
+#'
+#' All conditions involving m/z values allow to specify a mass accuracy using
+#' the optional fields `TOLERANCEMZ` and `TOLERANCEPPM` that define the absolute
+#' and m/z-relative acceptable difference in m/z values. One or both fields can
+#' be attached to a *condition* such as
+#' `MS2PREC=100:TOLERANCEMZ=0.1:TOLERANCEPPM=20` to select for example all
+#' MS2 spectra with a precursor m/z equal to 100 accepting a difference of 0.1
+#' and 20 ppm. Note that in contrast to MassQL, the default tolarance and ppm
+#' is 0 for all calls.
+#'
+#' @section Filters:
 #'
 #' Filters subset the data within spectra, i.e. select which peaks within
 #' spectra should be retrieved. `SpectraQL` does not support filters yet.
