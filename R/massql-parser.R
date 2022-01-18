@@ -52,7 +52,7 @@ NULL
 }
 
 .validate_what <- function(x) {
-    if (any(is.na(x)) || !length(what))
+    if (any(is.na(x)) || !length(x))
         stop("Syntax error: unable to extract type of data from query",
              call. = FALSE)
     x
@@ -62,7 +62,9 @@ NULL
 #'
 #' @noRd
 .WHAT_FUNCTIONS <- c(
-    `*` = "identity"
+    `*` = "identity",
+    `ms1data` = ".extract_ms1data",
+    `ms2data` = ".extract_ms2data"
 )
 
 #' Extracts the data as requested. The function to extract the data is retrieved
@@ -81,7 +83,32 @@ NULL
     if (length(idx) > 1L)
         stop("Specified type of data '", what, "' is ambiguous.", call. = FALSE)
     fun <- .WHAT_FUNCTIONS[idx]
-    do.call(fun, list(x))
+    do.call(fun, list(x, what = what))
+}
+
+#' @importMethodsFrom Spectra filterMsLevel
+#'
+#' @param x `Spectra` object.
+#'
+#' @param what `character(1)` with the information what should be extracted.
+#'     This is expected to be the processed/parsed *what* string (returned by
+#'     `.what`).
+#'
+#' @author Johannes Rainer
+#'
+#' @noRd
+.extract_ms1data <- function(x, what = character()) {
+    what <- gsub("[[:space:]]", "", what)
+    if (!tolower(what) == "ms1data")
+        stop("Syntax error: data type '", what, "' not supported.")
+    filterMsLevel(x, msLevel. = 1L)
+}
+
+.extract_ms2data <- function(x, what = character()) {
+    what <- gsub("[[:space:]]", "", what)
+    if (!tolower(what) == "ms2data")
+        stop("Syntax error: data type '", what, "' not supported.")
+    filterMsLevel(x, msLevel. = 2L)
 }
 
 #' Condition(s): everything between WHERE and end of line or FILTER.

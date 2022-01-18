@@ -1,6 +1,6 @@
 Package: SpectraQL
 Title: MassQL support for Spectra
-Version: 0.99.1
+Version: 0.98.1
 Description: The SpectraQL package adds support for the MassQL query language
     to Spectra objects. The Mass Spec Query Language MassQL was defined as a
     general query language to extract information from mass spectrometry data.

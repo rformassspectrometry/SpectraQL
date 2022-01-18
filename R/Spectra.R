@@ -20,9 +20,21 @@
 #' @section type of data:
 #'
 #' The `<type of data>` allows to define which data should be extracted from
-#' the selected spectra. `SpectraQL` supports:
+#' the selected spectra. MassQL defines *type of data* being `MS1DATA` or
+#' `MS2DATA` to retrieve MS1 or MS2 scans. In addition, functions can be applied
+#' to these to modify (e.g. sum) the data. `SpectraQL` supports:
 #'
 #' - `*`: select all data and return the data subset as a [Spectra()] object.
+#' - `MS1DATA`: return a [Spectra()] with all MS1 scans from the selected
+#'   spectra.
+#' - `MS1DATA`: return a [Spectra()] with all MS2 scans from the selected
+#'   spectra.
+#' - `scaninfo(MS1DATA)`, `scaninfo(MS2DATA)`: return the [spectraData()] of all
+#'   selected spectra.
+#' - `scansum(MS1DATA)`, `scaninfo(MS2DATA)`: sum of the peak intensities of
+#'   the selected spectra.
+#' - `scannum(MS1DATA)`, `scannum(MS2DATA)`: the scan number(s) of the selected
+#'   spectra.
 #'
 #' @section conditions:
 #'

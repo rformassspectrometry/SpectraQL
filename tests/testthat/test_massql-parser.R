@@ -140,6 +140,24 @@ test_that(".extract_what works", {
     expect_equal(sps_tmp, res)
 })
 
+test_that(".extract_ms1data works", {
+    expect_error(.extract_ms1data(sps_dda, "something"), "not supported")
+    res <- .extract_ms1data(sps_dda, "MS1DATA")
+    expect_equal(res$rtime, filterMsLevel(sps_dda, 1L)$rtime)
+
+    ## query with MS1DATA
+    res <- query(sps_dda, "query ms1data  where RTMIN = 200 and rtmax=300")
+})
+
+test_that(".extract_ms2data works", {
+    expect_error(.extract_ms2data(sps_dda, "something"), "not supported")
+    res <- .extract_ms2data(sps_dda, "MS2DATA")
+    expect_equal(res$rtime, filterMsLevel(sps_dda, 2L)$rtime)
+
+    ## query with MS2DATA
+    res <- query(sps_dda, "query ms2data  where RTMIN = 200 and rtmax=300")
+})
+
 ## query <- "QUERY * WHERE RTMIN = 123 AND RTMAX = 130  AND MZPREC = 312.2:TOLERANCEMZ = 0.1:TOLERANCEPPM=10"
 ## x <- .where(query)
 ## res <- lapply(x, .parse_where)

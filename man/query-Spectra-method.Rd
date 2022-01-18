@@ -9,7 +9,7 @@
 \alias{allows}
 \alias{to}
 \alias{and}
-\alias{filter}
+\alias{subset/filter}
 \alias{a}
 \alias{`Spectra`}
 \alias{object}
@@ -20,6 +20,65 @@
 \alias{Language}
 \alias{[MassQL](https://mwang87.github.io/MassQueryLanguage_Documentation/)}
 \alias{expression.}
+\alias{A}
+\alias{MassQL}
+\alias{is}
+\alias{expressed}
+\alias{in}
+\alias{the}
+\alias{form}
+\alias{`QUERY}
+\alias{<type}
+\alias{of}
+\alias{data>}
+\alias{WHERE}
+\alias{<condition>}
+\alias{AND}
+\alias{FILTER}
+\alias{<filter>}
+\alias{<filter>`,}
+\alias{multiple}
+\alias{*conditions*}
+\alias{*filters*}
+\alias{can}
+\alias{be}
+\alias{combined}
+\alias{with}
+\alias{logical}
+\alias{*and*}
+\alias{operations.}
+\alias{In}
+\alias{definition,}
+\alias{subsets}
+\alias{data}
+\alias{specific}
+\alias{spectra}
+\alias{while}
+\alias{*filter*}
+\alias{restricts}
+\alias{within}
+\alias{spectrum.}
+\alias{Note}
+\alias{that}
+\alias{at}
+\alias{present}
+\alias{are}
+\alias{not}
+\alias{supported.}
+\alias{Also}
+\alias{note}
+\alias{queries}
+\alias{interpreted}
+\alias{case}
+\alias{insensitive}
+\alias{`SpectraQL`.}
+\alias{See}
+\alias{also}
+\alias{package}
+\alias{vignette}
+\alias{for}
+\alias{more}
+\alias{details.}
 \title{Query a Spectra object using MassQL}
 \usage{
 \S4method{query}{Spectra}(x, query = character(), ...)
@@ -31,9 +90,47 @@
 
 \item{...}{currently ignored.}
 }
+\value{
+Depending on the \verb{<type of data>} part of the MassQL query.
+}
 \description{
 Query a Spectra object using MassQL
 }
+\section{type of data}{
+
+
+The \verb{<type of data>} allows to define which data should be extracted from
+the selected spectra. MassQL defines \emph{type of data} being \code{MS1DATA} or
+\code{MS2DATA} to retrieve MS1 or MS2 scans. In addition, functions can be applied
+to these to modify (e.g. sum) the data. \code{SpectraQL} supports:
+\itemize{
+\item \code{*}: select all data and return the data subset as a \code{\link[=Spectra]{Spectra()}} object.
+\item \code{MS1DATA}: return a \code{\link[=Spectra]{Spectra()}} with all MS1 scans from the selected
+spectra.
+\item \code{MS1DATA}: return a \code{\link[=Spectra]{Spectra()}} with all MS2 scans from the selected
+spectra.
+\item \code{scaninfo(MS1DATA)}, \code{scaninfo(MS2DATA)}: return the \code{\link[=spectraData]{spectraData()}} of all
+selected spectra.
+\item \code{scansum(MS1DATA)}, \code{scaninfo(MS2DATA)}: sum of the peak intensities of
+the selected spectra.
+\item \code{scannum(MS1DATA)}, \code{scannum(MS2DATA)}: the scan number(s) of the selected
+spectra.
+}
+}
+
+\section{conditions}{
+
+
+Conditions define to which spectra the data set should be subsetted.
+}
+
+\section{filters}{
+
+
+Filters subset the data within spectra, i.e. select which peaks within
+spectra should be retrieved. \code{SpectraQL} does not support filters yet.
+}
+
 \author{
-Johannes Rainer
+Andrea Vicini, Johannes Rainer
 }
