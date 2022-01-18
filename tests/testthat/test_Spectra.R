@@ -31,4 +31,31 @@ test_that(".query_spectra works", {
     res <- .query_spectra(
         sps_dda, "QUERY * WHERE RTMIN=420 AND MS2PREC=304.1131:TOLERANCEPPM=20")
     expect_equal(length(res), 3)
+    
+    res <- .query_spectra(sps_dda, "QUERY * WHERE CHARGE = 0")
+    expect_true(all(precursorCharge(res) == 0))
+    
+    res <- .query_spectra(sps_dda, "QUERY * WHERE CHARGE = NA OR -1")
+    expect_true(all(is.na(precursorCharge(res)) | precursorCharge(res) == -1))
+    
+    res <- .query_spectra(sps_dda, "QUERY * WHERE POLARITY = Positive")
+    expect_true(all(polarity(res) == 1)) 
+    
+    res <- .query_spectra(
+        sps_dda, "QUERY * WHERE MS2PROD=(100 OR 104):TOLERANCEPPM=5")
+    expect_true(containsMz(res, mz = 100, ppm = 5) ||
+                    containsMz(res, mz = 104, ppm = 5))
+    
+    res <- .query_spectra(
+        sps_dda, "QUERY * WHERE MS2PROD=(100 OR 104):TOLERANCEPPM=5")
+    expect_true(containsMz(res, mz = 100, ppm = 5) ||
+                    containsMz(res, mz = 104, ppm = 5))
+    
+    res <- .query_spectra(
+        sps_dda, "QUERY * WHERE MS2NL=100:TOLERANCEPPM=5")
+    #expect_true(containsNeutralLoss(res, neutralLoss = 100, ppm = 5)) 
+    #res ha 0 spectra and containsNeutralLoss(res, neutralLoss = 100, ppm = 5)
+    # throws the error : Errore in value[[1L]] : subscript fuori limite. Is this 
+    # ok or should containsNeutralLoss return a logical value?
+
 })

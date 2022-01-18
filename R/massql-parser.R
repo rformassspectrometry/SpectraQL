@@ -197,18 +197,88 @@ NULL
     ProcessingStep(filt_fun, ARGS = list(scan = c(scan_min, scan_max)))
 }
 
+#' Filter a `Spectra` based on provided charge.
+#'
+#' @importFrom Spectra filterPrecursorCharge
+#' 
+#' @author Johannes Rainer, Andrea Vicini
+#'
+#' @noRd
 .translate_filter_charge <- function(...) {
-    stop("Condition CHARGE not yet supported", call. = FALSE)
+    parms <- list(...)[[1L]]
+    charge <- integer(0)
+    if (any(names(parms) == "CHARGE")) {
+        tmp <- .parse_or(parms["CHARGE"])
+        if(any(!grepl("(^[+-]?[0-9]+)$|^NA$", tmp)))
+            stop("Non-integer value for 'CHARGE'")
+        charge <- as.integer(tmp)
+    }
+    ProcessingStep(filterPrecursorCharge, ARGS = list(z = charge))
 }
 
+#' Filter a `Spectra` based on provided polarity.
+#'
+#' @importFrom Spectra filterPolarity
+#' 
+#' @author Johannes Rainer, Andrea Vicini
+#'
+#' @noRd
 .translate_filter_polarity <- function(...) {
-    stop("Condition POLARITY not yet supported", call. = FALSE)
+    parms <- list(...)[[1L]]
+    polarity <- numeric(0)
+    if (any(names(parms) == "POLARITY")) {
+        polarity <- toupper(.parse_or(parms["POLARITY"]))
+        polarity <- unname(c("POSITIVE" = 1L, "NEGATIVE" = 0L, 
+                            "NA" = -1L)[polarity])
+        if(anyNA(polarity))
+            stop("Invalid value for 'POLARITY'")
+    }
+    ProcessingStep(filterPolarity, ARGS = list(polarity = polarity))  
 }
 
+#' Filter a `Spectra` based on MS2 peak.
+#'
+#' @importFrom Spectra containsMz
+#' 
+#' @author Johannes Rainer, Andrea Vicini
+#'
+#' @noRd
 .translate_filter_ms2prod <- function(...) {
-    ## use containsMz, parameters: mz, tolerance, ppm, which (any, all)
-    stop("Condition MS2PROD not yet supported", call. = FALSE)
+    parms <- list(...)[[1L]]
+    pmz <- numeric(0)
+    ppm <- 0
+    tolerance <- 0
+    if (any(names(parms) == "MS2PROD"))
+        pmz <- as.numeric(.parse_or(parms["MS2PROD"]))
+    if(anyNA(pmz))
+        stop("Non-numeric values for 'MS2PROD'")
+    if (any(names(parms) == "TOLERANCEMZ"))
+        tolerance <- as.numeric(parms["TOLERANCEMZ"])
+    if(is.na(tolerance))
+        stop("Non-numeric value for 'TOLERANCEMZ'")
+    if (any(names(parms) == "TOLERANCEPPM"))
+        ppm <- as.numeric(parms["TOLERANCEPPM"])
+    if(is.na(ppm))
+        stop("Non-numeric value for 'TOLERANCEPPM'")
+    if (length(pmz)) {
+        filt_ms2prod <- function(x, mz, tolerance, ppm) {
+            x[containsMz(x, mz, tolerance, ppm)]
+        }
+        ProcessingStep(filt_ms2prod, ARGS = list(mz = pmz, tolerance = tolerance,
+                                               ppm = ppm))
+    } else ProcessingStep(identity)
 }
+
+filt_fun <- function(x, pmz, tolerance, ppm) {
+    mzr <- pmz + c(-1, 1) * (tolerance + ppm(pmz, ppm = ppm))
+    do.call(c, lapply(mzr, function(v) ProcessingStep(filterPrecursorMz,
+                                                      ARGS = list(mz = v))))
+}
+
+# .translate_filter_ms2prod <- function(...) {
+#     ## use containsMz, parameters: mz, tolerance, ppm, which (any, all)
+#     stop("Condition MS2PROD not yet supported", call. = FALSE)
+# }
 
 #' @importFrom MsCoreUtils ppm
 #'
@@ -224,16 +294,70 @@ NULL
     tolerance <- 0
     if (any(names(parms) == "MS2PREC"))
         pmz <- as.numeric(parms["MS2PREC"])
+    if (is.na(pmz)) 
+        stop("Non-numeric value for 'MS2PREC'")
     if (any(names(parms) == "TOLERANCEMZ"))
         tolerance <- as.numeric(parms["TOLERANCEMZ"])
+    if (is.na(tolerance)) 
+        stop("Non-numeric value for 'TOLERANCEMZ'")
     if (any(names(parms) == "TOLERANCEPPM"))
         ppm <- as.numeric(parms["TOLERANCEPPM"])
+    if (is.na(ppm)) 
+        stop("Non-numeric value for 'TOLERANCEPPM'")
     if (length(pmz)) {
         mzr <- pmz + c(-1, 1) * (tolerance + ppm(pmz, ppm = ppm))
         ProcessingStep(filterPrecursorMz, ARGS = list(mz = mzr))
     } else ProcessingStep(identity)
 }
 
+## query <- "QUERY * WHERE RTMIN = 123 AND RTMAX = 130  AND MZPREC = 312.2:TOLERANCEMZ = 0.1:TOLERANCEPPM=10"
+## x <- .where(query)
+## res <- lapply(x, .parse_where)
+## names(res) <- vapply(res, function(z) names(z)[1], character(1))
+## res <- .group_min_max(res, name = "RT")
+## res <- .group_min_max(res, name = "SCAN")
+
+#' @importFrom MsCoreUtils ppm
+#'
+#' @importMethodsFrom Spectra containsNeutralLoss
+#'
+#' @author Johannes Rainer
+#'
+#' @noRd
 .translate_filter_ms2nl <- function(...) {
-    stop("Condition MS2NL not yet supported", call. = FALSE)
+    parms <- list(...)[[1L]]
+    nl <- numeric(0)
+    ppm <- 0
+    tolerance <- 0
+    if (any(names(parms) == "MS2NL"))
+        nl <- as.numeric(.parse_or(parms["MS2NL"]))
+    if (anyNA(nl)) 
+        stop("Non-numeric value/s for 'MS2NL'")
+    if (any(names(parms) == "TOLERANCEMZ"))
+        tolerance <- as.numeric(parms["TOLERANCEMZ"])
+    if (is.na(tolerance)) 
+        stop("Non-numeric value for 'TOLERANCEMZ'")
+    if (any(names(parms) == "TOLERANCEPPM"))
+        ppm <- as.numeric(parms["TOLERANCEPPM"])
+    if (is.na(ppm)) 
+        stop("Non-numeric value for 'TOLERANCEPPM'")
+    if (length(nl)) {
+        if(length(nl) > 1)
+            stop("OR not yet supported for 'MS2NL'")
+        filt_ms2nl <- function(x, neutralLoss, tolerance, ppm) {
+            x[containsNeutralLoss(x, neutralLoss, tolerance, ppm)]
+        }
+        ProcessingStep(filt_ms2nl, ARGS = list(neutralLoss = nl,
+                                                        tolerance = tolerance,
+                                                        ppm = ppm))
+    } else ProcessingStep(identity)
+}
+
+# .translate_filter_ms2nl <- function(...) {
+#     stop("Condition MS2NL not yet supported", call. = FALSE)
+# }
+
+.parse_or <- function(x) {
+    unlist(strsplit(gsub("^\\s+|\\s+$|\\(|\\)", "", gsub("\\s+", " ", x)),
+                    split = " OR "))
 }
