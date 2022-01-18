@@ -96,7 +96,7 @@ test_that(".translate_filter_scan works", {
     expect_error(.translate_filter_scan(SCAN = c(SCANMAX = "b")), "Non-numeric")
 })
 
-test_that(".query_to_filter works", {
+test_that(".query_to_filters works", {
     q <- "QUERY * WHERE RTMIN = 123 AND RTMAX = 130 AND RTMIN = 129"
     res <- .query_to_filters(q)
     expect_true(length(res) == 2)
@@ -111,6 +111,65 @@ test_that(".query_to_filter works", {
 
     q <- "QUERY * WHERE RTMIN > 123"
     expect_error(.query_to_filters(q), "not supported")
+})
+
+test_that(".translate_filter_charge works", {
+    res <- .translate_filter_charge(4)
+    expect_true(inherits(res, "ProcessingStep"))
+    expect_equal(res@ARGS, list(z = integer(0)))
+
+    res <- .translate_filter_charge(CHARGE = c(CHARGE = -1))
+    expect_true(inherits(res, "ProcessingStep"))
+    expect_equal(res@ARGS, list(z = -1))
+
+    res <- .translate_filter_charge(CHARGE = c(CHARGE = "(-1 OR 0 OR NA)"))
+    expect_true(inherits(res, "ProcessingStep"))
+    expect_equal(res@ARGS, list(z = c(-1, 0, NA)))
+
+    expect_error(.translate_filter_charge(CHARGE = c(CHARGE = "b")),
+                 "Non-integer")
+})
+
+test_that(".translate_filter_polarity works", {
+    res <- .translate_filter_polarity(4)
+    expect_true(inherits(res, "ProcessingStep"))
+    expect_equal(res@ARGS, list(polarity = integer(0)))
+
+    res <- .translate_filter_polarity(POLARITY = c(POLARITY = "Positive"))
+    expect_true(inherits(res, "ProcessingStep"))
+    expect_equal(res@ARGS, list(polarity = 1L))
+
+    res <- .translate_filter_polarity(POLARITY = c(POLARITY = "Positive OR NA"))
+    expect_true(inherits(res, "ProcessingStep"))
+    expect_equal(res@ARGS, list(polarity = c(1L, -1)))
+
+    expect_error(.translate_filter_polarity(POLARITY = c(POLARITY = "b")),
+                 "Invalid value")
+
+})
+
+test_that(".translate_filter_ms2prod works", {
+    res <- .translate_filter_ms2prod(4)
+    expect_true(inherits(res, "ProcessingStep"))
+    res <- .translate_filter_ms2prod(MS2PROD = c(MS2PROD = 123))
+    expect_true(inherits(res, "ProcessingStep"))
+    #expect_equal(res@FUN, containsMz)
+    expect_equal(res@ARGS, list(mz = 123, tolerance = 0, ppm = 0))
+
+    res <- .translate_filter_ms2prod(
+        MS2PROD = c(MS2PROD = 123, TOLERANCEMZ = 2, TOLERANCEPPM = 10))
+    expect_true(inherits(res, "ProcessingStep"))
+    #expect_equal(res@FUN, containsMz)
+    expect_equal(res@ARGS, list(mz = 123, tolerance = 2, ppm = 10))
+
+    res <- .translate_filter_ms2prod(
+        MS2PROD = c(MS2PROD = "(123 OR 125)", TOLERANCEMZ = 2, TOLERANCEPPM = 10))
+    expect_true(inherits(res, "ProcessingStep"))
+    #expect_equal(res@FUN, containsMz)
+    expect_equal(res@ARGS, list(mz = c(123, 125), tolerance = 2, ppm = 10))
+
+    expect_error(.translate_filter_ms2prod(MS2PROD = c(MS2PROD = "b")),
+                 "Non-numeric")
 })
 
 test_that(".translate_filter_ms2prec works", {
@@ -175,3 +234,33 @@ test_that(".extract_all works", {
 ## names(res) <- vapply(res, function(z) names(z)[1], character(1))
 ## res <- .group_min_max(res, name = "RT")
 ## res <- .group_min_max(res, name = "SCAN")
+
+test_that(".translate_filter_ms2nl works", {
+    res <- .translate_filter_ms2nl(4)
+    expect_true(inherits(res, "ProcessingStep"))
+    res <- .translate_filter_ms2nl(MS2NL = c(MS2NL = 123))
+    expect_true(inherits(res, "ProcessingStep"))
+    #expect_equal(res@FUN, containsNeutralLoss)
+    expect_equal(res@ARGS, list(neutralLoss = 123, tolerance = 0, ppm = 0))
+
+    res <- .translate_filter_ms2nl(
+        MS2NL = c(MS2NL = 123, TOLERANCEMZ = 2, TOLERANCEPPM = 10))
+    expect_true(inherits(res, "ProcessingStep"))
+    #expect_equal(res@FUN, containsNeutralLoss)
+    expect_equal(res@ARGS, list(neutralLoss = 123, tolerance = 2, ppm = 10))
+
+    expect_error(.translate_filter_ms2nl(MS2NL = c(MS2NL = "(123 OR 125)")),
+                 "OR not yet supported")
+
+    expect_error(.translate_filter_ms2nl(MS2NL = c(MS2NL = "b")),
+                 "Non-numeric")
+})
+
+test_that(".parse_or works", {
+    res <- .parse_or("ab")
+    expect_equal(res, "ab")
+    res <- .parse_or("ab OR   cd")
+    expect_equal(res, c("ab", "cd"))
+    res <- .parse_or("ab OR cd OR ef")
+    expect_equal(res, c("ab", "cd", "ef"))
+})
