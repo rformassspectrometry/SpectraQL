@@ -52,7 +52,7 @@ NULL
 }
 
 .validate_what <- function(x) {
-    if (any(is.na(x)) || !length(x))
+    if (anyNA(x) || !length(x))
         stop("Syntax error: unable to extract type of data from query",
              call. = FALSE)
     x
