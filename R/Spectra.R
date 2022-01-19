@@ -27,7 +27,7 @@
 #' - `*`: select all data and return the data subset as a [Spectra()] object.
 #' - `MS1DATA`: return a [Spectra()] with all MS1 scans from the selected
 #'   spectra.
-#' - `MS1DATA`: return a [Spectra()] with all MS2 scans from the selected
+#' - `MS2DATA`: return a [Spectra()] with all MS2 scans from the selected
 #'   spectra.
 #' - `scaninfo(MS1DATA)`, `scaninfo(MS2DATA)`: return the [spectraData()] of all
 #'   selected spectra.

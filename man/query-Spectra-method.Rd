@@ -107,7 +107,7 @@ to these to modify (e.g. sum) the data. \code{SpectraQL} supports:
 \item \code{*}: select all data and return the data subset as a \code{\link[=Spectra]{Spectra()}} object.
 \item \code{MS1DATA}: return a \code{\link[=Spectra]{Spectra()}} with all MS1 scans from the selected
 spectra.
-\item \code{MS1DATA}: return a \code{\link[=Spectra]{Spectra()}} with all MS2 scans from the selected
+\item \code{MS2DATA}: return a \code{\link[=Spectra]{Spectra()}} with all MS2 scans from the selected
 spectra.
 \item \code{scaninfo(MS1DATA)}, \code{scaninfo(MS2DATA)}: return the \code{\link[=spectraData]{spectraData()}} of all
 selected spectra.
