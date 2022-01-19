@@ -52,10 +52,48 @@ NULL
 }
 
 .validate_what <- function(x) {
-    if (any(is.na(x)))
+    if (anyNA(x) || !length(x))
         stop("Syntax error: unable to extract type of data from query",
              call. = FALSE)
     x
+}
+
+#' Extracts the data as requested.
+#'
+#' @param x `Spectra` object.
+#'
+#' @param what `character(1)` with the information what should be extracted.
+#'     This is expected to be the processed/parsed *what* string (returned by
+#'     `.what`).
+#'
+#' @author Johannes Rainer
+#'
+#' @noRd
+.extract_what <- function(x, what = character()) {
+    what <- gsub("[[:space:]]", "", tolower(what))
+    ## Define what type of data (all, MS1, MS2) should be returned.
+    .what_data(x, what)
+    ## Define if and how the data should be transformed.
+}
+
+#' Define which data to extract. Supported are *, ms1data, ms2data.
+#'
+#' @author Johannes Rainer
+#'
+#' @importMethodsFrom Spectra filterMsLevel
+#'
+#' @noRd
+.what_data <- function(x, what = character()) {
+    res <- NULL
+    if (length(grep("(^\\*$|\\(\\*\\))", what)))
+        res <- x
+    if (length(grep("(^ms1data$|\\(ms1data\\))", what)))
+        res <- filterMsLevel(x, msLevel. = 1L)
+    if (length(grep("(^ms2data$|\\(ms2data\\))", what)))
+        res <- filterMsLevel(x, msLevel. = 2L)
+    if (is.null(res))
+        stop("data definition '", what, "' not supported.", call. = FALSE)
+    res
 }
 
 #' Condition(s): everything between WHERE and end of line or FILTER.
@@ -149,11 +187,11 @@ NULL
 #'
 #' @return `ProcessingStep`
 #'
+#' @author Johannes Rainer
+#'
 #' @importFrom ProtGenerics ProcessingStep
 #'
 #' @importFrom Spectra filterRt
-#'
-#' @author Johannes Rainer
 #'
 #' @noRd
 .translate_filter_rt <- function(...) {
@@ -174,9 +212,9 @@ NULL
 
 #' Filter a `Spectra` based on provided scan numbers.
 #'
-#' @importMethodsFrom Spectra acquisitionNum
-#'
 #' @author Johannes Rainer
+#'
+#' @importMethodsFrom Spectra acquisitionNum
 #'
 #' @noRd
 .translate_filter_scan <- function(...) {
@@ -199,9 +237,9 @@ NULL
 
 #' Filter a `Spectra` based on provided charge.
 #'
-#' @importFrom Spectra filterPrecursorCharge
-#' 
 #' @author Johannes Rainer, Andrea Vicini
+#'
+#' @importFrom Spectra filterPrecursorCharge
 #'
 #' @noRd
 .translate_filter_charge <- function(...) {
@@ -218,9 +256,9 @@ NULL
 
 #' Filter a `Spectra` based on provided polarity.
 #'
-#' @importFrom Spectra filterPolarity
-#' 
 #' @author Johannes Rainer, Andrea Vicini
+#'
+#' @importFrom Spectra filterPolarity
 #'
 #' @noRd
 .translate_filter_polarity <- function(...) {
@@ -228,19 +266,19 @@ NULL
     polarity <- numeric(0)
     if (any(names(parms) == "POLARITY")) {
         polarity <- toupper(.parse_or(parms["POLARITY"]))
-        polarity <- unname(c("POSITIVE" = 1L, "NEGATIVE" = 0L, 
+        polarity <- unname(c("POSITIVE" = 1L, "NEGATIVE" = 0L,
                             "NA" = -1L)[polarity])
         if(anyNA(polarity))
             stop("Invalid value for 'POLARITY'")
     }
-    ProcessingStep(filterPolarity, ARGS = list(polarity = polarity))  
+    ProcessingStep(filterPolarity, ARGS = list(polarity = polarity))
 }
 
 #' Filter a `Spectra` based on MS2 peak.
 #'
-#' @importFrom Spectra containsMz
-#' 
 #' @author Johannes Rainer, Andrea Vicini
+#'
+#' @importFrom Spectra containsMz
 #'
 #' @noRd
 .translate_filter_ms2prod <- function(...) {
@@ -275,16 +313,11 @@ filt_fun <- function(x, pmz, tolerance, ppm) {
                                                       ARGS = list(mz = v))))
 }
 
-# .translate_filter_ms2prod <- function(...) {
-#     ## use containsMz, parameters: mz, tolerance, ppm, which (any, all)
-#     stop("Condition MS2PROD not yet supported", call. = FALSE)
-# }
-
+#' @author Johannes Rainer
+#'
 #' @importFrom MsCoreUtils ppm
 #'
 #' @importMethodsFrom Spectra filterPrecursorMz
-#'
-#' @author Johannes Rainer
 #'
 #' @noRd
 .translate_filter_ms2prec <- function(...) {
@@ -294,15 +327,15 @@ filt_fun <- function(x, pmz, tolerance, ppm) {
     tolerance <- 0
     if (any(names(parms) == "MS2PREC"))
         pmz <- as.numeric(parms["MS2PREC"])
-    if (is.na(pmz)) 
+    if (is.na(pmz))
         stop("Non-numeric value for 'MS2PREC'")
     if (any(names(parms) == "TOLERANCEMZ"))
         tolerance <- as.numeric(parms["TOLERANCEMZ"])
-    if (is.na(tolerance)) 
+    if (is.na(tolerance))
         stop("Non-numeric value for 'TOLERANCEMZ'")
     if (any(names(parms) == "TOLERANCEPPM"))
         ppm <- as.numeric(parms["TOLERANCEPPM"])
-    if (is.na(ppm)) 
+    if (is.na(ppm))
         stop("Non-numeric value for 'TOLERANCEPPM'")
     if (length(pmz)) {
         mzr <- pmz + c(-1, 1) * (tolerance + ppm(pmz, ppm = ppm))
@@ -317,11 +350,11 @@ filt_fun <- function(x, pmz, tolerance, ppm) {
 ## res <- .group_min_max(res, name = "RT")
 ## res <- .group_min_max(res, name = "SCAN")
 
+#' @author Johannes Rainer
+#'
 #' @importFrom MsCoreUtils ppm
 #'
 #' @importMethodsFrom Spectra containsNeutralLoss
-#'
-#' @author Johannes Rainer
 #'
 #' @noRd
 .translate_filter_ms2nl <- function(...) {
@@ -331,15 +364,15 @@ filt_fun <- function(x, pmz, tolerance, ppm) {
     tolerance <- 0
     if (any(names(parms) == "MS2NL"))
         nl <- as.numeric(.parse_or(parms["MS2NL"]))
-    if (anyNA(nl)) 
+    if (anyNA(nl))
         stop("Non-numeric value/s for 'MS2NL'")
     if (any(names(parms) == "TOLERANCEMZ"))
         tolerance <- as.numeric(parms["TOLERANCEMZ"])
-    if (is.na(tolerance)) 
+    if (is.na(tolerance))
         stop("Non-numeric value for 'TOLERANCEMZ'")
     if (any(names(parms) == "TOLERANCEPPM"))
         ppm <- as.numeric(parms["TOLERANCEPPM"])
-    if (is.na(ppm)) 
+    if (is.na(ppm))
         stop("Non-numeric value for 'TOLERANCEPPM'")
     if (length(nl)) {
         if(length(nl) > 1)
@@ -352,10 +385,6 @@ filt_fun <- function(x, pmz, tolerance, ppm) {
                                                         ppm = ppm))
     } else ProcessingStep(identity)
 }
-
-# .translate_filter_ms2nl <- function(...) {
-#     stop("Condition MS2NL not yet supported", call. = FALSE)
-# }
 
 .parse_or <- function(x) {
     unlist(strsplit(gsub("^\\s+|\\s+$|\\(|\\)", "", gsub("\\s+", " ", x)),

@@ -10,6 +10,9 @@ test_that(".what works", {
 
     res <- .what("query *  ")
     expect_equal(res, "*")
+
+    res <- .what("QUERY * WHERE RTMIN = 200 AND RTMAX = 300")
+    expect_equal(res, "*")
 })
 
 test_that(".validate_what works", {
@@ -114,16 +117,16 @@ test_that(".translate_filter_charge works", {
     res <- .translate_filter_charge(4)
     expect_true(inherits(res, "ProcessingStep"))
     expect_equal(res@ARGS, list(z = integer(0)))
-    
-    res <- .translate_filter_charge(CHARGE = c(CHARGE = -1)) 
+
+    res <- .translate_filter_charge(CHARGE = c(CHARGE = -1))
     expect_true(inherits(res, "ProcessingStep"))
     expect_equal(res@ARGS, list(z = -1))
-    
-    res <- .translate_filter_charge(CHARGE = c(CHARGE = "(-1 OR 0 OR NA)")) 
+
+    res <- .translate_filter_charge(CHARGE = c(CHARGE = "(-1 OR 0 OR NA)"))
     expect_true(inherits(res, "ProcessingStep"))
     expect_equal(res@ARGS, list(z = c(-1, 0, NA)))
-    
-    expect_error(.translate_filter_charge(CHARGE = c(CHARGE = "b")), 
+
+    expect_error(.translate_filter_charge(CHARGE = c(CHARGE = "b")),
                  "Non-integer")
 })
 
@@ -131,16 +134,16 @@ test_that(".translate_filter_polarity works", {
     res <- .translate_filter_polarity(4)
     expect_true(inherits(res, "ProcessingStep"))
     expect_equal(res@ARGS, list(polarity = integer(0)))
-    
-    res <- .translate_filter_polarity(POLARITY = c(POLARITY = "Positive")) 
+
+    res <- .translate_filter_polarity(POLARITY = c(POLARITY = "Positive"))
     expect_true(inherits(res, "ProcessingStep"))
     expect_equal(res@ARGS, list(polarity = 1L))
-    
-    res <- .translate_filter_polarity(POLARITY = c(POLARITY = "Positive OR NA")) 
+
+    res <- .translate_filter_polarity(POLARITY = c(POLARITY = "Positive OR NA"))
     expect_true(inherits(res, "ProcessingStep"))
     expect_equal(res@ARGS, list(polarity = c(1L, -1)))
-    
-    expect_error(.translate_filter_polarity(POLARITY = c(POLARITY = "b")), 
+
+    expect_error(.translate_filter_polarity(POLARITY = c(POLARITY = "b")),
                  "Invalid value")
 
 })
@@ -152,20 +155,20 @@ test_that(".translate_filter_ms2prod works", {
     expect_true(inherits(res, "ProcessingStep"))
     #expect_equal(res@FUN, containsMz)
     expect_equal(res@ARGS, list(mz = 123, tolerance = 0, ppm = 0))
-    
+
     res <- .translate_filter_ms2prod(
         MS2PROD = c(MS2PROD = 123, TOLERANCEMZ = 2, TOLERANCEPPM = 10))
     expect_true(inherits(res, "ProcessingStep"))
     #expect_equal(res@FUN, containsMz)
     expect_equal(res@ARGS, list(mz = 123, tolerance = 2, ppm = 10))
-    
+
     res <- .translate_filter_ms2prod(
         MS2PROD = c(MS2PROD = "(123 OR 125)", TOLERANCEMZ = 2, TOLERANCEPPM = 10))
     expect_true(inherits(res, "ProcessingStep"))
     #expect_equal(res@FUN, containsMz)
     expect_equal(res@ARGS, list(mz = c(123, 125), tolerance = 2, ppm = 10))
-    
-    expect_error(.translate_filter_ms2prod(MS2PROD = c(MS2PROD = "b")), 
+
+    expect_error(.translate_filter_ms2prod(MS2PROD = c(MS2PROD = "b")),
                  "Non-numeric")
 })
 
@@ -176,12 +179,12 @@ test_that(".translate_filter_ms2prec works", {
     expect_true(inherits(res, "ProcessingStep"))
     expect_equal(res@FUN, filterPrecursorMz)
     expect_equal(res@ARGS, list(mz = c(123, 123)))
-    
+
     res <- .translate_filter_ms2prec(MS2PREC = c(MS2PREC = 123, TOLERANCEMZ = 2))
     expect_true(inherits(res, "ProcessingStep"))
     expect_equal(res@FUN, filterPrecursorMz)
     expect_equal(res@ARGS, list(mz = c(121, 125)))
-    
+
     res <- .translate_filter_ms2prec(
         MS2PREC = c(MS2PREC = 123, TOLERANCEMZ = 2, TOLERANCEPPM = 10))
     expect_true(inherits(res, "ProcessingStep"))
@@ -190,6 +193,56 @@ test_that(".translate_filter_ms2prec works", {
         res@ARGS, list(mz = c(123 - 2 - ppm(123, 10), 123 + 2 + ppm(123, 10))))
 })
 
+test_that(".extract_what works", {
+    df <- S4Vectors::DataFrame(msLevel = c(1L, 2L), rtime = c(2, 3.2))
+    sps_tmp <- Spectra::Spectra(df)
+
+    expect_error(.extract_what(sps_tmp, "what"), "not supported")
+    res <- .extract_what(sps_tmp, "*")
+    expect_equal(sps_tmp, res)
+})
+
+test_that(".what_data works", {
+    ## *
+    res <- .what_data(sps_dda, "*")
+    expect_s4_class(res, "Spectra")
+    expect_equal(length(res), length(sps_dda))
+
+    res <- .what_data(sps_dda, "scaninfo(*)")
+    expect_s4_class(res, "Spectra")
+    expect_equal(length(res), length(sps_dda))
+
+    expect_error(.what_data(sps_dda, "scaninfo(*"), "not supported")
+    expect_error(.what_data(sps_dda, "other"), "not supported")
+
+    res <- .what_data(sps_dda, "ms1data")
+    expect_s4_class(res, "Spectra")
+    expect_true(all(msLevel(res) == 1L))
+
+    res <- .what_data(sps_dda, "other(ms1data)")
+    expect_s4_class(res, "Spectra")
+    expect_true(all(msLevel(res) == 1L))
+
+    expect_error(.what_data(sps_dda, "ms1data)"), "not supported")
+
+    res <- .what_data(sps_dda, "ms2data")
+    expect_s4_class(res, "Spectra")
+    expect_true(all(msLevel(res) == 2L))
+
+    res <- .what_data(sps_dda, "other(ms2data)")
+    expect_s4_class(res, "Spectra")
+    expect_true(all(msLevel(res) == 2L))
+
+    expect_error(.what_data(sps_dda, "ms2datas"), "not supported")
+})
+
+## query <- "QUERY * WHERE RTMIN = 123 AND RTMAX = 130  AND MZPREC = 312.2:TOLERANCEMZ = 0.1:TOLERANCEPPM=10"
+## x <- .where(query)
+## res <- lapply(x, .parse_where)
+## names(res) <- vapply(res, function(z) names(z)[1], character(1))
+## res <- .group_min_max(res, name = "RT")
+## res <- .group_min_max(res, name = "SCAN")
+
 test_that(".translate_filter_ms2nl works", {
     res <- .translate_filter_ms2nl(4)
     expect_true(inherits(res, "ProcessingStep"))
@@ -197,17 +250,17 @@ test_that(".translate_filter_ms2nl works", {
     expect_true(inherits(res, "ProcessingStep"))
     #expect_equal(res@FUN, containsNeutralLoss)
     expect_equal(res@ARGS, list(neutralLoss = 123, tolerance = 0, ppm = 0))
-    
+
     res <- .translate_filter_ms2nl(
         MS2NL = c(MS2NL = 123, TOLERANCEMZ = 2, TOLERANCEPPM = 10))
     expect_true(inherits(res, "ProcessingStep"))
     #expect_equal(res@FUN, containsNeutralLoss)
     expect_equal(res@ARGS, list(neutralLoss = 123, tolerance = 2, ppm = 10))
-    
+
     expect_error(.translate_filter_ms2nl(MS2NL = c(MS2NL = "(123 OR 125)")),
                  "OR not yet supported")
-    
-    expect_error(.translate_filter_ms2nl(MS2NL = c(MS2NL = "b")), 
+
+    expect_error(.translate_filter_ms2nl(MS2NL = c(MS2NL = "b")),
                  "Non-numeric")
 })
 
@@ -219,5 +272,3 @@ test_that(".parse_or works", {
     res <- .parse_or("ab OR cd OR ef")
     expect_equal(res, c("ab", "cd", "ef"))
 })
-
-

@@ -1,6 +1,6 @@
 Package: SpectraQL
 Title: MassQL support for Spectra
-Version: 0.99.0
+Version: 0.98.1
 Description: The SpectraQL package adds support for the MassQL query language
     to Spectra objects. The Mass Spec Query Language MassQL was defined as a
     general query language to extract information from mass spectrometry data.
@@ -12,19 +12,33 @@ Authors@R: c(person(given = "RforMassSpectrometry Package Maintainer",
              person(given = "Johannes", family = "Rainer",
                     email = "Johannes.Rainer@eurac.edu",
                     role = "aut",
-                    comment = c(ORCID = "0000-0002-6977-7147")))
+                    comment = c(ORCID = "0000-0002-6977-7147")),
+	     person(given = "Andrea", family = "Vicini",
+                    email = "andrea.vicini@eurac.edu",
+                    role = "aut"),
+             person(given = "Sebastian", family = "Gibb",
+                    email = "mail@sebastiangibb.de",
+                    role = "ctb",
+                    comment = c(ORCID = "0000-0001-7406-4443"))
+		    )
 Depends:
     R (>= 4.1.0),
     ProtGenerics (>= 1.25.1)
 Imports:
+    methods,
     Spectra,
     MsCoreUtils
 Suggests:
     testthat,
     msdata (>= 0.19.3),
-    roxygen2
+    roxygen2,
+    rmarkdown,
+    knitr,
+    BiocStyle,
+    mzR
 License: Artistic-2.0
 LazyData: false
+VignetteBuilder: knitr
 BugReports: https://github.com/RforMassSpectrometry/SpectraQL/issues
 URL: https://github.com/RforMassSpectrometry/SpectraQL
 biocViews: Infrastructure, Proteomics, MassSpectrometry, Metabolomics

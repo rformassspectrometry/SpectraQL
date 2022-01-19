@@ -59,3 +59,11 @@ test_that(".query_spectra works", {
     # ok or should containsNeutralLoss return a logical value?
 
 })
+
+test_that(".query_what works", {
+    res <- .query_what(sps_dda, "QUERY * ")
+    expect_equal(res, sps_dda)
+
+    expect_error(.query_what(sps_dda, "QUERY other WHERE RTIME = 300"),
+                 "not supported")
+})
