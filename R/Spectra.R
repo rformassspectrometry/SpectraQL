@@ -80,9 +80,9 @@
 #'
 #' @return Depending on the `<type of data>` part of the MassQL query.
 #'
-#' @importClassesFrom Spectra Spectra
-#'
 #' @author Andrea Vicini, Johannes Rainer
+#'
+#' @importClassesFrom Spectra Spectra
 #'
 #' @exportMethod query
 setMethod("query", "Spectra", function(x, query = character(), ...) {

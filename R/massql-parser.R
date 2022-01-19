@@ -76,11 +76,11 @@ NULL
     ## Define if and how the data should be transformed.
 }
 
-#' @importMethodsFrom Spectra filterMsLevel
-#'
 #' Define which data to extract. Supported are *, ms1data, ms2data.
 #'
 #' @author Johannes Rainer
+#'
+#' @importMethodsFrom Spectra filterMsLevel
 #'
 #' @noRd
 .what_data <- function(x, what = character()) {
@@ -187,11 +187,11 @@ NULL
 #'
 #' @return `ProcessingStep`
 #'
+#' @author Johannes Rainer
+#'
 #' @importFrom ProtGenerics ProcessingStep
 #'
 #' @importFrom Spectra filterRt
-#'
-#' @author Johannes Rainer
 #'
 #' @noRd
 .translate_filter_rt <- function(...) {
@@ -212,9 +212,9 @@ NULL
 
 #' Filter a `Spectra` based on provided scan numbers.
 #'
-#' @importMethodsFrom Spectra acquisitionNum
-#'
 #' @author Johannes Rainer
+#'
+#' @importMethodsFrom Spectra acquisitionNum
 #'
 #' @noRd
 .translate_filter_scan <- function(...) {
@@ -237,9 +237,9 @@ NULL
 
 #' Filter a `Spectra` based on provided charge.
 #'
-#' @importFrom Spectra filterPrecursorCharge
-#'
 #' @author Johannes Rainer, Andrea Vicini
+#'
+#' @importFrom Spectra filterPrecursorCharge
 #'
 #' @noRd
 .translate_filter_charge <- function(...) {
@@ -256,9 +256,9 @@ NULL
 
 #' Filter a `Spectra` based on provided polarity.
 #'
-#' @importFrom Spectra filterPolarity
-#'
 #' @author Johannes Rainer, Andrea Vicini
+#'
+#' @importFrom Spectra filterPolarity
 #'
 #' @noRd
 .translate_filter_polarity <- function(...) {
@@ -276,9 +276,9 @@ NULL
 
 #' Filter a `Spectra` based on MS2 peak.
 #'
-#' @importFrom Spectra containsMz
-#'
 #' @author Johannes Rainer, Andrea Vicini
+#'
+#' @importFrom Spectra containsMz
 #'
 #' @noRd
 .translate_filter_ms2prod <- function(...) {
@@ -313,11 +313,11 @@ filt_fun <- function(x, pmz, tolerance, ppm) {
                                                       ARGS = list(mz = v))))
 }
 
+#' @author Johannes Rainer
+#'
 #' @importFrom MsCoreUtils ppm
 #'
 #' @importMethodsFrom Spectra filterPrecursorMz
-#'
-#' @author Johannes Rainer
 #'
 #' @noRd
 .translate_filter_ms2prec <- function(...) {
@@ -350,11 +350,11 @@ filt_fun <- function(x, pmz, tolerance, ppm) {
 ## res <- .group_min_max(res, name = "RT")
 ## res <- .group_min_max(res, name = "SCAN")
 
+#' @author Johannes Rainer
+#'
 #' @importFrom MsCoreUtils ppm
 #'
 #' @importMethodsFrom Spectra containsNeutralLoss
-#'
-#' @author Johannes Rainer
 #'
 #' @noRd
 .translate_filter_ms2nl <- function(...) {
