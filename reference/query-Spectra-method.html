@@ -17,12 +17,15 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">SpectraQL</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.98.1</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav"><li>
+  <a href="../articles/SpectraQL.html">Get started</a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
@@ -66,9 +69,72 @@
 <dt>...</dt>
 <dd><p>currently ignored.</p></dd>
 </dl></div>
+    <div id="value">
+    <h2>Value</h2>
+    <p>Depending on the <code>&lt;type of data&gt;</code> part of the MassQL query.</p>
+    </div>
+    <div id="type-of-data">
+    <h2>Type of data</h2>
+    
+
+
+<p>The <code>&lt;type of data&gt;</code> allows to define which data should be extracted from
+the selected spectra. MassQL defines <em>type of data</em> being <code>MS1DATA</code> or
+<code>MS2DATA</code> to retrieve MS1 or MS2 scans. In addition, functions can be applied
+to these to modify (e.g. sum) the data. <code>SpectraQL</code> supports:</p><ul><li><p><code>*</code>: select all data and return the data subset as a <code>Spectra()</code> object.</p></li>
+<li><p><code>MS1DATA</code>: return a <code>Spectra()</code> with all MS1 scans from the selected
+spectra.</p></li>
+<li><p><code>MS2DATA</code>: return a <code>Spectra()</code> with all MS2 scans from the selected
+spectra.</p></li>
+<li><p><code>scaninfo(MS1DATA)</code>, <code>scaninfo(MS2DATA)</code>: return the <code>spectraData()</code> of all
+selected spectra.</p></li>
+<li><p><code>scansum(MS1DATA)</code>, <code>scaninfo(MS2DATA)</code>: sum of the peak intensities of
+the selected spectra.</p></li>
+<li><p><code>scannum(MS1DATA)</code>, <code>scannum(MS2DATA)</code>: the scan number(s) of the selected
+spectra.</p></li>
+</ul></div>
+    <div id="conditions">
+    <h2>Conditions</h2>
+    
+
+
+<p>Conditions define to which spectra the data set should be subsetted. Several
+conditions can be combined with <code>"and"</code> (case insensitive). The syntax for a
+condition is <code>&lt;condition&gt; = &lt;value&gt;</code>, e.g. <code>MS2PROD = 144.1</code>. Such conditions
+can be further refined by additional expressions that allow for example to
+define acceptable tolerances for m/z differences. <code>SpectraQL</code> supports (case
+insensitive):</p><ul><li><p><code>RTMIN</code>: minimum retention time (in <strong>seconds</strong>).</p></li>
+<li><p><code>RTMAX</code>: maximum retention time (in <strong>seconds</strong>).</p></li>
+<li><p><code>SCANMIN</code>: the minimum scan number (acquisition number).</p></li>
+<li><p><code>SCANMAX</code>: the maximum scan number (acquisition number).</p></li>
+<li><p><code>CHARGE</code>: the charge for MS2 spectra.</p></li>
+<li><p><code>POLARITY</code>: the polarity of the spectra (can be <code>"positive"</code>, <code>"negative"</code>,
+<code>"pos"</code> or <code>"neg"</code>, case insensitive).</p></li>
+<li><p><code>MS2PROD</code>: allows to select MS2 spectra that contain a peak with a
+particular m/z.</p></li>
+<li><p><code>MS2PREC</code>: allows to select MS2 spectra with the defined precursor m/z.</p></li>
+<li><p><code>MS2MZ</code>: allows to select MS1 spectra containing peaks with the defined
+m/z.</p></li>
+</ul><p>All conditions involving m/z values allow to specify a mass accuracy using
+the optional fields <code>TOLERANCEMZ</code> and <code>TOLERANCEPPM</code> that define the absolute
+and m/z-relative acceptable difference in m/z values. One or both fields can
+be attached to a <em>condition</em> such as
+<code>MS2PREC=100:TOLERANCEMZ=0.1:TOLERANCEPPM=20</code> to select for example all
+MS2 spectra with a precursor m/z equal to 100 accepting a difference of 0.1
+and 20 ppm. Note that in contrast to MassQL, the default tolarance and ppm
+is 0 for all calls.</p>
+    </div>
+    <div id="filters">
+    <h2>Filters</h2>
+    
+
+
+<p>Filters subset the data within spectra, i.e. select which peaks within
+spectra should be retrieved. <code>SpectraQL</code> does not support filters yet.</p>
+    </div>
     <div id="author">
     <h2>Author</h2>
-    <p>Johannes Rainer</p>
+    <p>Andrea Vicini, Johannes Rainer</p>
     </div>
 
   </div>
@@ -79,7 +145,7 @@
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by RforMassSpectrometry Package Maintainer, Johannes Rainer.</p>
+  <p></p><p>Developed by RforMassSpectrometry Package Maintainer, Johannes Rainer, Andrea Vicini.</p>
 </div>
 
 <div class="pkgdown">
