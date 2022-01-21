@@ -271,4 +271,6 @@ test_that(".parse_or works", {
     expect_equal(res, c("ab", "cd"))
     res <- .parse_or("ab OR cd OR ef")
     expect_equal(res, c("ab", "cd", "ef"))
+    res <- .parse_or("(ab OR  cd )")
+    expect_equal(res, c("ab", "cd"))
 })

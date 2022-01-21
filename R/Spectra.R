@@ -55,8 +55,9 @@
 #' - `MS2PROD`: allows to select MS2 spectra that contain a peak with a
 #'   particular m/z.
 #' - `MS2PREC`: allows to select MS2 spectra with the defined precursor m/z.
-#' - `MS2MZ`: allows to select MS1 spectra containing peaks with the defined
+#' - `MS1MZ`: allows to select MS1 spectra containing peaks with the defined
 #'   m/z.
+#' - `MS2NL`: allows to look for a neutral loss from precursor in MS2 spectra.
 #'
 #' All conditions involving m/z values allow to specify a mass accuracy using
 #' the optional fields `TOLERANCEMZ` and `TOLERANCEPPM` that define the absolute
@@ -82,6 +83,43 @@
 #'
 #' @author Andrea Vicini, Johannes Rainer
 #'
+#' @examples 
+#'
+#' ## Load MS data from an example mzML file.
+#' library(Spectra)
+#' library(msdata)
+#' fl <- system.file("TripleTOF-SWATH", "PestMix1_DDA.mzML", package = "msdata")
+#' dda <- Spectra(fl)
+#'
+#' ## Restrict the data to spectra with retention time in the range 200-300
+#' ## seconds.
+#' res <- query(dda, "QUERY * WHERE RTMIN = 200 AND RTMAX = 300")
+#'
+#' ## Restrict to spectra with scan number in between 9 and 400.
+#' res <- query(dda, "QUERY * WHERE SCANMIN = 9 AND SCANMAX = 400")
+#'
+#' ## Select MS2 spectra with precursor m/z equal to 304.1131 (allowing a m/z
+#' ## relative ppm tolerance of 20)
+#' res <- query(dda, "QUERY MS2DATA WHERE MS2PREC = 304.1131:TOLERANCEPPM=20")
+#'
+#' ## Select MS2 spectra with precursor charge equal to 1 or -1
+#' res <- query(dda, "QUERY MS2DATA WHERE CHARGE = (1 OR -1)")
+#'
+#' ## Select spectra with positive polarity
+#' res <- query(dda, "QUERY * WHERE POLARITY = Positive")
+#'
+#' ## Select MS2 spectra containing a peak with certain m/z
+#' res <- query(dda, "QUERY MS2DATA WHERE MS2PROD=(100 OR 104):TOLERANCEPPM=5")
+#'
+#' ## Select MS2 spectra containing a peak with neutral loss from
+#' ## precursor of 100 allowing a m/z relative ppm tolerance of 5)
+#' res <- query(dda, "QUERY MS2DATA WHERE MS2NL=100:TOLERANCEPPM=5")
+#'
+#' ## Combine two different conditions: selection of spectra with positive
+#' ## polarity and retention time greater than 200
+#' res <- query(dda, "QUERY * WHERE RTMIN = 200 AND POLARITY = Positive")
+NULL
+
 #' @importClassesFrom Spectra Spectra
 #'
 #' @exportMethod query

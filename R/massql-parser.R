@@ -24,18 +24,22 @@ NULL
 #'
 #' @noRd
 .query_to_filters <- function(x) {
-    qry <- lapply(.where(x), .parse_where)
-    names(qry) <- vapply(qry, function(z) names(z)[1], character(1))
-    qry <- .group_min_max(qry, name = "SCAN")
-    qry <- .group_min_max(qry, name = "RT")
-    res <- vector("list", length = length(qry))
-    for (i in seq_along(qry)) {
-        fun <- .CONDITION_FUNCTIONS[names(qry)[i]]
-        if (is.na(fun) | length(fun) == 0)
-            stop("Condition '", names(qry)[i], "' not supported.")
-        res[[i]] <- do.call(fun, qry[i])
+    if (is.na(where <- .where(x)))
+        list()
+    else {
+        qry <- lapply(where, .parse_where)
+        names(qry) <- vapply(qry, function(z) names(z)[1], character(1))
+        qry <- .group_min_max(qry, name = "SCAN")
+        qry <- .group_min_max(qry, name = "RT")
+        res <- vector("list", length = length(qry))
+        for (i in seq_along(qry)) {
+            fun <- .CONDITION_FUNCTIONS[names(qry)[i]]
+            if (is.na(fun) | length(fun) == 0)
+                stop("Condition '", names(qry)[i], "' not supported.")
+            res[[i]] <- do.call(fun, qry[i])
+        }
+        res[lengths(res) > 0]
     }
-    res[lengths(res) > 0]
 }
 
 #' What should be returned? This returns the part of the query which is between
@@ -307,12 +311,6 @@ NULL
     } else ProcessingStep(identity)
 }
 
-filt_fun <- function(x, pmz, tolerance, ppm) {
-    mzr <- pmz + c(-1, 1) * (tolerance + ppm(pmz, ppm = ppm))
-    do.call(c, lapply(mzr, function(v) ProcessingStep(filterPrecursorMz,
-                                                      ARGS = list(mz = v))))
-}
-
 #' @author Johannes Rainer
 #'
 #' @importFrom MsCoreUtils ppm
@@ -387,6 +385,6 @@ filt_fun <- function(x, pmz, tolerance, ppm) {
 }
 
 .parse_or <- function(x) {
-    unlist(strsplit(gsub("^\\s+|\\s+$|\\(|\\)", "", gsub("\\s+", " ", x)),
-                    split = " OR "))
+    unlist(strsplit(gsub("^\\s+|\\s+$|\\(\\s*|\\s*\\)", "", 
+                         gsub("\\s+", " ", x)), split = " OR "))
 }

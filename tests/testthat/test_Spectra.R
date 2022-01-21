@@ -1,6 +1,8 @@
 test_that("query,Spectra works", {
     expect_error(query(sps_dda), "single character")
     expect_error(query(sps_dda, c("a", "b")), "single character")
+    res <- query(sps_dda, "QUERY MS2DATA")
+    expect_true(all(msLevel(res) == 2))
 })
 
 test_that(".query_spectra works", {
@@ -17,8 +19,8 @@ test_that(".query_spectra works", {
     expect_true(all(acquisitionNum(res) >= 9 & acquisitionNum(res) <= 400))
 
 
-    res <- .query_spectra(sps_dda, "QUERY * WHERE MS2PREC")
-    expect_true(length(res) == 0)
+    res <- expect_error(.query_spectra(sps_dda, "QUERY * WHERE MS2PREC"), 
+                        "Non-numeric")
 
     ex_mz <- 304.1131
     mzr <- ex_mz + c(-1, 1) * ppm(ex_mz, 20)
@@ -47,11 +49,6 @@ test_that(".query_spectra works", {
                     containsMz(res, mz = 104, ppm = 5))
     
     res <- .query_spectra(
-        sps_dda, "QUERY * WHERE MS2PROD=(100 OR 104):TOLERANCEPPM=5")
-    expect_true(containsMz(res, mz = 100, ppm = 5) ||
-                    containsMz(res, mz = 104, ppm = 5))
-    
-    res <- .query_spectra(
         sps_dda, "QUERY * WHERE MS2NL=100:TOLERANCEPPM=5")
     #expect_true(containsNeutralLoss(res, neutralLoss = 100, ppm = 5)) 
     #res ha 0 spectra and containsNeutralLoss(res, neutralLoss = 100, ppm = 5)
@@ -63,6 +60,9 @@ test_that(".query_spectra works", {
 test_that(".query_what works", {
     res <- .query_what(sps_dda, "QUERY * ")
     expect_equal(res, sps_dda)
+    
+    res <- .query_what(sps_dda, "QUERY MS2DATA")
+    expect_true(all(msLevel(res) == 2))
 
     expect_error(.query_what(sps_dda, "QUERY other WHERE RTIME = 300"),
                  "not supported")
