@@ -39,7 +39,8 @@ test_that(".parse_where works", {
     res <- .parse_where("RTMAX")
     expect_equal(res, c(RTMAX = NA_character_))
     res <- .parse_where("MS2PROD=312:TOLERANCEMZ= 0.1 :TOLERANCEMZ=3")
-    expect_equal(res, c(MS2PROD = "312", TOLERANCEMZ = "0.1", TOLERANCEMZ = "3"))
+    expect_equal(res, c(MS2PROD = "312", TOLERANCEMZ = "0.1",
+                        TOLERANCEMZ = "3"))
 })
 
 test_that(".group_min_max works", {
@@ -163,13 +164,14 @@ test_that(".translate_filter_ms2prod works", {
     expect_equal(res@ARGS, list(mz = 123, tolerance = 2, ppm = 10))
 
     res <- .translate_filter_ms2prod(
-        MS2PROD = c(MS2PROD = "(123 OR 125)", TOLERANCEMZ = 2, TOLERANCEPPM = 10))
+        MS2PROD = c(MS2PROD = "(123 OR 125)", TOLERANCEMZ = 2,
+                    TOLERANCEPPM = 10))
     expect_true(inherits(res, "ProcessingStep"))
     #expect_equal(res@FUN, containsMz)
     expect_equal(res@ARGS, list(mz = c(123, 125), tolerance = 2, ppm = 10))
 
     expect_error(.translate_filter_ms2prod(MS2PROD = c(MS2PROD = "b")),
-                 "Non-numeric")
+                 "non-numeric")
 })
 
 test_that(".translate_filter_ms2prec works", {
@@ -177,20 +179,28 @@ test_that(".translate_filter_ms2prec works", {
     expect_true(inherits(res, "ProcessingStep"))
     res <- .translate_filter_ms2prec(MS2PREC = c(MS2PREC = 123))
     expect_true(inherits(res, "ProcessingStep"))
-    expect_equal(res@FUN, filterPrecursorMz)
-    expect_equal(res@ARGS, list(mz = c(123, 123)))
+    expect_equal(res@FUN, filterPrecursorMzValues)
+    expect_equal(res@ARGS, list(mz = 123, ppm = 0, tolerance = 0))
 
     res <- .translate_filter_ms2prec(MS2PREC = c(MS2PREC = 123, TOLERANCEMZ = 2))
     expect_true(inherits(res, "ProcessingStep"))
-    expect_equal(res@FUN, filterPrecursorMz)
-    expect_equal(res@ARGS, list(mz = c(121, 125)))
+    expect_equal(res@FUN, filterPrecursorMzValues)
+    expect_equal(res@ARGS, list(mz = 123, ppm = 0, tolerance = 2))
 
     res <- .translate_filter_ms2prec(
         MS2PREC = c(MS2PREC = 123, TOLERANCEMZ = 2, TOLERANCEPPM = 10))
     expect_true(inherits(res, "ProcessingStep"))
-    expect_equal(res@FUN, filterPrecursorMz)
-    expect_equal(
-        res@ARGS, list(mz = c(123 - 2 - ppm(123, 10), 123 + 2 + ppm(123, 10))))
+    expect_equal(res@FUN, filterPrecursorMzValues)
+    expect_equal(res@ARGS, list(mz = 123, ppm = 10, tolerance = 2))
+
+    expect_error(.translate_filter_ms2prec(MS2PREC = c(MS2PREC = "b")),
+                 "non-numeric")
+    ## Or
+    res <- .translate_filter_ms2prec(
+        MS2PREC = c(MS2PREC = "(123 OR 125 or 129)", TOLERANCEMZ = 2,
+                    TOLERANCEPPM = 10))
+    expect_true(inherits(res, "ProcessingStep"))
+    expect_equal(res@ARGS, list(mz = c(123, 125, 129), ppm = 10, tolerance = 2))
 })
 
 test_that(".extract_what works", {
@@ -270,5 +280,7 @@ test_that(".parse_or works", {
     res <- .parse_or("ab OR   cd")
     expect_equal(res, c("ab", "cd"))
     res <- .parse_or("ab OR cd OR ef")
+    expect_equal(res, c("ab", "cd", "ef"))
+    res <- .parse_or("ab or cd OR ef")
     expect_equal(res, c("ab", "cd", "ef"))
 })

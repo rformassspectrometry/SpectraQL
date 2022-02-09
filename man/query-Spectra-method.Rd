@@ -135,9 +135,10 @@ insensitive):
 \item \code{CHARGE}: the charge for MS2 spectra.
 \item \code{POLARITY}: the polarity of the spectra (can be \code{"positive"}, \code{"negative"},
 \code{"pos"} or \code{"neg"}, case insensitive).
-\item \code{MS2PROD}: allows to select MS2 spectra that contain a peak with a
-particular m/z.
-\item \code{MS2PREC}: allows to select MS2 spectra with the defined precursor m/z.
+\item \code{MS2PROD}: allows to select MS2 spectra that contain a peak with
+particular m/z value(s). See below for examples.
+\item \code{MS2PREC}: allows to select MS2 spectra with the defined precursor m/z
+value(s). See below for examples.
 \item \code{MS2MZ}: allows to select MS1 spectra containing peaks with the defined
 m/z.
 }
@@ -159,6 +160,14 @@ Filters subset the data within spectra, i.e. select which peaks within
 spectra should be retrieved. \code{SpectraQL} does not support filters yet.
 }
 
+\examples{
+
+library(msdata)
+library(Spectra)
+fls <- dir(system.file("TripleTOF-SWATH", package = "msdata"),
+    full.names = TRUE)
+sps_dda <- Spectra(fls[1L])
+}
 \author{
 Andrea Vicini, Johannes Rainer
 }

@@ -289,7 +289,7 @@ NULL
     if (any(names(parms) == "MS2PROD"))
         pmz <- as.numeric(.parse_or(parms["MS2PROD"]))
     if(anyNA(pmz))
-        stop("Non-numeric values for 'MS2PROD'")
+        stop("Missing or non-numeric value(s) for 'MS2PROD'")
     if (any(names(parms) == "TOLERANCEMZ"))
         tolerance <- as.numeric(parms["TOLERANCEMZ"])
     if(is.na(tolerance))
@@ -307,17 +307,11 @@ NULL
     } else ProcessingStep(identity)
 }
 
-filt_fun <- function(x, pmz, tolerance, ppm) {
-    mzr <- pmz + c(-1, 1) * (tolerance + ppm(pmz, ppm = ppm))
-    do.call(c, lapply(mzr, function(v) ProcessingStep(filterPrecursorMz,
-                                                      ARGS = list(mz = v))))
-}
-
 #' @author Johannes Rainer
 #'
 #' @importFrom MsCoreUtils ppm
 #'
-#' @importMethodsFrom Spectra filterPrecursorMz
+#' @importMethodsFrom Spectra filterPrecursorMzValues
 #'
 #' @noRd
 .translate_filter_ms2prec <- function(...) {
@@ -326,9 +320,9 @@ filt_fun <- function(x, pmz, tolerance, ppm) {
     ppm <- 0
     tolerance <- 0
     if (any(names(parms) == "MS2PREC"))
-        pmz <- as.numeric(parms["MS2PREC"])
-    if (is.na(pmz))
-        stop("Non-numeric value for 'MS2PREC'")
+        pmz <- as.numeric(.parse_or(parms["MS2PREC"]))
+    if (anyNA(pmz))
+        stop("Missing or non-numeric value(s) for 'MS2PREC'")
     if (any(names(parms) == "TOLERANCEMZ"))
         tolerance <- as.numeric(parms["TOLERANCEMZ"])
     if (is.na(tolerance))
@@ -338,8 +332,8 @@ filt_fun <- function(x, pmz, tolerance, ppm) {
     if (is.na(ppm))
         stop("Non-numeric value for 'TOLERANCEPPM'")
     if (length(pmz)) {
-        mzr <- pmz + c(-1, 1) * (tolerance + ppm(pmz, ppm = ppm))
-        ProcessingStep(filterPrecursorMz, ARGS = list(mz = mzr))
+        ProcessingStep(filterPrecursorMzValues,
+                       ARGS = list(mz = pmz, ppm = ppm, tolerance = tolerance))
     } else ProcessingStep(identity)
 }
 
@@ -388,5 +382,5 @@ filt_fun <- function(x, pmz, tolerance, ppm) {
 
 .parse_or <- function(x) {
     unlist(strsplit(gsub("^\\s+|\\s+$|\\(|\\)", "", gsub("\\s+", " ", x)),
-                    split = " OR "))
+                    split = " (OR|or) "))
 }

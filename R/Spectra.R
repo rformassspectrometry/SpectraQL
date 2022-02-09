@@ -52,9 +52,10 @@
 #' - `CHARGE`: the charge for MS2 spectra.
 #' - `POLARITY`: the polarity of the spectra (can be `"positive"`, `"negative"`,
 #'   `"pos"` or `"neg"`, case insensitive).
-#' - `MS2PROD`: allows to select MS2 spectra that contain a peak with a
-#'   particular m/z.
-#' - `MS2PREC`: allows to select MS2 spectra with the defined precursor m/z.
+#' - `MS2PROD`: allows to select MS2 spectra that contain a peak with
+#'   particular m/z value(s). See below for examples.
+#' - `MS2PREC`: allows to select MS2 spectra with the defined precursor m/z
+#'   value(s). See below for examples.
 #' - `MS2MZ`: allows to select MS1 spectra containing peaks with the defined
 #'   m/z.
 #'
@@ -85,6 +86,14 @@
 #' @importClassesFrom Spectra Spectra
 #'
 #' @exportMethod query
+#'
+#' @examples
+#'
+#' library(msdata)
+#' library(Spectra)
+#' fls <- dir(system.file("TripleTOF-SWATH", package = "msdata"),
+#'     full.names = TRUE)
+#' sps_dda <- Spectra(fls[1L])
 setMethod("query", "Spectra", function(x, query = character(), ...) {
     if (!length(query))
         return(x)

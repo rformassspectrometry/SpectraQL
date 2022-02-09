@@ -18,7 +18,6 @@ BiocStyle::markdown()
 
 **Package**: `r BiocStyle::Biocpkg("SpectraQL")`<br />
 **Authors**: `r packageDescription("SpectraQL")[["Author"]] `<br />
-**Last modified:** `r file.info("SpectraQL.Rmd")$mtime`<br />
 **Compiled**: `r date()`
 
 
@@ -162,6 +161,15 @@ object with all spectra measured between 200 and 300 seconds.
 
 ```{r}
 range(rtime(dda_rt))
+```
+
+While `"*"` returns all spectra, the data can be alternatively subsetted to
+either MS1 or MS2 level using `"MS1DATA"` or `"MS2DATA"` respectively. Below we
+restrict the query from above to return only MS2 spectra (note again that
+`SpectraQL` is case insensitive to key words or variable names).
+
+```{r}
+query(dda, "query ms2data where rtmin = 200 and rtmax = 300")
 ```
 
 To restrict to MS2 spectra with their precursor m/z matching a certain value, we
