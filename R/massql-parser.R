@@ -177,6 +177,7 @@ NULL
     POLARITY = ".translate_filter_polarity",
     MS2PROD = ".translate_filter_ms2prod",
     MS2PREC = ".translate_filter_ms2prec",
+    MS1MZ = ".translate_filter_ms1mz",
     MS2NL = ".translate_filter_ms2nl"
 )
 
@@ -274,6 +275,14 @@ NULL
     ProcessingStep(filterPolarity, ARGS = list(polarity = polarity))
 }
 
+.translate_filter_ms2prod <- function(...) {
+    .translate_filter_peak_mz(..., msLevel = 2L, value = "MS2PROD")
+}
+
+.translate_filter_ms1mz <- function(...) {
+    .translate_filter_peak_mz(..., msLevel = 1L, value = "MS1MZ")
+}
+
 #' Filter a `Spectra` based on MS2 peak.
 #'
 #' @author Johannes Rainer, Andrea Vicini
@@ -281,15 +290,19 @@ NULL
 #' @importFrom Spectra containsMz
 #'
 #' @noRd
-.translate_filter_ms2prod <- function(...) {
+.translate_filter_peak_mz <- function(..., msLevel = 2L, value = "MS2PROD") {
     parms <- list(...)[[1L]]
+    if (any(names(parms) == "msLevel"))
+        stop("Got msLevel in parms")
+    if (any(names(parms) == "value"))
+        stop("Got value in parms")
     pmz <- numeric(0)
     ppm <- 0
     tolerance <- 0
-    if (any(names(parms) == "MS2PROD"))
-        pmz <- as.numeric(.parse_or(parms["MS2PROD"]))
+    if (any(names(parms) == value))
+        pmz <- as.numeric(.parse_or(parms[value]))
     if(anyNA(pmz))
-        stop("Missing or non-numeric value(s) for 'MS2PROD'")
+        stop("Missing or non-numeric value(s) for '", value, "'")
     if (any(names(parms) == "TOLERANCEMZ"))
         tolerance <- as.numeric(parms["TOLERANCEMZ"])
     if(is.na(tolerance))
@@ -299,11 +312,13 @@ NULL
     if(is.na(ppm))
         stop("Non-numeric value for 'TOLERANCEPPM'")
     if (length(pmz)) {
-        filt_ms2prod <- function(x, mz, tolerance, ppm) {
+        filt_peak_mz <- function(x, mz, tolerance, ppm, msLevel) {
+            x <- filterMsLevel(x, msLevel = msLevel)
             x[containsMz(x, mz, tolerance, ppm)]
         }
-        ProcessingStep(filt_ms2prod, ARGS = list(mz = pmz, tolerance = tolerance,
-                                               ppm = ppm))
+        ProcessingStep(filt_peak_mz,
+                       ARGS = list(mz = pmz, tolerance = tolerance, ppm = ppm,
+                                   msLevel = msLevel))
     } else ProcessingStep(identity)
 }
 
@@ -336,13 +351,6 @@ NULL
                        ARGS = list(mz = pmz, ppm = ppm, tolerance = tolerance))
     } else ProcessingStep(identity)
 }
-
-## query <- "QUERY * WHERE RTMIN = 123 AND RTMAX = 130  AND MZPREC = 312.2:TOLERANCEMZ = 0.1:TOLERANCEPPM=10"
-## x <- .where(query)
-## res <- lapply(x, .parse_where)
-## names(res) <- vapply(res, function(z) names(z)[1], character(1))
-## res <- .group_min_max(res, name = "RT")
-## res <- .group_min_max(res, name = "SCAN")
 
 #' @author Johannes Rainer
 #'

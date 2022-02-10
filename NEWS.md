@@ -3,7 +3,8 @@
 ## Changes in 0.98.2
 
 - Change from `filterPrecursorMz` to `filterPrecursorMzValues`.
-- Support `"OR"` in `"MS2PREC"`.
+- Support `"OR"` in `"MS2PREC"`, `MS1MZ`, `MS2PROD`.
+- Add `MS1MZ`.
 
 ## Changes in 0.98.1
 

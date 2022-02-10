@@ -149,29 +149,41 @@ test_that(".translate_filter_polarity works", {
 
 })
 
-test_that(".translate_filter_ms2prod works", {
-    res <- .translate_filter_ms2prod(4)
+test_that(".translate_filter_peak_mz works", {
+    res <- .translate_filter_peak_mz(4)
     expect_true(inherits(res, "ProcessingStep"))
-    res <- .translate_filter_ms2prod(MS2PROD = c(MS2PROD = 123))
-    expect_true(inherits(res, "ProcessingStep"))
-    #expect_equal(res@FUN, containsMz)
-    expect_equal(res@ARGS, list(mz = 123, tolerance = 0, ppm = 0))
+    expect_equal(res@FUN, identity)
+    expect_equal(res@ARGS, list())
 
-    res <- .translate_filter_ms2prod(
+    res <- .translate_filter_peak_mz(MS2PROD = c(MS2PROD = 123))
+    expect_true(inherits(res, "ProcessingStep"))
+    expect_equal(res@ARGS, list(mz = 123, tolerance = 0, ppm = 0, msLevel = 2L))
+
+    res <- .translate_filter_peak_mz(
         MS2PROD = c(MS2PROD = 123, TOLERANCEMZ = 2, TOLERANCEPPM = 10))
     expect_true(inherits(res, "ProcessingStep"))
-    #expect_equal(res@FUN, containsMz)
-    expect_equal(res@ARGS, list(mz = 123, tolerance = 2, ppm = 10))
+    expect_equal(res@ARGS, list(mz = 123, tolerance = 2, ppm = 10, msLevel =2L))
 
-    res <- .translate_filter_ms2prod(
+    res <- .translate_filter_peak_mz(
         MS2PROD = c(MS2PROD = "(123 OR 125)", TOLERANCEMZ = 2,
                     TOLERANCEPPM = 10))
     expect_true(inherits(res, "ProcessingStep"))
-    #expect_equal(res@FUN, containsMz)
-    expect_equal(res@ARGS, list(mz = c(123, 125), tolerance = 2, ppm = 10))
+    expect_equal(res@ARGS, list(mz = c(123, 125), tolerance = 2,
+                                ppm = 10, msLevel = 2L))
 
-    expect_error(.translate_filter_ms2prod(MS2PROD = c(MS2PROD = "b")),
+    expect_error(.translate_filter_peak_mz(MS2PROD = c(MS2PROD = "b")),
                  "non-numeric")
+
+    ## MS1MZ
+    res <- .translate_filter_ms1mz(MS1MZ = c(MS1MZ = 123, TOLERANCEPPM = 10))
+    expect_true(inherits(res, "ProcessingStep"))
+    expect_equal(res@ARGS, list(mz = 123, tolerance = 0, ppm = 10, msLevel =1L))
+
+    ## MS2PROD
+    res <- .translate_filter_ms2prod(MS2PROD = c(MS2PROD = 123,
+                                                 TOLERANCEPPM = 13))
+    expect_true(inherits(res, "ProcessingStep"))
+    expect_equal(res@ARGS, list(mz = 123, tolerance = 0, ppm = 13, msLevel =2L))
 })
 
 test_that(".translate_filter_ms2prec works", {
