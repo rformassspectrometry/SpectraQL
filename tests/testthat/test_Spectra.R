@@ -78,7 +78,7 @@ test_that(".query_what works", {
     expect_equal(res, sps_dda)
 
     res <- .query_what(sps_dda, "QUERY MS2DATA")
-    expect_true(all(msLevel(res) == 2))
+    expect_true(all(res$msLevel == 2))
 
     expect_error(.query_what(sps_dda, "QUERY other WHERE RTIME = 300"),
                  "not supported")

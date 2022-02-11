@@ -2,6 +2,10 @@
 #'
 #' @aliases query
 #'
+#' @name query
+#'
+#' @description
+#'
 #' The `query` function allows to query and subset/filter a `Spectra` object
 #' using a Mass Spec Query Language
 #' [MassQL](https://mwang87.github.io/MassQueryLanguage_Documentation/)
@@ -87,49 +91,6 @@
 #'
 #' @author Andrea Vicini, Johannes Rainer
 #'
-#' @examples 
-#'
-#' ## Load MS data from an example mzML file.
-#' library(Spectra)
-#' library(msdata)
-#' fl <- system.file("TripleTOF-SWATH", "PestMix1_DDA.mzML", package = "msdata")
-#' dda <- Spectra(fl)
-#'
-#' ## Restrict the data to spectra with retention time in the range 200-300
-#' ## seconds.
-#' res <- query(dda, "QUERY * WHERE RTMIN = 200 AND RTMAX = 300")
-#'
-#' ## Restrict to spectra with scan number in between 9 and 400.
-#' res <- query(dda, "QUERY * WHERE SCANMIN = 9 AND SCANMAX = 400")
-#'
-#' ## Select MS2 spectra with precursor m/z equal to 304.1131 (allowing a m/z
-#' ## relative ppm tolerance of 20)
-#' res <- query(dda, "QUERY MS2DATA WHERE MS2PREC = 304.1131:TOLERANCEPPM=20")
-#'
-#' ## Select MS2 spectra with precursor charge equal to 1 or -1
-#' res <- query(dda, "QUERY MS2DATA WHERE CHARGE = (1 OR -1)")
-#'
-#' ## Select spectra with positive polarity
-#' res <- query(dda, "QUERY * WHERE POLARITY = Positive")
-#'
-#' ## Select MS2 spectra containing a peak with certain m/z
-#' res <- query(dda, "QUERY MS2DATA WHERE MS2PROD=(100 OR 104):TOLERANCEPPM=5")
-#'
-#' ## Select MS2 spectra containing a peak with neutral loss from
-#' ## precursor of 100 allowing a m/z relative ppm tolerance of 5)
-#' res <- query(dda, "QUERY MS2DATA WHERE MS2NL=100:TOLERANCEPPM=5")
-#'
-#' ## Combine two different conditions: selection of spectra with positive
-#' ## polarity and retention time greater than 200
-#' res <- query(dda, "QUERY * WHERE RTMIN = 200 AND POLARITY = Positive")
-NULL
-
-#' @importClassesFrom Spectra Spectra
-#'
-#' @importFrom methods is
-#'
-#' @exportMethod query
-#'
 #' @examples
 #'
 #' ## Read a data file with MS1 and MS2 spectra
@@ -170,6 +131,23 @@ NULL
 #'
 #' ## MS2MZ can be used as alternative to MS2PROD
 #' query(sps_dda, "QUERY * WHERE MS2MZ = 100:TOLERANCEMZ=1")
+#'
+#' ## Select MS2 spectra containing a peak with neutral loss from
+#' ## precursor of 100 allowing a m/z relative ppm tolerance of 5)
+#' res <- query(sps_dda, "QUERY MS2DATA WHERE MS2NL=100:TOLERANCEPPM=5")
+#'
+#' ## Combine two different conditions: selection of spectra with positive
+#' ## polarity and retention time greater than 200
+#' res <- query(sps_dda, "QUERY * WHERE RTMIN = 200 AND POLARITY = Positive")
+NULL
+
+#' @importClassesFrom Spectra Spectra
+#'
+#' @importFrom methods is
+#'
+#' @exportMethod query
+#'
+#' @rdname query
 setMethod("query", "Spectra", function(x, query = character(), ...) {
     if (!length(query))
         return(x)

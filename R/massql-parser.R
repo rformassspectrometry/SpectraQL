@@ -24,22 +24,18 @@ NULL
 #'
 #' @noRd
 .query_to_filters <- function(x) {
-    if (is.na(where <- .where(x)))
-        list()
-    else {
-        qry <- lapply(where, .parse_where)
-        names(qry) <- vapply(qry, function(z) names(z)[1], character(1))
-        qry <- .group_min_max(qry, name = "SCAN")
-        qry <- .group_min_max(qry, name = "RT")
-        res <- vector("list", length = length(qry))
-        for (i in seq_along(qry)) {
-            fun <- .CONDITION_FUNCTIONS[names(qry)[i]]
-            if (is.na(fun) | length(fun) == 0)
-                stop("Condition '", names(qry)[i], "' not supported.")
-            res[[i]] <- do.call(fun, qry[i])
-        }
-        res[lengths(res) > 0]
+    qry <- lapply(.where(x), .parse_where)
+    names(qry) <- vapply(qry, function(z) names(z)[1], character(1))
+    qry <- .group_min_max(qry, name = "SCAN")
+    qry <- .group_min_max(qry, name = "RT")
+    res <- vector("list", length = length(qry))
+    for (i in seq_along(qry)) {
+        fun <- .CONDITION_FUNCTIONS[names(qry)[i]]
+        if (is.na(fun) | length(fun) == 0)
+            stop("Condition '", names(qry)[i], "' not supported.")
+        res[[i]] <- do.call(fun, qry[i])
     }
+    res[lengths(res) > 0]
 }
 
 #' What should be returned? This returns the part of the query which is between
@@ -431,6 +427,6 @@ NULL
 }
 
 .parse_or <- function(x) {
-    unlist(strsplit(gsub("^\\s+|\\s+$|\\(\\s*|\\s*\\)", "", 
+    unlist(strsplit(gsub("^\\s+|\\s+$|\\(\\s*|\\s*\\)", "",
                          gsub("\\s+", " ", x)), split = " (OR|or) "))
 }
