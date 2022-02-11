@@ -1,5 +1,11 @@
 # SpectraQL 0.98
 
+## Changes in 0.98.3
+
+- Fix `MS1DATA` and `MS2DATA` to return only peaks data.
+- Add support for functions (`scansum`, `scaninfo`).
+- Fix parsing of where part.
+
 ## Changes in 0.98.2
 
 - Change from `filterPrecursorMz` to `filterPrecursorMzValues`.

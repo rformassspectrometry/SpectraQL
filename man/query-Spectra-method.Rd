@@ -101,20 +101,23 @@ Query a Spectra object using MassQL
 
 The \verb{<type of data>} allows to define which data should be extracted from
 the selected spectra. MassQL defines \emph{type of data} being \code{MS1DATA} or
-\code{MS2DATA} to retrieve MS1 or MS2 scans. In addition, functions can be applied
-to these to modify (e.g. sum) the data. \code{SpectraQL} supports:
+\code{MS2DATA} to retrieve data from MS1 or MS2 scans. By default peak data will
+be returned, but in addition, MASSQL defines additional functions that can
+be applied to modify the data or select different data to be returned. In
+addition \code{SpectraQL} defines the special type of data \code{*} which will return
+the results as a \code{Spectra} object. \code{SpectraQL} supports:
 \itemize{
 \item \code{*}: select all data and return the data subset as a \code{\link[=Spectra]{Spectra()}} object.
-\item \code{MS1DATA}: return a \code{\link[=Spectra]{Spectra()}} with all MS1 scans from the selected
-spectra.
-\item \code{MS2DATA}: return a \code{\link[=Spectra]{Spectra()}} with all MS2 scans from the selected
-spectra.
+\item \code{MS1DATA}: return the \code{\link[=peaksData]{peaksData()}} from all selected \strong{MS1} spectra,
+i.e. a \code{list} with two column matrices with the peaks' m/z and intensity
+values.
+\item \code{MS2DATA}: return the \code{\link[=peaksData]{peaksData()}} from all selected \strong{MS2} spectra,
+i.e. a \code{list} with two column matrices with the peaks' m/z and intensity
+values.
 \item \code{scaninfo(MS1DATA)}, \code{scaninfo(MS2DATA)}: return the \code{\link[=spectraData]{spectraData()}} of all
 selected spectra.
 \item \code{scansum(MS1DATA)}, \code{scansum(MS2DATA)}: sum of the peak intensities of
 the selected spectra (TIC).
-\item \code{scannum(MS1DATA)}, \code{scannum(MS2DATA)}: the scan number(s) of the selected
-spectra.
 }
 }
 
@@ -135,7 +138,7 @@ insensitive):
 \item \code{CHARGE}: the charge for MS2 spectra.
 \item \code{POLARITY}: the polarity of the spectra (can be \code{"positive"}, \code{"negative"},
 \code{"pos"} or \code{"neg"}, case insensitive).
-\item \code{MS2PROD}: allows to select MS2 spectra that contain a peak with
+\item \code{MS2PROD} or MS2MZ`: allows to select MS2 spectra that contain a peak with
 particular m/z value(s). See below for examples.
 \item \code{MS2PREC}: allows to select MS2 spectra with the defined precursor m/z
 value(s). See below for examples.
@@ -172,9 +175,11 @@ sps_dda <- Spectra(fls[1L])
 ## Subset to spectra measured between 300 and 400 seconds
 query(sps_dda, "QUERY * WHERE RTMIN = 300 AND RTMAX = 400")
 
-## To select only MS1 or MS2 spectra use "MS1DATA" or "MS2DATA" instead
-## or *. Note also that queries are case-insensitive.
-query(sps_dda, "query ms1data where rtmin = 300 and rtmax = 400")
+## To extract peaks data from MS1 or MS2 spectra use "MS1DATA" or "MS2DATA"
+## instead of *. Note also that queries are case-insensitive.
+pks <- query(sps_dda, "query ms1data where rtmin = 300 and rtmax = 400")
+pks
+head(pks[[1L]])
 
 ## To select (MS2) spectra with a certain precursor m/z the MS2PREC condition
 ## can be used. Below we extract all spectra with a precursor m/z of 99.9
@@ -195,6 +200,9 @@ query(sps_dda, "QUERY MS2DATA WHERE MS1MZ = 100:TOLERANCEMZ=1")
 ## In contrast, do select MS2 spectra containing a peak with a certain m/z
 ## we have to use the condition MS2PROD
 query(sps_dda, "QUERY * WHERE MS2PROD = 100:TOLERANCEMZ=1")
+
+## MS2MZ can be used as alternative to MS2PROD
+query(sps_dda, "QUERY * WHERE MS2MZ = 100:TOLERANCEMZ=1")
 }
 \author{
 Andrea Vicini, Johannes Rainer

@@ -1,6 +1,17 @@
 test_that("query,Spectra works", {
     expect_equal(query(sps_dda), sps_dda)
     expect_error(query(sps_dda, c("a", "b")), "single character")
+
+    res <- query(sps_dda, "query *")
+    expect_equal(res, sps_dda)
+
+    ## TIC
+    res <- query(sps_dda, "query scansum(ms1data)")
+    expect_equal(res, ionCount(filterMsLevel(sps_dda, 1L)))
+
+    expect_error(query(sps_dda, "query scansum(ms2da)"), "not supported")
+    expect_error(query(sps_dda, "query ms2data where other"), "not supported")
+    expect_error(query(sps_dda, "query ms2data ww"), "not supported")
 })
 
 test_that(".query_spectra works", {

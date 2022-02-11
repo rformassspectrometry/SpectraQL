@@ -27,7 +27,7 @@ test_that(".where works", {
     res <- .where("query bla where a < 5 and b > 5 filter fdf")
     expect_equal(res, c("a < 5", "b > 5"))
     res <- .where("query all")
-    expect_equal(res, NA_character_)
+    expect_equal(res, character())
 })
 
 test_that(".parse_where works", {
@@ -257,6 +257,28 @@ test_that(".what_data works", {
 
     expect_error(.what_data(sps_dda, "ms2datas"), "not supported")
 })
+
+test_that(".what_extract works", {
+    s <- sps_dda[1:4]
+
+    res <- .what_extract(s, "MS1DATA")
+    expect_true(length(res) == 4)
+    expect_true(is.matrix(res[[1L]]))
+
+    res <- .what_extract(s, "*")
+    expect_s4_class(res, "Spectra")
+
+    res <- .what_extract(s, " scansum( MS1DATA")
+    expect_true(is.numeric(res))
+    expect_equal(res, ionCount(s))
+
+    res <- .what_extract(s, "scaninfo(MS2DATA)")
+    expect_s4_class(res, "DataFrame")
+    expect_true(nrow(res) == 4)
+
+    expect_error(.what_extract(s, "scannum(MS1DATA"), "'scannum' not supported")
+})
+
 
 ## query <- "QUERY * WHERE RTMIN = 123 AND RTMAX = 130  AND MZPREC = 312.2:TOLERANCEMZ = 0.1:TOLERANCEPPM=10"
 ## x <- .where(query)

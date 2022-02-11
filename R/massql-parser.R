@@ -66,14 +66,16 @@ NULL
 #'     This is expected to be the processed/parsed *what* string (returned by
 #'     `.what`).
 #'
+#' @return the requested data. Can be the subsetted `Spectra` input object or,
+#'     depending on `what`, also other data types.
+#'
 #' @author Johannes Rainer
 #'
 #' @noRd
 .extract_what <- function(x, what = character()) {
     what <- gsub("[[:space:]]", "", tolower(what))
-    ## Define what type of data (all, MS1, MS2) should be returned.
-    .what_data(x, what)
-    ## Define if and how the data should be transformed.
+    x <- .what_data(x, what)
+    .what_extract(x, what)
 }
 
 #' Define which data to extract. Supported are *, ms1data, ms2data.
@@ -85,15 +87,50 @@ NULL
 #' @noRd
 .what_data <- function(x, what = character()) {
     res <- NULL
-    if (length(grep("(^\\*$|\\(\\*\\))", what)))
+    if (grepl("(^\\*$|\\(\\*\\))", what))
         res <- x
-    if (length(grep("(^ms1data$|\\(ms1data\\))", what)))
+    if (grepl("(^ms1data$|\\(ms1data\\))", what))
         res <- filterMsLevel(x, msLevel. = 1L)
-    if (length(grep("(^ms2data$|\\(ms2data\\))", what)))
+    if (grepl("(^ms2data$|\\(ms2data\\))", what))
         res <- filterMsLevel(x, msLevel. = 2L)
     if (is.null(res))
         stop("data definition '", what, "' not supported.", call. = FALSE)
     res
+}
+
+#' Process specific data extraction functions. This function collects the
+#' results and returns it to the user.
+#'
+#' @param x `Spectra`.
+#'
+#' @param what `character`.
+#'
+#' @return depends on `what`
+#'
+#' @author Johannes Rainer
+#'
+#' @importMethodsFrom Spectra ionCount
+#'
+#' @importMethodsFrom Spectra peaksData
+#'
+#' @importMethodsFrom Spectra spectraData
+#'
+#' @noRd
+.what_extract <- function(x, what = character()) {
+    what <- strsplit(what, split = "(", fixed = TRUE)[[1L]]
+    if (length(what) > 1L) {
+        fun <- what[1L]
+        if (grepl("scaninfo", fun))
+            return(spectraData(x))
+        if (grepl("scansum", fun))
+            return(ionCount(x))
+        stop("function '", fun, "' not supported.", call. = FALSE)
+    }
+    ## If there is no function we return the peaksData unless what is * in which
+    ## case we return a `Spectra`.
+    if (grepl("(^\\*$|\\(\\*\\))", what))
+        x
+    else peaksData(x)
 }
 
 #' Condition(s): everything between WHERE and end of line or FILTER.
@@ -107,7 +144,7 @@ NULL
                "\\1", x, ignore.case = TRUE)
     res[res == x] <- NA_character_
     res <- unlist(strsplit(res, split = "[[:space:]]*(and|AND)[[:space:]]*"))
-    res[nchar(res) > 0]
+    res[nchar(res) > 0 & !is.na(res)]
 }
 
 #' group elements with name `*MIN` and `*MAX` into pairs of two.
@@ -176,6 +213,7 @@ NULL
     CHARGE = ".translate_filter_charge",
     POLARITY = ".translate_filter_polarity",
     MS2PROD = ".translate_filter_ms2prod",
+    MS2MZ = ".translate_filter_ms2prod",
     MS2PREC = ".translate_filter_ms2prec",
     MS1MZ = ".translate_filter_ms1mz",
     MS2NL = ".translate_filter_ms2nl"
