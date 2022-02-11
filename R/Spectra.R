@@ -1,6 +1,6 @@
 #' @title Query a Spectra object using MassQL
 #'
-#' @aliases query
+#' @aliases query query,Spectra-method
 #'
 #' @name query
 #'
