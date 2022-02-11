@@ -18,7 +18,6 @@ BiocStyle::markdown()
 
 **Package**: `r BiocStyle::Biocpkg("SpectraQL")`<br />
 **Authors**: `r packageDescription("SpectraQL")[["Author"]] `<br />
-**Last modified:** `r file.info("SpectraQL.Rmd")$mtime`<br />
 **Compiled**: `r date()`
 
 
@@ -94,6 +93,7 @@ function. The types of data that are currently supported by `SpectraQL` are:
 - `"MS1DATA"` (case insensitive): returns MS1 data.
 - `"MS2DATA"` (case insensitive): returns MS2 data.
 
+
 ### Condition
 
 The `<condition>` allows to subset a `Spectra` object. Several conditions can be
@@ -113,7 +113,7 @@ conditions:
 - `MS2PROD`: allows to select MS2 spectra that contain a peak with a particular
   m/z.
 - `MS2PREC`: allows to select MS2 spectra with the defined precursor m/z.
-- `MS2MZ`: allows to select MS1 spectra containing peaks with the defined m/z.
+- `MS1MZ`: allows to select MS1 spectra containing peaks with the defined m/z.
 
 All conditions involving m/z values allow to specify a mass accuracy using the
 optional fields `TOLERANCEMZ` and `TOLERANCEPPM` that define the absolute
@@ -164,6 +164,15 @@ object with all spectra measured between 200 and 300 seconds.
 range(rtime(dda_rt))
 ```
 
+While `"*"` returns all spectra, the data can be alternatively subsetted to
+either MS1 or MS2 level using `"MS1DATA"` or `"MS2DATA"` respectively. Below we
+restrict the query from above to return only MS2 spectra (note again that
+`SpectraQL` is case insensitive to key words or variable names).
+
+```{r}
+query(dda, "query ms2data where rtmin = 200 and rtmax = 300")
+```
+
 To restrict to MS2 spectra with their precursor m/z matching a certain value, we
 can use the `MS2PREC` condition. Conditions on m/z values support also accuracy
 specifications. Using `TOLERANCEMZ` and `TOLERANCEPPM` it is thus possible to
@@ -196,6 +205,18 @@ dda_rt <- query(dda,
 dda_rt
 ```
 
+For conditions `MS2PROD`, `MS2PREC` and `MS1MZ` it is also possible to provide
+multiple values to select spectra that match any of the provided m/z
+values. These values can be separated by `"OR"` (or `"or"`), `TOLERANCEPPM` and
+`TOLERANCEMZ` will be applied to each of these. Below we select all spectra that
+contain an (MS1) peak with an m/z matching any of the provided values.
+
+```{r}
+query(dda, "QUERY * WHERE MS1MZ = (123 OR 234.1 OR 300):TOLERANCEMZ=0.05")
+```
+
+Note that using `MS1MZ` will return only MS1 spectra and `MS2PROD` and `MS2PREC`
+only MS2 spectra.
 
 # Session information {-}
 

@@ -31,8 +31,8 @@
 #'   spectra.
 #' - `scaninfo(MS1DATA)`, `scaninfo(MS2DATA)`: return the [spectraData()] of all
 #'   selected spectra.
-#' - `scansum(MS1DATA)`, `scaninfo(MS2DATA)`: sum of the peak intensities of
-#'   the selected spectra.
+#' - `scansum(MS1DATA)`, `scansum(MS2DATA)`: sum of the peak intensities of
+#'   the selected spectra (TIC).
 #' - `scannum(MS1DATA)`, `scannum(MS2DATA)`: the scan number(s) of the selected
 #'   spectra.
 #'
@@ -52,11 +52,12 @@
 #' - `CHARGE`: the charge for MS2 spectra.
 #' - `POLARITY`: the polarity of the spectra (can be `"positive"`, `"negative"`,
 #'   `"pos"` or `"neg"`, case insensitive).
-#' - `MS2PROD`: allows to select MS2 spectra that contain a peak with a
-#'   particular m/z.
-#' - `MS2PREC`: allows to select MS2 spectra with the defined precursor m/z.
-#' - `MS2MZ`: allows to select MS1 spectra containing peaks with the defined
-#'   m/z.
+#' - `MS2PROD`: allows to select MS2 spectra that contain a peak with
+#'   particular m/z value(s). See below for examples.
+#' - `MS2PREC`: allows to select MS2 spectra with the defined precursor m/z
+#'   value(s). See below for examples.
+#' - `MS1MZ`: allows to select MS1 spectra containing peak(s) with the defined
+#'   m/z value(s).
 #'
 #' All conditions involving m/z values allow to specify a mass accuracy using
 #' the optional fields `TOLERANCEMZ` and `TOLERANCEPPM` that define the absolute
@@ -85,6 +86,42 @@
 #' @importClassesFrom Spectra Spectra
 #'
 #' @exportMethod query
+#'
+#' @examples
+#'
+#' ## Read a data file with MS1 and MS2 spectra
+#' library(msdata)
+#' library(Spectra)
+#' fls <- dir(system.file("TripleTOF-SWATH", package = "msdata"),
+#'     full.names = TRUE)
+#' sps_dda <- Spectra(fls[1L])
+#'
+#' ## Subset to spectra measured between 300 and 400 seconds
+#' query(sps_dda, "QUERY * WHERE RTMIN = 300 AND RTMAX = 400")
+#'
+#' ## To select only MS1 or MS2 spectra use "MS1DATA" or "MS2DATA" instead
+#' ## or *. Note also that queries are case-insensitive.
+#' query(sps_dda, "query ms1data where rtmin = 300 and rtmax = 400")
+#'
+#' ## To select (MS2) spectra with a certain precursor m/z the MS2PREC condition
+#' ## can be used. Below we extract all spectra with a precursor m/z of 99.9
+#' ## accepting also a difference of 10ppm
+#' query(sps_dda, "QUERY * WHERE MS2PREC = 99.967:TOLERANCEPPM=10")
+#'
+#' ## It is also possible to specify multiple precursor m/z values:
+#' query(sps_dda, "QUERY * WHERE MS2PREC = (99.967 OR 428.88):TOLERANCEPPM=10")
+#'
+#' ## To select all MS1 spectra that contain a peak with a certain m/z we can
+#' ## use the MS1MZ condition. Below we combine this with an absolute tolerance
+#' ## using TOLERANCEMZ.
+#' query(sps_dda, "QUERY * WHERE MS1MZ = 100:TOLERANCEMZ=1")
+#'
+#' ## Using MS2DATA in combination with MS1MZ will not return any spectra.
+#' query(sps_dda, "QUERY MS2DATA WHERE MS1MZ = 100:TOLERANCEMZ=1")
+#'
+#' ## In contrast, do select MS2 spectra containing a peak with a certain m/z
+#' ## we have to use the condition MS2PROD
+#' query(sps_dda, "QUERY * WHERE MS2PROD = 100:TOLERANCEMZ=1")
 setMethod("query", "Spectra", function(x, query = character(), ...) {
     if (!length(query))
         return(x)
