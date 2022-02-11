@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">SpectraQL</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.98.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.98.2</span>
       </span>
     </div>
 
@@ -81,15 +81,15 @@
 <p>The <code>&lt;type of data&gt;</code> allows to define which data should be extracted from
 the selected spectra. MassQL defines <em>type of data</em> being <code>MS1DATA</code> or
 <code>MS2DATA</code> to retrieve MS1 or MS2 scans. In addition, functions can be applied
-to these to modify (e.g. sum) the data. <code>SpectraQL</code> supports:</p><ul><li><p><code>*</code>: select all data and return the data subset as a <code>Spectra()</code> object.</p></li>
-<li><p><code>MS1DATA</code>: return a <code>Spectra()</code> with all MS1 scans from the selected
+to these to modify (e.g. sum) the data. <code>SpectraQL</code> supports:</p><ul><li><p><code>*</code>: select all data and return the data subset as a <code><a href="https://rdrr.io/pkg/Spectra/man/Spectra.html" class="external-link">Spectra()</a></code> object.</p></li>
+<li><p><code>MS1DATA</code>: return a <code><a href="https://rdrr.io/pkg/Spectra/man/Spectra.html" class="external-link">Spectra()</a></code> with all MS1 scans from the selected
 spectra.</p></li>
-<li><p><code>MS2DATA</code>: return a <code>Spectra()</code> with all MS2 scans from the selected
+<li><p><code>MS2DATA</code>: return a <code><a href="https://rdrr.io/pkg/Spectra/man/Spectra.html" class="external-link">Spectra()</a></code> with all MS2 scans from the selected
 spectra.</p></li>
-<li><p><code>scaninfo(MS1DATA)</code>, <code>scaninfo(MS2DATA)</code>: return the <code>spectraData()</code> of all
+<li><p><code>scaninfo(MS1DATA)</code>, <code>scaninfo(MS2DATA)</code>: return the <code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">spectraData()</a></code> of all
 selected spectra.</p></li>
-<li><p><code>scansum(MS1DATA)</code>, <code>scaninfo(MS2DATA)</code>: sum of the peak intensities of
-the selected spectra.</p></li>
+<li><p><code>scansum(MS1DATA)</code>, <code>scansum(MS2DATA)</code>: sum of the peak intensities of
+the selected spectra (TIC).</p></li>
 <li><p><code>scannum(MS1DATA)</code>, <code>scannum(MS2DATA)</code>: the scan number(s) of the selected
 spectra.</p></li>
 </ul></div>
@@ -110,11 +110,12 @@ insensitive):</p><ul><li><p><code>RTMIN</code>: minimum retention time (in <stro
 <li><p><code>CHARGE</code>: the charge for MS2 spectra.</p></li>
 <li><p><code>POLARITY</code>: the polarity of the spectra (can be <code>"positive"</code>, <code>"negative"</code>,
 <code>"pos"</code> or <code>"neg"</code>, case insensitive).</p></li>
-<li><p><code>MS2PROD</code>: allows to select MS2 spectra that contain a peak with a
-particular m/z.</p></li>
-<li><p><code>MS2PREC</code>: allows to select MS2 spectra with the defined precursor m/z.</p></li>
-<li><p><code>MS2MZ</code>: allows to select MS1 spectra containing peaks with the defined
-m/z.</p></li>
+<li><p><code>MS2PROD</code>: allows to select MS2 spectra that contain a peak with
+particular m/z value(s). See below for examples.</p></li>
+<li><p><code>MS2PREC</code>: allows to select MS2 spectra with the defined precursor m/z
+value(s). See below for examples.</p></li>
+<li><p><code>MS1MZ</code>: allows to select MS1 spectra containing peak(s) with the defined
+m/z value(s).</p></li>
 </ul><p>All conditions involving m/z values allow to specify a mass accuracy using
 the optional fields <code>TOLERANCEMZ</code> and <code>TOLERANCEPPM</code> that define the absolute
 and m/z-relative acceptable difference in m/z values. One or both fields can
@@ -137,6 +138,177 @@ spectra should be retrieved. <code>SpectraQL</code> does not support filters yet
     <p>Andrea Vicini, Johannes Rainer</p>
     </div>
 
+    <div id="ref-examples">
+    <h2>Examples</h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
+<span class="r-in"><span class="co">## Read a data file with MS1 and MS2 spectra</span></span>
+<span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">msdata</span><span class="op">)</span></span>
+<span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/RforMassSpectrometry/Spectra" class="external-link">Spectra</a></span><span class="op">)</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: S4Vectors</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: stats4</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: BiocGenerics</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Attaching package: ‘BiocGenerics’</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The following objects are masked from ‘package:stats’:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     IQR, mad, sd, var, xtabs</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The following objects are masked from ‘package:base’:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     Filter, Find, Map, Position, Reduce, anyDuplicated, append,</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     as.data.frame, basename, cbind, colnames, dirname, do.call,</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     duplicated, eval, evalq, get, grep, grepl, intersect, is.unsorted,</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     lapply, mapply, match, mget, order, paste, pmax, pmax.int, pmin,</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     pmin.int, rank, rbind, rownames, sapply, setdiff, sort, table,</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     tapply, union, unique, unsplit, which.max, which.min</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Attaching package: ‘S4Vectors’</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The following objects are masked from ‘package:base’:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     I, expand.grid, unname</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: BiocParallel</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Attaching package: ‘Spectra’</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The following object is masked from ‘package:ProtGenerics’:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     addProcessing</span>
+<span class="r-in"><span class="va">fls</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">dir</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"TripleTOF-SWATH"</span>, package <span class="op">=</span> <span class="st">"msdata"</span><span class="op">)</span>,</span>
+<span class="r-in">    full.names <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">sps_dda</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Spectra/man/Spectra.html" class="external-link">Spectra</a></span><span class="op">(</span><span class="va">fls</span><span class="op">[</span><span class="fl">1L</span><span class="op">]</span><span class="op">)</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co">## Subset to spectra measured between 300 and 400 seconds</span></span>
+<span class="r-in"><span class="fu">query</span><span class="op">(</span><span class="va">sps_dda</span>, <span class="st">"QUERY * WHERE RTMIN = 300 AND RTMAX = 400"</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> MSn data (Spectra) with 971 spectra in a MsBackendMzR backend:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       msLevel     rtime scanIndex</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     &lt;integer&gt; &lt;numeric&gt; &lt;integer&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1           1   300.123      2271</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2           2   300.395      2272</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3           1   300.533      2273</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4           1   300.654      2274</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5           1   300.775      2275</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ...       ...       ...       ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 967         1   399.277      3237</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 968         1   399.406      3238</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 969         1   399.527      3239</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 970         2   399.798      3240</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 971         1   399.936      3241</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ... 33 more variables/columns.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> file(s):</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PestMix1_DDA.mzML</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Filter: select retention time [300..400] on MS level(s) 1 2 [Fri Feb 11 07:16:26 2022] </span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co">## To select only MS1 or MS2 spectra use "MS1DATA" or "MS2DATA" instead</span></span>
+<span class="r-in"><span class="co">## or *. Note also that queries are case-insensitive.</span></span>
+<span class="r-in"><span class="fu">query</span><span class="op">(</span><span class="va">sps_dda</span>, <span class="st">"query ms1data where rtmin = 300 and rtmax = 400"</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> MSn data (Spectra) with 326 spectra in a MsBackendMzR backend:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       msLevel     rtime scanIndex</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     &lt;integer&gt; &lt;numeric&gt; &lt;integer&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1           1   300.123      2271</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2           1   300.533      2273</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3           1   300.654      2274</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4           1   300.775      2275</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5           1   301.183      2277</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ...       ...       ...       ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 322         1   399.152      3236</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 323         1   399.277      3237</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 324         1   399.406      3238</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 325         1   399.527      3239</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 326         1   399.936      3241</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ... 33 more variables/columns.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> file(s):</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PestMix1_DDA.mzML</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Filter: select retention time [300..400] on MS level(s) 1 2 [Fri Feb 11 07:16:26 2022]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Filter: select MS level(s) 1 [Fri Feb 11 07:16:26 2022] </span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co">## To select (MS2) spectra with a certain precursor m/z the MS2PREC condition</span></span>
+<span class="r-in"><span class="co">## can be used. Below we extract all spectra with a precursor m/z of 99.9</span></span>
+<span class="r-in"><span class="co">## accepting also a difference of 10ppm</span></span>
+<span class="r-in"><span class="fu">query</span><span class="op">(</span><span class="va">sps_dda</span>, <span class="st">"QUERY * WHERE MS2PREC = 99.967:TOLERANCEPPM=10"</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> MSn data (Spectra) with 1 spectra in a MsBackendMzR backend:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     msLevel     rtime scanIndex</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   &lt;integer&gt; &lt;numeric&gt; &lt;integer&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1         2   884.843      7495</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ... 33 more variables/columns.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> file(s):</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PestMix1_DDA.mzML</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Filter: select spectra with precursor m/z matching 99.967 [Fri Feb 11 07:16:26 2022] </span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co">## It is also possible to specify multiple precursor m/z values:</span></span>
+<span class="r-in"><span class="fu">query</span><span class="op">(</span><span class="va">sps_dda</span>, <span class="st">"QUERY * WHERE MS2PREC = (99.967 OR 428.88):TOLERANCEPPM=10"</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> MSn data (Spectra) with 2 spectra in a MsBackendMzR backend:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     msLevel     rtime scanIndex</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   &lt;integer&gt; &lt;numeric&gt; &lt;integer&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1         2   884.843      7495</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2         2   887.813      7516</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ... 33 more variables/columns.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> file(s):</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PestMix1_DDA.mzML</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Filter: select spectra with precursor m/z matching 99.967, 428.88 [Fri Feb 11 07:16:26 2022] </span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co">## To select all MS1 spectra that contain a peak with a certain m/z we can</span></span>
+<span class="r-in"><span class="co">## use the MS1MZ condition. Below we combine this with an absolute tolerance</span></span>
+<span class="r-in"><span class="co">## using TOLERANCEMZ.</span></span>
+<span class="r-in"><span class="fu">query</span><span class="op">(</span><span class="va">sps_dda</span>, <span class="st">"QUERY * WHERE MS1MZ = 100:TOLERANCEMZ=1"</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> MSn data (Spectra) with 4625 spectra in a MsBackendMzR backend:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        msLevel     rtime scanIndex</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      &lt;integer&gt; &lt;numeric&gt; &lt;integer&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1            1     0.231         1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2            1     0.351         2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3            1     0.471         3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4            1     0.591         4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5            1     0.711         5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ...        ...       ...       ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4621         1   899.491      7598</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4622         1   899.613      7599</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4623         1   899.747      7600</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4624         1   899.872      7601</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4625         1   899.993      7602</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ... 33 more variables/columns.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> file(s):</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PestMix1_DDA.mzML</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Filter: select MS level(s) 1 [Fri Feb 11 07:16:26 2022] </span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co">## Using MS2DATA in combination with MS1MZ will not return any spectra.</span></span>
+<span class="r-in"><span class="fu">query</span><span class="op">(</span><span class="va">sps_dda</span>, <span class="st">"QUERY MS2DATA WHERE MS1MZ = 100:TOLERANCEMZ=1"</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> MSn data (Spectra) with 0 spectra in a MsBackendMzR backend:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Filter: select MS level(s) 1 [Fri Feb 11 07:16:27 2022]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Filter: select MS level(s) 2 [Fri Feb 11 07:16:27 2022] </span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co">## In contrast, do select MS2 spectra containing a peak with a certain m/z</span></span>
+<span class="r-in"><span class="co">## we have to use the condition MS2PROD</span></span>
+<span class="r-in"><span class="fu">query</span><span class="op">(</span><span class="va">sps_dda</span>, <span class="st">"QUERY * WHERE MS2PROD = 100:TOLERANCEMZ=1"</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> MSn data (Spectra) with 260 spectra in a MsBackendMzR backend:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       msLevel     rtime scanIndex</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     &lt;integer&gt; &lt;numeric&gt; &lt;integer&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1           2    47.183       370</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2           2    79.371       617</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3           2    81.661       631</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4           2    97.140       744</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5           2    97.550       746</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ...       ...       ...       ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 256         2   884.163      7491</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 257         2   884.843      7495</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 258         2   890.443      7535</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 259         2   893.072      7554</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 260         2   898.602      7591</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ... 33 more variables/columns.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> file(s):</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PestMix1_DDA.mzML</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Filter: select MS level(s) 2 [Fri Feb 11 07:16:27 2022] </span>
+</code></pre></div>
+    </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top"><h2 data-toc-skip>Contents</h2>
