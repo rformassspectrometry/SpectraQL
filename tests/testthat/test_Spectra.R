@@ -1,8 +1,18 @@
 test_that("query,Spectra works", {
     expect_equal(query(sps_dda), sps_dda)
     expect_error(query(sps_dda, c("a", "b")), "single character")
+    res <- query(sps_dda, "query *")
+    expect_equal(res, sps_dda)
+
+    ## TIC
+    res <- query(sps_dda, "query scansum(ms1data)")
+    expect_equal(res, ionCount(filterMsLevel(sps_dda, 1L)))
+
+    expect_error(query(sps_dda, "query scansum(ms2da)"), "not supported")
+    expect_error(query(sps_dda, "query ms2data where other"), "not supported")
+    expect_error(query(sps_dda, "query ms2data ww"), "not supported")
     res <- query(sps_dda, "QUERY MS2DATA")
-    expect_true(all(msLevel(res) == 2))
+    expect_true(all(res$msLevel == 2))
 })
 
 test_that(".query_spectra works", {
@@ -66,9 +76,9 @@ test_that(".query_spectra works", {
 test_that(".query_what works", {
     res <- .query_what(sps_dda, "QUERY * ")
     expect_equal(res, sps_dda)
-    
+
     res <- .query_what(sps_dda, "QUERY MS2DATA")
-    expect_true(all(msLevel(res) == 2))
+    expect_true(all(res$msLevel == 2))
 
     expect_error(.query_what(sps_dda, "QUERY other WHERE RTIME = 300"),
                  "not supported")

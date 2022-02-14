@@ -1,6 +1,10 @@
 #' @title Query a Spectra object using MassQL
 #'
-#' @aliases query
+#' @aliases query query,Spectra-method
+#'
+#' @name query
+#'
+#' @description
 #'
 #' The `query` function allows to query and subset/filter a `Spectra` object
 #' using a Mass Spec Query Language
@@ -21,20 +25,23 @@
 #'
 #' The `<type of data>` allows to define which data should be extracted from
 #' the selected spectra. MassQL defines *type of data* being `MS1DATA` or
-#' `MS2DATA` to retrieve MS1 or MS2 scans. In addition, functions can be applied
-#' to these to modify (e.g. sum) the data. `SpectraQL` supports:
+#' `MS2DATA` to retrieve data from MS1 or MS2 scans. By default peak data will
+#' be returned, but in addition, MASSQL defines additional functions that can
+#' be applied to modify the data or select different data to be returned. In
+#' addition `SpectraQL` defines the special type of data `*` which will return
+#' the results as a `Spectra` object. `SpectraQL` supports:
 #'
 #' - `*`: select all data and return the data subset as a [Spectra()] object.
-#' - `MS1DATA`: return a [Spectra()] with all MS1 scans from the selected
-#'   spectra.
-#' - `MS2DATA`: return a [Spectra()] with all MS2 scans from the selected
-#'   spectra.
+#' - `MS1DATA`: return the [peaksData()] from all selected **MS1** spectra,
+#'   i.e. a `list` with two column matrices with the peaks' m/z and intensity
+#'   values.
+#' - `MS2DATA`: return the [peaksData()] from all selected **MS2** spectra,
+#'   i.e. a `list` with two column matrices with the peaks' m/z and intensity
+#'   values.
 #' - `scaninfo(MS1DATA)`, `scaninfo(MS2DATA)`: return the [spectraData()] of all
 #'   selected spectra.
 #' - `scansum(MS1DATA)`, `scansum(MS2DATA)`: sum of the peak intensities of
 #'   the selected spectra (TIC).
-#' - `scannum(MS1DATA)`, `scannum(MS2DATA)`: the scan number(s) of the selected
-#'   spectra.
 #'
 #' @section Conditions:
 #'
@@ -52,7 +59,7 @@
 #' - `CHARGE`: the charge for MS2 spectra.
 #' - `POLARITY`: the polarity of the spectra (can be `"positive"`, `"negative"`,
 #'   `"pos"` or `"neg"`, case insensitive).
-#' - `MS2PROD`: allows to select MS2 spectra that contain a peak with
+#' - `MS2PROD` or MS2MZ`: allows to select MS2 spectra that contain a peak with
 #'   particular m/z value(s). See below for examples.
 #' - `MS2PREC`: allows to select MS2 spectra with the defined precursor m/z
 #'   value(s). See below for examples.
@@ -84,47 +91,6 @@
 #'
 #' @author Andrea Vicini, Johannes Rainer
 #'
-#' @examples 
-#'
-#' ## Load MS data from an example mzML file.
-#' library(Spectra)
-#' library(msdata)
-#' fl <- system.file("TripleTOF-SWATH", "PestMix1_DDA.mzML", package = "msdata")
-#' dda <- Spectra(fl)
-#'
-#' ## Restrict the data to spectra with retention time in the range 200-300
-#' ## seconds.
-#' res <- query(dda, "QUERY * WHERE RTMIN = 200 AND RTMAX = 300")
-#'
-#' ## Restrict to spectra with scan number in between 9 and 400.
-#' res <- query(dda, "QUERY * WHERE SCANMIN = 9 AND SCANMAX = 400")
-#'
-#' ## Select MS2 spectra with precursor m/z equal to 304.1131 (allowing a m/z
-#' ## relative ppm tolerance of 20)
-#' res <- query(dda, "QUERY MS2DATA WHERE MS2PREC = 304.1131:TOLERANCEPPM=20")
-#'
-#' ## Select MS2 spectra with precursor charge equal to 1 or -1
-#' res <- query(dda, "QUERY MS2DATA WHERE CHARGE = (1 OR -1)")
-#'
-#' ## Select spectra with positive polarity
-#' res <- query(dda, "QUERY * WHERE POLARITY = Positive")
-#'
-#' ## Select MS2 spectra containing a peak with certain m/z
-#' res <- query(dda, "QUERY MS2DATA WHERE MS2PROD=(100 OR 104):TOLERANCEPPM=5")
-#'
-#' ## Select MS2 spectra containing a peak with neutral loss from
-#' ## precursor of 100 allowing a m/z relative ppm tolerance of 5)
-#' res <- query(dda, "QUERY MS2DATA WHERE MS2NL=100:TOLERANCEPPM=5")
-#'
-#' ## Combine two different conditions: selection of spectra with positive
-#' ## polarity and retention time greater than 200
-#' res <- query(dda, "QUERY * WHERE RTMIN = 200 AND POLARITY = Positive")
-NULL
-
-#' @importClassesFrom Spectra Spectra
-#'
-#' @exportMethod query
-#'
 #' @examples
 #'
 #' ## Read a data file with MS1 and MS2 spectra
@@ -137,9 +103,11 @@ NULL
 #' ## Subset to spectra measured between 300 and 400 seconds
 #' query(sps_dda, "QUERY * WHERE RTMIN = 300 AND RTMAX = 400")
 #'
-#' ## To select only MS1 or MS2 spectra use "MS1DATA" or "MS2DATA" instead
-#' ## or *. Note also that queries are case-insensitive.
-#' query(sps_dda, "query ms1data where rtmin = 300 and rtmax = 400")
+#' ## To extract peaks data from MS1 or MS2 spectra use "MS1DATA" or "MS2DATA"
+#' ## instead of *. Note also that queries are case-insensitive.
+#' pks <- query(sps_dda, "query ms1data where rtmin = 300 and rtmax = 400")
+#' pks
+#' head(pks[[1L]])
 #'
 #' ## To select (MS2) spectra with a certain precursor m/z the MS2PREC condition
 #' ## can be used. Below we extract all spectra with a precursor m/z of 99.9
@@ -160,6 +128,26 @@ NULL
 #' ## In contrast, do select MS2 spectra containing a peak with a certain m/z
 #' ## we have to use the condition MS2PROD
 #' query(sps_dda, "QUERY * WHERE MS2PROD = 100:TOLERANCEMZ=1")
+#'
+#' ## MS2MZ can be used as alternative to MS2PROD
+#' query(sps_dda, "QUERY * WHERE MS2MZ = 100:TOLERANCEMZ=1")
+#'
+#' ## Select MS2 spectra containing a peak with neutral loss from
+#' ## precursor of 100 allowing a m/z relative ppm tolerance of 5)
+#' res <- query(sps_dda, "QUERY MS2DATA WHERE MS2NL=100:TOLERANCEPPM=5")
+#'
+#' ## Combine two different conditions: selection of spectra with positive
+#' ## polarity and retention time greater than 200
+#' res <- query(sps_dda, "QUERY * WHERE RTMIN = 200 AND POLARITY = Positive")
+NULL
+
+#' @importClassesFrom Spectra Spectra
+#'
+#' @importFrom methods is
+#'
+#' @exportMethod query
+#'
+#' @rdname query
 setMethod("query", "Spectra", function(x, query = character(), ...) {
     if (!length(query))
         return(x)

@@ -58,7 +58,7 @@ or MGF files
 of the `Spectra` an hence `SpectraQL` package is thus not restricted to
 mzML-backed MS data.
 
-```{r}
+```{r, message = FALSE}
 library(Spectra)
 library(SpectraQL)
 library(msdata)
@@ -69,20 +69,20 @@ dda <- Spectra(fl)
 
 ## MassQL definition
 
-A MassQL query consists of several parts: `QUERY <type of data> WHERE
-<condition> AND <condition> FILTER <filter> AND <filter>` (see its
+A MassQL query consists of several parts: `"QUERY <type of data> WHERE
+<condition> AND <condition> FILTER <filter> AND <filter>"` (see its
 [definition](https://mwang87.github.io/MassQueryLanguage_Documentation/#definition-of-a-query)
 for more details). `<type of data>` defines which data should be extracted from
 the selected data, `<condition>` defines which spectra should be selected and
 `<filter>` allows to subset each individual spectrum (i.e. to which peaks in
 each spectrum the data should be subsetted). See the following sections for more
 information on each part of such an MassQL query. `SpectraQL` in general
-supports the MassQL query schema is however case insensitive (i.e. both `query`
-and `QUERY` is accepted) and is insensitive to white spaces (i.e. both
-`RTMIN=10` and `RTMIN = 10` is supported). Also, it should be mentioned that at
-present not all keywords, filters and operations are supported by
-`SpectraQL`. The supported types of data, conditions and filters are listed in
-the sections below.
+supports the MassQL query schema is however case insensitive (i.e. both
+`"query"` and `"QUERY"` are accepted) and is insensitive to white spaces (i.e.
+both `"RTMIN=10"` and `"RTMIN = 10"` are supported). Also, it should be
+mentioned that at present not all keywords, filters and operations are supported
+by `SpectraQL`. The supported types of data, conditions and filters are listed
+in the sections below.
 
 ### Type of data
 
@@ -90,39 +90,54 @@ The `<type of data>` defines what should be returned by the `query`
 function. The types of data that are currently supported by `SpectraQL` are:
 
 - `"*"`: returns the full data, i.e. returns a `Spectra` object.
-- `"MS1DATA"` (case insensitive): returns MS1 data.
-- `"MS2DATA"` (case insensitive): returns MS2 data.
+- `"MS1DATA"` (case insensitive): returns (if no function is defined) the peaks
+  data for selected MS1 scans (i.e. a `list` of matrices with m/z and intensity
+  values).
+- `"MS2DATA"` (case insensitive): returns (if no function is defined) the peaks
+  data for selected MS2 scans (i.e. a `list` of matrices with m/z and intensity
+  values).
+
+In addition functions can be used to extract specific information from the
+spectra. `SpectraQL` supports at present the following functions defined by
+MassQL:
+
+- `"scaninfo"`: e.g. `"scaninfo(MS1DATA)"` or `"scaninfo(MS2DATA)"` to extract
+  spectra information for MS1 or MS2 scans, respectively. This returns the
+  `spectraData` for the sub-setted `Spectra` object.
+- `"scansum"`: e.g. `"scansum(MS1DATA)"` or `"scansum(MS2DATA)"` to extract the
+  TIC (sum of peak intensities) of the selected spectra.
 
 
 ### Condition
 
 The `<condition>` allows to subset a `Spectra` object. Several conditions can be
 combined with `"and"`. The syntax for a condition is `<condition> = <value>`,
-e.g. `MS2PROD = 144.1`. Such conditions can be further refined by additional
+e.g. `"MS2PROD = 144.1"`. Such conditions can be further refined by additional
 expressions that allow for example to define acceptable tolerances for m/z
 differences (see further below for details). `SpectraQL` supports the following
 conditions:
 
-- `RTMIN`: minimum retention time (in **seconds**).
-- `RTMAX`: maximum retention time (in **seconds**).
-- `SCANMIN`: the minimum scan number (acquisition number).
-- `SCANMAX`: the maximum scan number (acquisition number).
-- `CHARGE`: the charge for MS2 spectra.
-- `POLARITY`: the polarity of the spectra (can be `"positive"`, `"negative"`,
+- `"RTMIN"`: minimum retention time (in **seconds**).
+- `"RTMAX"`: maximum retention time (in **seconds**).
+- `"SCANMIN"`: the minimum scan number (acquisition number).
+- `"SCANMAX"`: the maximum scan number (acquisition number).
+- `"CHARGE"`: the charge for MS2 spectra.
+- `"POLARITY"`: the polarity of the spectra (can be `"positive"`, `"negative"`,
   `"pos"` or `"neg"`, case insensitive).
-- `MS2PROD`: allows to select MS2 spectra that contain a peak with a particular
-  m/z.
-- `MS2PREC`: allows to select MS2 spectra with the defined precursor m/z.
-- `MS1MZ`: allows to select MS1 spectra containing peaks with the defined m/z.
-- `MS2NL`: allows to look for a neutral loss from precursor in MS2 spectra.
+- `"MS2PROD"` or `"MS2MZ"`: allows to select MS2 spectra that contain a peak
+  with a particular m/z.
+- `"MS2PREC"`: allows to select MS2 spectra with the defined precursor m/z.
+- `"MS1MZ"`: allows to select MS1 spectra containing peaks with the defined m/z.
+- `"MS2NL"`: allows to look for a neutral loss from precursor in MS2 spectra.
 
 All conditions involving m/z values allow to specify a mass accuracy using the
-optional fields `TOLERANCEMZ` and `TOLERANCEPPM` that define the absolute
+optional fields `"TOLERANCEMZ"` and `"TOLERANCEPPM"` that define the absolute
 and m/z-relative acceptable difference in m/z values. One or both fields can be
-attached to a *condition* such as `MS2PREC=100:TOLERANCEMZ=0.1:TOLERANCEPPM=20`
-to select for example all MS2 spectra with a precursor m/z equal to 100
-accepting a difference of 0.1 and 20 ppm. Note that in contrast to MassQL, the
-default tolarance and ppm is 0 for all calls.
+attached to a *condition* such as
+`"MS2PREC=100:TOLERANCEMZ=0.1:TOLERANCEPPM=20"` to select for example all MS2
+spectra with a precursor m/z equal to 100 accepting a difference of 0.1 and 20
+ppm. Note that in contrast to MassQL, the default tolarance and ppm is 0 for all
+calls.
 
 ### Filter
 
@@ -131,8 +146,9 @@ Filters are currently not supported by `SpectraQL`.
 
 ### Differences of the `SpectraQL` implementation to the `MassQL` definition
 
-- Retention times (for `RTMIN`, `RTMAX`) are expressed in seconds, not minutes.
-- Default for `TOLERANCEMZ` is `0` instead of `0.1`.
+- Retention times (for `"RTMIN"`, `"RTMAX"`) are expressed in seconds, not
+  minutes.
+- Default for `"TOLERANCEMZ"` is `0` instead of `0.1`.
 
 ## Examples
 
@@ -148,8 +164,10 @@ table(msLevel(dda))
 range(rtime(dda))
 ```
 
+### Filtering and subsetting
+
 To restrict the data to spectra measured between 200 and 300 seconds of the
-measurement run we can use a MassQL query with the `rtmin` and `rtmax`
+measurement run we can use a MassQL query with the `"rtmin"` and `"rtmax"`
 conditions.
 
 ```{r}
@@ -165,39 +183,32 @@ object with all spectra measured between 200 and 300 seconds.
 range(rtime(dda_rt))
 ```
 
-While `"*"` returns all spectra, the data can be alternatively subsetted to
-either MS1 or MS2 level using `"MS1DATA"` or `"MS2DATA"` respectively. Below we
-restrict the query from above to return only MS2 spectra (note again that
-`SpectraQL` is case insensitive to key words or variable names).
-
-```{r}
-query(dda, "query ms2data where rtmin = 200 and rtmax = 300")
-```
-
 To restrict to MS2 spectra with their precursor m/z matching a certain value, we
-can use the `MS2PREC` condition. Conditions on m/z values support also accuracy
-specifications. Using `TOLERANCEMZ` and `TOLERANCEPPM` it is thus possible to
-define an absolute and m/z relative acceptable difference. Below we use such a
-condition to select MS2 spectra with a precursor m/z matching 278.093 with a
-tolerance of 0 and ppm of 20. Since `SpectraQL` is case insensitive, we write
-the full MassQL query in lower case below.
+can use the `"MS2PREC"` condition. Conditions on m/z values support also
+accuracy specifications. Using `"TOLERANCEMZ"` and `"TOLERANCEPPM"` it is thus
+possible to define an absolute and m/z relative acceptable difference. Below we
+use such a condition to select MS2 spectra with a precursor m/z matching 278.093
+with a tolerance of 0 and ppm of 20. Since `SpectraQL` is case insensitive, we
+write the full MassQL query in lower case below.
 
 ```{r}
-dda_rt <- query(dda_rt,
-                "query * where ms2prec = 278.093:toleancemz=0:toleranceppm=30")
-length(dda_rt)
-dda_rt
+dda_pmz <- query(
+    dda,
+    "query * where ms2prec = 278.093:toleancemz=0:toleranceppm=30")
+length(dda_pmz)
+dda_pmz
 ```
 
-We thus selected 3 spectra from the data set with a precursor m/z matching our
+We thus selected 9 spectra from the data set with a precursor m/z matching our
 filter criteria.
 
 ```{r}
-precursorMz(dda_rt)
+precursorMz(dda_pmz)
 ```
 
 We can obviously also combine the two queries into a single MassQL query. This
-time we also omit the `tolerancemz` field as we set that anyway to a value of 0.
+time we also omit the `"tolerancemz"` field as we set that anyway to a value of
+0.
 
 ```{r}
 dda_rt <- query(dda,
@@ -206,18 +217,56 @@ dda_rt <- query(dda,
 dda_rt
 ```
 
-For conditions `MS2PROD`, `MS2PREC` and `MS1MZ` it is also possible to provide
-multiple values to select spectra that match any of the provided m/z
-values. These values can be separated by `"OR"` (or `"or"`), `TOLERANCEPPM` and
-`TOLERANCEMZ` will be applied to each of these. Below we select all spectra that
-contain an (MS1) peak with an m/z matching any of the provided values.
+For conditions `"MS2PROD"`, `"MS2PREC"` and `"MS1MZ"` it is also possible to
+provide multiple values to select spectra that match any of the provided m/z
+values. These values can be separated by `"OR"` (or `"or"`), `"TOLERANCEPPM"`
+and `"TOLERANCEMZ"` will be applied to each of these. Below we select all
+spectra that contain an (MS1) peak with an m/z matching any of the provided
+values.
 
 ```{r}
 query(dda, "QUERY * WHERE MS1MZ = (123 OR 234.1 OR 300):TOLERANCEMZ=0.05")
 ```
 
-Note that using `MS1MZ` will return only MS1 spectra and `MS2PROD` and `MS2PREC`
-only MS2 spectra.
+Note that using `"MS1MZ"` will return only MS1 spectra and `"MS2PROD"`,
+`"MS2MZ"` and `"MS2PREC"` only MS2 spectra.
+
+
+### Choosing which data to return
+
+Thus far we uses `"*"` in all queries, which returns the result as a `Spectra`
+object. Alternatively, we can use `"MS1DATA"` or `"MS2DATA"` which will return
+the peak data for MS1 or MS2 spectra, respectively. The result is thus not a
+`Spectra` object, but a `list` of two-column matrices with the m/z and intensity
+values of all selected spectra. Below we use this to extract the peaks data for
+all MS2 spectra measured between 200 and 300 seconds.
+
+```{r}
+pks <- query(dda, "query ms2data where rtmin = 200 and rtmax = 300")
+length(pks)
+head(pks[[1L]])
+```
+
+We can in addition also use functions to extract only specific data from the
+result. `"scansum"` would for example return the sum of intensities per spectra
+and would thus allow to extract a total ion chromatogram:
+
+```{r}
+tic <- query(dda, "query scansum(ms1data)")
+```
+
+```{r}
+plot(tic, type = "l", xlab = "rtime")
+```
+
+The function `"scaninfo"` extracts all information from the selected
+spectra. For `SpectraQL` this means that the result from `spectraData` are
+returned:
+
+```{r}
+si <- query(dda, "query scaninfo(*) where rtmin = 300 and rtmax = 500")
+si
+```
 
 # Session information {-}
 
