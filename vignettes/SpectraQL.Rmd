@@ -128,7 +128,7 @@ conditions:
   with a particular m/z.
 - `"MS2PREC"`: allows to select MS2 spectra with the defined precursor m/z.
 - `"MS1MZ"`: allows to select MS1 spectra containing peaks with the defined m/z.
-- `MS2NL`: allows to look for a neutral loss from precursor in MS2 spectra.
+- `"MS2NL"`: allows to look for a neutral loss from precursor in MS2 spectra.
 
 All conditions involving m/z values allow to specify a mass accuracy using the
 optional fields `"TOLERANCEMZ"` and `"TOLERANCEPPM"` that define the absolute
