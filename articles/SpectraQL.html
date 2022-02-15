@@ -90,7 +90,7 @@ document.addEventListener("DOMContentLoaded", function() {
     if (links[i].hostname != window.location.hostname)
       links[i].target = '_blank';
 });
-</script><p><strong>Package</strong>: <em><a href="https://bioconductor.org/packages/3.15/SpectraQL" class="external-link">SpectraQL</a></em><br><strong>Authors</strong>: RforMassSpectrometry Package Maintainer [cre], Johannes Rainer [aut] (<a href="https://orcid.org/0000-0002-6977-7147" class="external-link uri">https://orcid.org/0000-0002-6977-7147</a>), Andrea Vicini [aut], Sebastian Gibb [ctb] (<a href="https://orcid.org/0000-0001-7406-4443" class="external-link uri">https://orcid.org/0000-0001-7406-4443</a>)<br><strong>Compiled</strong>: Mon Feb 14 11:33:59 2022</p>
+</script><p><strong>Package</strong>: <em><a href="https://bioconductor.org/packages/3.15/SpectraQL" class="external-link">SpectraQL</a></em><br><strong>Authors</strong>: RforMassSpectrometry Package Maintainer [cre], Johannes Rainer [aut] (<a href="https://orcid.org/0000-0002-6977-7147" class="external-link uri">https://orcid.org/0000-0002-6977-7147</a>), Andrea Vicini [aut], Sebastian Gibb [ctb] (<a href="https://orcid.org/0000-0001-7406-4443" class="external-link uri">https://orcid.org/0000-0001-7406-4443</a>)<br><strong>Compiled</strong>: Tue Feb 15 14:01:27 2022</p>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
@@ -220,7 +220,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <span class="co">## file(s):</span>
 <span class="co">## PestMix1_DDA.mzML</span>
 <span class="co">## Processing:</span>
-<span class="co">##  Filter: select retention time [200..300] on MS level(s) 1 2 [Mon Feb 14 11:34:02 2022]</span></code></pre>
+<span class="co">##  Filter: select retention time [200..300] on MS level(s) 1 2 [Tue Feb 15 14:01:31 2022]</span></code></pre>
 <p>Internally, <code>SpectraQL</code> translates the MassQL query into filter functions that are applied to the <code>Spectra</code> object. The returned result is now a <code>Spectra</code> object with all spectra measured between 200 and 300 seconds.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/range.html" class="external-link">range</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">rtime</a></span><span class="op">(</span><span class="va">dda_rt</span><span class="op">)</span><span class="op">)</span></code></pre></div>
@@ -251,7 +251,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <span class="co">## file(s):</span>
 <span class="co">## PestMix1_DDA.mzML</span>
 <span class="co">## Processing:</span>
-<span class="co">##  Filter: select spectra with precursor m/z matching 278.093 [Mon Feb 14 11:34:02 2022]</span></code></pre>
+<span class="co">##  Filter: select spectra with precursor m/z matching 278.093 [Tue Feb 15 14:01:31 2022]</span></code></pre>
 <p>We thus selected 9 spectra from the data set with a precursor m/z matching our filter criteria.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">precursorMz</a></span><span class="op">(</span><span class="va">dda_pmz</span><span class="op">)</span></code></pre></div>
@@ -274,8 +274,8 @@ document.addEventListener("DOMContentLoaded", function() {
 <span class="co">## file(s):</span>
 <span class="co">## PestMix1_DDA.mzML</span>
 <span class="co">## Processing:</span>
-<span class="co">##  Filter: select retention time [200..300] on MS level(s) 1 2 [Mon Feb 14 11:34:02 2022]</span>
-<span class="co">##  Filter: select spectra with precursor m/z matching 278.093 [Mon Feb 14 11:34:02 2022]</span></code></pre>
+<span class="co">##  Filter: select retention time [200..300] on MS level(s) 1 2 [Tue Feb 15 14:01:31 2022]</span>
+<span class="co">##  Filter: select spectra with precursor m/z matching 278.093 [Tue Feb 15 14:01:31 2022]</span></code></pre>
 <p>For conditions <code>"MS2PROD"</code>, <code>"MS2PREC"</code> and <code>"MS1MZ"</code> it is also possible to provide multiple values to select spectra that match any of the provided m/z values. These values can be separated by <code>"OR"</code> (or <code>"or"</code>), <code>"TOLERANCEPPM"</code> and <code>"TOLERANCEMZ"</code> will be applied to each of these. Below we select all spectra that contain an (MS1) peak with an m/z matching any of the provided values.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/query.html">query</a></span><span class="op">(</span><span class="va">dda</span>, <span class="st">"QUERY * WHERE MS1MZ = (123 OR 234.1 OR 300):TOLERANCEMZ=0.05"</span><span class="op">)</span></code></pre></div>
@@ -298,7 +298,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <span class="co">## file(s):</span>
 <span class="co">## PestMix1_DDA.mzML</span>
 <span class="co">## Processing:</span>
-<span class="co">##  Filter: select MS level(s) 1 [Mon Feb 14 11:34:02 2022]</span></code></pre>
+<span class="co">##  Filter: select MS level(s) 1 [Tue Feb 15 14:01:31 2022]</span></code></pre>
 <p>Note that using <code>"MS1MZ"</code> will return only MS1 spectra and <code>"MS2PROD"</code>, <code>"MS2MZ"</code> and <code>"MS2PREC"</code> only MS2 spectra.</p>
 </div>
 <div class="section level4">
