@@ -1,5 +1,9 @@
 # SpectraQL 0.98
 
+## Changes in 0.98.4
+
+- Add support for `"FILTER MS1MZ"` and `"FILTER MS2MZ"`.
+
 ## Changes in 0.98.3
 
 - Fix `MS1DATA` and `MS2DATA` to return only peaks data.

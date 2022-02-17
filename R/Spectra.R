@@ -11,8 +11,8 @@
 #' [MassQL](https://mwang87.github.io/MassQueryLanguage_Documentation/)
 #' expression.
 #'
-#' A MassQL query is expressed in the form `QUERY <type of data> WHERE
-#' <condition> AND <condition> FILTER <filter> AND <filter>`, multiple
+#' A MassQL query is expressed in the form `"QUERY <type of data> WHERE
+#' <condition> AND <condition> FILTER <filter> AND <filter>"`, multiple
 #' *conditions* and *filters* can be combined with logical *and* operations. In
 #' the MassQL definition, *conditions* subsets the data to specific spectra
 #' while *filter* restricts the data within a spectrum. Note that at present
@@ -23,55 +23,57 @@
 #'
 #' @section Type of data:
 #'
-#' The `<type of data>` allows to define which data should be extracted from
-#' the selected spectra. MassQL defines *type of data* being `MS1DATA` or
-#' `MS2DATA` to retrieve data from MS1 or MS2 scans. By default peak data will
+#' The `"<type of data>"` allows to define which data should be extracted from
+#' the selected spectra. MassQL defines *type of data* being `"MS1DATA"` or
+#' `"MS2DATA"` to retrieve data from MS1 or MS2 scans. By default peak data will
 #' be returned, but in addition, MASSQL defines additional functions that can
 #' be applied to modify the data or select different data to be returned. In
-#' addition `SpectraQL` defines the special type of data `*` which will return
+#' addition `SpectraQL` defines the special type of data `"*"` which will return
 #' the results as a `Spectra` object. `SpectraQL` supports:
 #'
-#' - `*`: select all data and return the data subset as a [Spectra()] object.
-#' - `MS1DATA`: return the [peaksData()] from all selected **MS1** spectra,
+#' - `"*"`: select all data and return the data subset as a [Spectra()] object.
+#' - `"MS1DATA"`: return the [peaksData()] from all selected **MS1** spectra,
 #'   i.e. a `list` with two column matrices with the peaks' m/z and intensity
 #'   values.
-#' - `MS2DATA`: return the [peaksData()] from all selected **MS2** spectra,
+#' - `"MS2DATA"`: return the [peaksData()] from all selected **MS2** spectra,
 #'   i.e. a `list` with two column matrices with the peaks' m/z and intensity
 #'   values.
-#' - `scaninfo(MS1DATA)`, `scaninfo(MS2DATA)`: return the [spectraData()] of all
-#'   selected spectra.
-#' - `scansum(MS1DATA)`, `scansum(MS2DATA)`: sum of the peak intensities of
-#'   the selected spectra (TIC).
+#' - `"scaninfo(MS1DATA)"`, `"scaninfo(MS2DATA)"`: return the [spectraData()]
+#'   of all selected spectra.
+#' - `"scansum(MS1DATA)"`, `"scansum(MS2DATA)"`: sum of the peak intensities of
+#'   the selected spectra (TIC, or XIC if combined with `"FILTER"`).
 #'
 #' @section Conditions:
 #'
-#' Conditions define to which spectra the data set should be subsetted. Several
+#' Conditions define to which spectra the data set should be subsetted. A
+#' *condition* will subset a `Spectra` object to selected spectra, but will not
+#' (unlike *Filters*, see further below) filter peaks from a spectrum. Several
 #' conditions can be combined with `"and"` (case insensitive). The syntax for a
-#' condition is `<condition> = <value>`, e.g. `MS2PROD = 144.1`. Such conditions
-#' can be further refined by additional expressions that allow for example to
-#' define acceptable tolerances for m/z differences. `SpectraQL` supports (case
-#' insensitive):
+#' condition is `"<condition> = <value>"`, e.g. `"MS2PROD = 144.1"`. Such
+#' conditions can be further refined by additional expressions that allow for
+#' example to define acceptable tolerances for m/z differences. `SpectraQL`
+#' supports (case insensitive):
 #'
-#' - `RTMIN`: minimum retention time (in **seconds**).
-#' - `RTMAX`: maximum retention time (in **seconds**).
-#' - `SCANMIN`: the minimum scan number (acquisition number).
-#' - `SCANMAX`: the maximum scan number (acquisition number).
-#' - `CHARGE`: the charge for MS2 spectra.
-#' - `POLARITY`: the polarity of the spectra (can be `"positive"`, `"negative"`,
-#'   `"pos"` or `"neg"`, case insensitive).
-#' - `MS2PROD` or MS2MZ`: allows to select MS2 spectra that contain a peak with
-#'   particular m/z value(s). See below for examples.
-#' - `MS2PREC`: allows to select MS2 spectra with the defined precursor m/z
+#' - `"RTMIN"`: minimum retention time (in **seconds**).
+#' - `"RTMAX"`: maximum retention time (in **seconds**).
+#' - `"SCANMIN"`: the minimum scan number (acquisition number).
+#' - `"SCANMAX"`: the maximum scan number (acquisition number).
+#' - `"CHARGE"`: the charge for MS2 spectra.
+#' - `"POLARITY"`: the polarity of the spectra (can be `"positive"`,
+#'   `"negative"`, `"pos"` or `"neg"`, case insensitive).
+#' - `"MS2PROD"` or `"MS2MZ"`: allows to select MS2 spectra that contain a peak
+#'   with particular m/z value(s). See below for examples.
+#' - `"MS2PREC"`: allows to select MS2 spectra with the defined precursor m/z
 #'   value(s). See below for examples.
-#' - `MS1MZ`: allows to select MS1 spectra containing peak(s) with the defined
+#' - `"MS1MZ"`: allows to select MS1 spectra containing peak(s) with the defined
 #'   m/z value(s).
-#' - `MS2NL`: allows to look for a neutral loss from precursor in MS2 spectra.
+#' - `"MS2NL"`: allows to look for a neutral loss from precursor in MS2 spectra.
 #'
 #' All conditions involving m/z values allow to specify a mass accuracy using
-#' the optional fields `TOLERANCEMZ` and `TOLERANCEPPM` that define the absolute
-#' and m/z-relative acceptable difference in m/z values. One or both fields can
-#' be attached to a *condition* such as
-#' `MS2PREC=100:TOLERANCEMZ=0.1:TOLERANCEPPM=20` to select for example all
+#' the optional fields `"TOLERANCEMZ"` and `"TOLERANCEPPM"` that define the
+#' absolute and m/z-relative acceptable difference in m/z values. One or both
+#' fields can be attached to a *condition* such as
+#' `"MS2PREC=100:TOLERANCEMZ=0.1:TOLERANCEPPM=20"` to select for example all
 #' MS2 spectra with a precursor m/z equal to 100 accepting a difference of 0.1
 #' and 20 ppm. Note that in contrast to MassQL, the default tolarance and ppm
 #' is 0 for all calls.
@@ -79,7 +81,14 @@
 #' @section Filters:
 #'
 #' Filters subset the data within spectra, i.e. select which peaks within
-#' spectra should be retrieved. `SpectraQL` does not support filters yet.
+#' spectra should be retrieved. `SpectraQL` supports the following filters:
+#'
+#' - `"MS1MZ"`: filters MS1 spectra keeping only peaks with matching m/z values
+#'   (tolerance can be specified with `"TOLERANCEMZ"` and `"TOLERANCEPPM"` as
+#'   for conditions).
+#' - `"MS2MZ"`: filters MS2 spectra keeping only peaks with matching m/z values
+#'   (tolerance can be specified with `"TOLERANCEMZ"` and `"TOLERANCEPPM"` as
+#'   for conditions).
 #'
 #' @param x The `Spectra` object to query.
 #'
@@ -172,7 +181,9 @@ setMethod("query", "Spectra", function(x, query = character(), ...) {
 #'
 #' @noRd
 .query_spectra <- function(x, query = character(), ...) {
-    flt <- .query_to_filters(query)
+    flt <- .query_to_filters(.where(query))
+    flt <- c(flt, .query_to_filters(.filter(query), MAP = .FILTER_FUNCTIONS,
+                                    label = "Filter"))
     for (pstep in flt)
         x <- do.call(pstep@FUN, args = c(list(x), pstep@ARGS))
     x
