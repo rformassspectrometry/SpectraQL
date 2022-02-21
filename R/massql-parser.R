@@ -13,9 +13,13 @@
 #' @noRd
 NULL
 
-#' *Translate* MassQL query to filter functions.
+#' *Translate* MassQL query to filter functions. This function works both for
+#' "conditions" (WHERE MS2MZ= ...) as well as "filters" (FILTER MS1MZ = ).
 #'
-#' @param x `character` with the MassQL query.
+#' @param x result from a call to `.where(<query>)` or `.filter(<query>)`
+#'
+#' @param MAP defines how conditions or filters should be translated to filter
+#'     functions.
 #'
 #' @return `list` with `ProcessingStep` objects, each representing one filter
 #'     for a `Spectra` object.
@@ -23,16 +27,17 @@ NULL
 #' @author Johannes Rainer
 #'
 #' @noRd
-.query_to_filters <- function(x) {
-    qry <- lapply(.where(x), .parse_where)
+.query_to_filters <- function(x, MAP = .CONDITION_FUNCTIONS,
+                              label = "Condition") {
+    qry <- lapply(x, .parse_where)
     names(qry) <- vapply(qry, function(z) names(z)[1], character(1))
     qry <- .group_min_max(qry, name = "SCAN")
     qry <- .group_min_max(qry, name = "RT")
     res <- vector("list", length = length(qry))
     for (i in seq_along(qry)) {
-        fun <- .CONDITION_FUNCTIONS[names(qry)[i]]
+        fun <- MAP[names(qry)[i]]
         if (is.na(fun) | length(fun) == 0)
-            stop("Condition '", names(qry)[i], "' not supported.")
+            stop(label, " '", names(qry)[i], "' not supported.")
         res[[i]] <- do.call(fun, qry[i])
     }
     res[lengths(res) > 0]
@@ -208,15 +213,15 @@ NULL
 #'
 #' @noRd
 .CONDITION_FUNCTIONS <- c(
-    RT = ".translate_filter_rt",
-    SCAN = ".translate_filter_scan",
-    CHARGE = ".translate_filter_charge",
-    POLARITY = ".translate_filter_polarity",
-    MS2PROD = ".translate_filter_ms2prod",
-    MS2MZ = ".translate_filter_ms2prod",
-    MS2PREC = ".translate_filter_ms2prec",
-    MS1MZ = ".translate_filter_ms1mz",
-    MS2NL = ".translate_filter_ms2nl"
+    RT = ".translate_condition_rt",
+    SCAN = ".translate_condition_scan",
+    CHARGE = ".translate_condition_charge",
+    POLARITY = ".translate_condition_polarity",
+    MS2PROD = ".translate_condition_ms2prod",
+    MS2MZ = ".translate_condition_ms2prod",
+    MS2PREC = ".translate_condition_ms2prec",
+    MS1MZ = ".translate_condition_ms1mz",
+    MS2NL = ".translate_condition_ms2nl"
 )
 
 #' Convert the RT condition to a `ProcessingStep` with a filter function
@@ -233,7 +238,7 @@ NULL
 #' @importFrom Spectra filterRt
 #'
 #' @noRd
-.translate_filter_rt <- function(...) {
+.translate_condition_rt <- function(...) {
     parms <- list(...)[[1L]]
     rtmin <- -Inf
     rtmax <- Inf
@@ -256,7 +261,7 @@ NULL
 #' @importMethodsFrom Spectra acquisitionNum
 #'
 #' @noRd
-.translate_filter_scan <- function(...) {
+.translate_condition_scan <- function(...) {
     parms <- list(...)[[1L]]
     scan_min <- -Inf
     scan_max <- Inf
@@ -281,7 +286,7 @@ NULL
 #' @importFrom Spectra filterPrecursorCharge
 #'
 #' @noRd
-.translate_filter_charge <- function(...) {
+.translate_condition_charge <- function(...) {
     parms <- list(...)[[1L]]
     charge <- integer(0)
     if (any(names(parms) == "CHARGE")) {
@@ -300,7 +305,7 @@ NULL
 #' @importFrom Spectra filterPolarity
 #'
 #' @noRd
-.translate_filter_polarity <- function(...) {
+.translate_condition_polarity <- function(...) {
     parms <- list(...)[[1L]]
     polarity <- numeric(0)
     if (any(names(parms) == "POLARITY")) {
@@ -313,12 +318,12 @@ NULL
     ProcessingStep(filterPolarity, ARGS = list(polarity = polarity))
 }
 
-.translate_filter_ms2prod <- function(...) {
-    .translate_filter_peak_mz(..., msLevel = 2L, value = "MS2PROD")
+.translate_condition_ms2prod <- function(...) {
+    .translate_condition_peak_mz(..., msLevel = 2L, value = "MS2PROD")
 }
 
-.translate_filter_ms1mz <- function(...) {
-    .translate_filter_peak_mz(..., msLevel = 1L, value = "MS1MZ")
+.translate_condition_ms1mz <- function(...) {
+    .translate_condition_peak_mz(..., msLevel = 1L, value = "MS1MZ")
 }
 
 #' Filter a `Spectra` based on MS2 peak.
@@ -328,12 +333,8 @@ NULL
 #' @importFrom Spectra containsMz
 #'
 #' @noRd
-.translate_filter_peak_mz <- function(..., msLevel = 2L, value = "MS2PROD") {
+.translate_condition_peak_mz <- function(..., msLevel = 2L, value = "MS2PROD") {
     parms <- list(...)[[1L]]
-    if (any(names(parms) == "msLevel"))
-        stop("Got msLevel in parms")
-    if (any(names(parms) == "value"))
-        stop("Got value in parms")
     pmz <- numeric(0)
     ppm <- 0
     tolerance <- 0
@@ -367,7 +368,7 @@ NULL
 #' @importMethodsFrom Spectra filterPrecursorMzValues
 #'
 #' @noRd
-.translate_filter_ms2prec <- function(...) {
+.translate_condition_ms2prec <- function(...) {
     parms <- list(...)[[1L]]
     pmz <- numeric()
     ppm <- 0
@@ -397,7 +398,7 @@ NULL
 #' @importMethodsFrom Spectra containsNeutralLoss
 #'
 #' @noRd
-.translate_filter_ms2nl <- function(...) {
+.translate_condition_ms2nl <- function(...) {
     parms <- list(...)[[1L]]
     nl <- numeric(0)
     ppm <- 0
@@ -429,4 +430,62 @@ NULL
 .parse_or <- function(x) {
     unlist(strsplit(gsub("^\\s+|\\s+$|\\(\\s*|\\s*\\)", "",
                          gsub("\\s+", " ", x)), split = " (OR|or) "))
+}
+
+#' filter(s): everything between FILTER and end of line or WHERE (?).
+#' individual filters are additionally split by `AND`.
+#'
+#' @author Johannes Rainer
+#'
+#' @noRd
+.filter <- function(x) {
+    res <- sub(".*?filter[[:space:]]*(.*?)[[:space:]]*(where.*|$)",
+               "\\1", x, ignore.case = TRUE)
+    res[res == x] <- NA_character_
+    res <- unlist(strsplit(res, split = "[[:space:]]*(and|AND)[[:space:]]*"))
+    res[nchar(res) > 0 & !is.na(res)]
+}
+
+.FILTER_FUNCTIONS <- c(
+    MS2MZ = ".translate_filter_ms2mz",
+    MS1MZ = ".translate_filter_ms1mz"
+)
+
+.translate_filter_ms2mz <- function(...) {
+    .translate_filter_mz_value(..., msLevel = 2L, value = "MS2MZ")
+}
+
+.translate_filter_ms1mz <- function(...) {
+    .translate_filter_mz_value(..., msLevel = 1L, value = "MS1MZ")
+}
+
+#' Filter a `Spectra` using the filterMzValue function.
+#'
+#' @author Johannes Rainer
+#'
+#' @importFrom Spectra filterMzValues
+#'
+#' @noRd
+.translate_filter_mz_value <- function(..., msLevel = 2L, value = "MS2MZ") {
+    parms <- list(...)[[1L]]
+    mz <- numeric(0)
+    ppm <- 0
+    tolerance <- 0
+    if (any(names(parms) == value))
+        mz <- as.numeric(.parse_or(parms[value]))
+    if(anyNA(mz))
+        stop("Missing or non-numeric value(s) for '", value, "'")
+    if (any(names(parms) == "TOLERANCEMZ"))
+        tolerance <- as.numeric(parms["TOLERANCEMZ"])
+    if(is.na(tolerance))
+        stop("Non-numeric value for 'TOLERANCEMZ'")
+    if (any(names(parms) == "TOLERANCEPPM"))
+        ppm <- as.numeric(parms["TOLERANCEPPM"])
+    if(is.na(ppm))
+        stop("Non-numeric value for 'TOLERANCEPPM'")
+    if (length(mz))
+        ProcessingStep(
+            filterMzValues, ARGS = list(mz = mz, tolerance = tolerance,
+                                        ppm = ppm, msLevel. = msLevel))
+    else ProcessingStep(identity)
 }

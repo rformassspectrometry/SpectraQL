@@ -23,7 +23,7 @@ using a Mass Spec Query Language
 \href{https://mwang87.github.io/MassQueryLanguage_Documentation/}{MassQL}
 expression.
 
-A MassQL query is expressed in the form \verb{QUERY <type of data> WHERE <condition> AND <condition> FILTER <filter> AND <filter>}, multiple
+A MassQL query is expressed in the form \code{"QUERY <type of data> WHERE <condition> AND <condition> FILTER <filter> AND <filter>"}, multiple
 \emph{conditions} and \emph{filters} can be combined with logical \emph{and} operations. In
 the MassQL definition, \emph{conditions} subsets the data to specific spectra
 while \emph{filter} restricts the data within a spectrum. Note that at present
@@ -35,59 +35,61 @@ See also the package vignette for more details.
 \section{Type of data}{
 
 
-The \verb{<type of data>} allows to define which data should be extracted from
-the selected spectra. MassQL defines \emph{type of data} being \code{MS1DATA} or
-\code{MS2DATA} to retrieve data from MS1 or MS2 scans. By default peak data will
+The \code{"<type of data>"} allows to define which data should be extracted from
+the selected spectra. MassQL defines \emph{type of data} being \code{"MS1DATA"} or
+\code{"MS2DATA"} to retrieve data from MS1 or MS2 scans. By default peak data will
 be returned, but in addition, MASSQL defines additional functions that can
 be applied to modify the data or select different data to be returned. In
-addition \code{SpectraQL} defines the special type of data \code{*} which will return
+addition \code{SpectraQL} defines the special type of data \code{"*"} which will return
 the results as a \code{Spectra} object. \code{SpectraQL} supports:
 \itemize{
-\item \code{*}: select all data and return the data subset as a \code{\link[=Spectra]{Spectra()}} object.
-\item \code{MS1DATA}: return the \code{\link[=peaksData]{peaksData()}} from all selected \strong{MS1} spectra,
+\item \code{"*"}: select all data and return the data subset as a \code{\link[=Spectra]{Spectra()}} object.
+\item \code{"MS1DATA"}: return the \code{\link[=peaksData]{peaksData()}} from all selected \strong{MS1} spectra,
 i.e. a \code{list} with two column matrices with the peaks' m/z and intensity
 values.
-\item \code{MS2DATA}: return the \code{\link[=peaksData]{peaksData()}} from all selected \strong{MS2} spectra,
+\item \code{"MS2DATA"}: return the \code{\link[=peaksData]{peaksData()}} from all selected \strong{MS2} spectra,
 i.e. a \code{list} with two column matrices with the peaks' m/z and intensity
 values.
-\item \code{scaninfo(MS1DATA)}, \code{scaninfo(MS2DATA)}: return the \code{\link[=spectraData]{spectraData()}} of all
-selected spectra.
-\item \code{scansum(MS1DATA)}, \code{scansum(MS2DATA)}: sum of the peak intensities of
-the selected spectra (TIC).
+\item \code{"scaninfo(MS1DATA)"}, \code{"scaninfo(MS2DATA)"}: return the \code{\link[=spectraData]{spectraData()}}
+of all selected spectra.
+\item \code{"scansum(MS1DATA)"}, \code{"scansum(MS2DATA)"}: sum of the peak intensities of
+the selected spectra (TIC, or XIC if combined with \code{"FILTER"}).
 }
 }
 
 \section{Conditions}{
 
 
-Conditions define to which spectra the data set should be subsetted. Several
+Conditions define to which spectra the data set should be subsetted. A
+\emph{condition} will subset a \code{Spectra} object to selected spectra, but will not
+(unlike \emph{Filters}, see further below) filter peaks from a spectrum. Several
 conditions can be combined with \code{"and"} (case insensitive). The syntax for a
-condition is \verb{<condition> = <value>}, e.g. \code{MS2PROD = 144.1}. Such conditions
-can be further refined by additional expressions that allow for example to
-define acceptable tolerances for m/z differences. \code{SpectraQL} supports (case
-insensitive):
+condition is \code{"<condition> = <value>"}, e.g. \code{"MS2PROD = 144.1"}. Such
+conditions can be further refined by additional expressions that allow for
+example to define acceptable tolerances for m/z differences. \code{SpectraQL}
+supports (case insensitive):
 \itemize{
-\item \code{RTMIN}: minimum retention time (in \strong{seconds}).
-\item \code{RTMAX}: maximum retention time (in \strong{seconds}).
-\item \code{SCANMIN}: the minimum scan number (acquisition number).
-\item \code{SCANMAX}: the maximum scan number (acquisition number).
-\item \code{CHARGE}: the charge for MS2 spectra.
-\item \code{POLARITY}: the polarity of the spectra (can be \code{"positive"}, \code{"negative"},
-\code{"pos"} or \code{"neg"}, case insensitive).
-\item \code{MS2PROD} or MS2MZ`: allows to select MS2 spectra that contain a peak with
-particular m/z value(s). See below for examples.
-\item \code{MS2PREC}: allows to select MS2 spectra with the defined precursor m/z
+\item \code{"RTMIN"}: minimum retention time (in \strong{seconds}).
+\item \code{"RTMAX"}: maximum retention time (in \strong{seconds}).
+\item \code{"SCANMIN"}: the minimum scan number (acquisition number).
+\item \code{"SCANMAX"}: the maximum scan number (acquisition number).
+\item \code{"CHARGE"}: the charge for MS2 spectra.
+\item \code{"POLARITY"}: the polarity of the spectra (can be \code{"positive"},
+\code{"negative"}, \code{"pos"} or \code{"neg"}, case insensitive).
+\item \code{"MS2PROD"} or \code{"MS2MZ"}: allows to select MS2 spectra that contain a peak
+with particular m/z value(s). See below for examples.
+\item \code{"MS2PREC"}: allows to select MS2 spectra with the defined precursor m/z
 value(s). See below for examples.
-\item \code{MS1MZ}: allows to select MS1 spectra containing peak(s) with the defined
+\item \code{"MS1MZ"}: allows to select MS1 spectra containing peak(s) with the defined
 m/z value(s).
-\item \code{MS2NL}: allows to look for a neutral loss from precursor in MS2 spectra.
+\item \code{"MS2NL"}: allows to look for a neutral loss from precursor in MS2 spectra.
 }
 
 All conditions involving m/z values allow to specify a mass accuracy using
-the optional fields \code{TOLERANCEMZ} and \code{TOLERANCEPPM} that define the absolute
-and m/z-relative acceptable difference in m/z values. One or both fields can
-be attached to a \emph{condition} such as
-\code{MS2PREC=100:TOLERANCEMZ=0.1:TOLERANCEPPM=20} to select for example all
+the optional fields \code{"TOLERANCEMZ"} and \code{"TOLERANCEPPM"} that define the
+absolute and m/z-relative acceptable difference in m/z values. One or both
+fields can be attached to a \emph{condition} such as
+\code{"MS2PREC=100:TOLERANCEMZ=0.1:TOLERANCEPPM=20"} to select for example all
 MS2 spectra with a precursor m/z equal to 100 accepting a difference of 0.1
 and 20 ppm. Note that in contrast to MassQL, the default tolarance and ppm
 is 0 for all calls.
@@ -97,7 +99,15 @@ is 0 for all calls.
 
 
 Filters subset the data within spectra, i.e. select which peaks within
-spectra should be retrieved. \code{SpectraQL} does not support filters yet.
+spectra should be retrieved. \code{SpectraQL} supports the following filters:
+\itemize{
+\item \code{"MS1MZ"}: filters MS1 spectra keeping only peaks with matching m/z values
+(tolerance can be specified with \code{"TOLERANCEMZ"} and \code{"TOLERANCEPPM"} as
+for conditions).
+\item \code{"MS2MZ"}: filters MS2 spectra keeping only peaks with matching m/z values
+(tolerance can be specified with \code{"TOLERANCEMZ"} and \code{"TOLERANCEPPM"} as
+for conditions).
+}
 }
 
 \examples{
