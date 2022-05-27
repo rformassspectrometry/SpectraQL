@@ -93,7 +93,7 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 </script><p><strong>Package</strong>: <em><a href="https://bioconductor.org/packages/3.15/SpectraQL" class="external-link">SpectraQL</a></em><br><strong>Authors</strong>: RforMassSpectrometry Package Maintainer [cre],
 Johannes Rainer [aut] (<a href="https://orcid.org/0000-0002-6977-7147" class="external-link uri">https://orcid.org/0000-0002-6977-7147</a>), Andrea Vicini
-[aut], Sebastian Gibb [ctb] (<a href="https://orcid.org/0000-0001-7406-4443" class="external-link uri">https://orcid.org/0000-0001-7406-4443</a>)<br><strong>Compiled</strong>: Mon Feb 21 13:31:10 2022</p>
+[aut], Sebastian Gibb [ctb] (<a href="https://orcid.org/0000-0001-7406-4443" class="external-link uri">https://orcid.org/0000-0001-7406-4443</a>)<br><strong>Compiled</strong>: Fri May 27 12:12:44 2022</p>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
@@ -320,7 +320,7 @@ of the measurement run we can use a MassQL query with the
 <span class="co">## file(s):</span>
 <span class="co">## PestMix1_DDA.mzML</span>
 <span class="co">## Processing:</span>
-<span class="co">##  Filter: select retention time [200..300] on MS level(s) 1 2 [Mon Feb 21 13:31:14 2022]</span></code></pre>
+<span class="co">##  Filter: select retention time [200..300] on MS level(s) 1 2 [Fri May 27 12:12:48 2022]</span></code></pre>
 <p>Internally, <code>SpectraQL</code> translates the MassQL query into
 filter functions that are applied to the <code>Spectra</code> object.
 The returned result is now a <code>Spectra</code> object with all
@@ -362,7 +362,7 @@ query in lower case below.</p>
 <span class="co">## file(s):</span>
 <span class="co">## PestMix1_DDA.mzML</span>
 <span class="co">## Processing:</span>
-<span class="co">##  Filter: select spectra with precursor m/z matching 278.093 [Mon Feb 21 13:31:14 2022]</span></code></pre>
+<span class="co">##  Filter: select spectra with precursor m/z matching 278.093 [Fri May 27 12:12:48 2022]</span></code></pre>
 <p>We thus selected 9 spectra from the data set with a precursor m/z
 matching our filter criteria.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
@@ -388,8 +388,8 @@ set that anyway to a value of 0.</p>
 <span class="co">## file(s):</span>
 <span class="co">## PestMix1_DDA.mzML</span>
 <span class="co">## Processing:</span>
-<span class="co">##  Filter: select retention time [200..300] on MS level(s) 1 2 [Mon Feb 21 13:31:14 2022]</span>
-<span class="co">##  Filter: select spectra with precursor m/z matching 278.093 [Mon Feb 21 13:31:14 2022]</span></code></pre>
+<span class="co">##  Filter: select retention time [200..300] on MS level(s) 1 2 [Fri May 27 12:12:48 2022]</span>
+<span class="co">##  Filter: select spectra with precursor m/z matching 278.093 [Fri May 27 12:12:48 2022]</span></code></pre>
 <p>For conditions <code>"MS2PROD"</code>, <code>"MS2PREC"</code> and
 <code>"MS1MZ"</code> it is also possible to provide multiple values to
 select spectra that match any of the provided m/z values. These values
@@ -418,7 +418,7 @@ applied to each of these. Below we select all spectra that contain an
 <span class="co">## file(s):</span>
 <span class="co">## PestMix1_DDA.mzML</span>
 <span class="co">## Processing:</span>
-<span class="co">##  Filter: select MS level(s) 1 [Mon Feb 21 13:31:14 2022]</span></code></pre>
+<span class="co">##  Filter: select MS level(s) 1 [Fri May 27 12:12:48 2022]</span></code></pre>
 <p>Note that using <code>"MS1MZ"</code> will return only MS1 spectra and
 <code>"MS2PROD"</code>, <code>"MS2MZ"</code> and <code>"MS2PREC"</code>
 only MS2 spectra.</p>
@@ -623,12 +623,13 @@ MassQL query into the following combination of function calls:</p>
 <div class="section level2">
 <h2 class="unnumbered" id="session-information">Session information<a class="anchor" aria-label="anchor" href="#session-information"></a>
 </h2>
-<pre><code><span class="co">## R Under development (unstable) (2022-02-17 r81757)</span>
+<pre><code><span class="co">## R version 4.2.0 (2022-04-22)</span>
 <span class="co">## Platform: x86_64-pc-linux-gnu (64-bit)</span>
-<span class="co">## Running under: Ubuntu 20.04.3 LTS</span>
+<span class="co">## Running under: Ubuntu 20.04.4 LTS</span>
 <span class="co">## </span>
 <span class="co">## Matrix products: default</span>
-<span class="co">## BLAS/LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.8.so</span>
+<span class="co">## BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3</span>
+<span class="co">## LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/liblapack.so.3</span>
 <span class="co">## </span>
 <span class="co">## locale:</span>
 <span class="co">##  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              </span>
@@ -643,26 +644,26 @@ MassQL query into the following combination of function calls:</p>
 <span class="co">## [8] base     </span>
 <span class="co">## </span>
 <span class="co">## other attached packages:</span>
-<span class="co">## [1] msdata_0.35.2        SpectraQL_0.98.4     Spectra_1.5.10      </span>
-<span class="co">## [4] ProtGenerics_1.27.2  BiocParallel_1.29.12 S4Vectors_0.33.10   </span>
-<span class="co">## [7] BiocGenerics_0.41.2  BiocStyle_2.23.1    </span>
+<span class="co">## [1] msdata_0.36.0       SpectraQL_0.98.4    Spectra_1.6.0      </span>
+<span class="co">## [4] ProtGenerics_1.27.2 BiocParallel_1.30.2 S4Vectors_0.34.0   </span>
+<span class="co">## [7] BiocGenerics_0.42.0 BiocStyle_2.24.0   </span>
 <span class="co">## </span>
 <span class="co">## loaded via a namespace (and not attached):</span>
-<span class="co">##  [1] Rcpp_1.0.8          highr_0.9           bslib_0.3.1        </span>
-<span class="co">##  [4] compiler_4.2.0      BiocManager_1.30.16 jquerylib_0.1.4    </span>
+<span class="co">##  [1] Rcpp_1.0.8.3        highr_0.9           bslib_0.3.1        </span>
+<span class="co">##  [4] compiler_4.2.0      BiocManager_1.30.18 jquerylib_0.1.4    </span>
 <span class="co">##  [7] tools_4.2.0         ncdf4_1.19          digest_0.6.29      </span>
-<span class="co">## [10] clue_0.3-60         jsonlite_1.7.3      evaluate_0.15      </span>
-<span class="co">## [13] memoise_2.0.1       rlang_1.0.1         cli_3.2.0          </span>
-<span class="co">## [16] yaml_2.3.5          parallel_4.2.0      pkgdown_2.0.2.9000 </span>
-<span class="co">## [19] xfun_0.29           fastmap_1.1.0       cluster_2.1.2      </span>
-<span class="co">## [22] stringr_1.4.0       knitr_1.37          desc_1.4.0         </span>
-<span class="co">## [25] fs_1.5.2            sass_0.4.0          systemfonts_1.0.4  </span>
-<span class="co">## [28] IRanges_2.29.1      MsCoreUtils_1.7.3   rprojroot_2.0.2    </span>
-<span class="co">## [31] Biobase_2.55.0      R6_2.5.1            textshaping_0.3.6  </span>
-<span class="co">## [34] rmarkdown_2.11      bookdown_0.24       mzR_2.29.3         </span>
-<span class="co">## [37] purrr_0.3.4         magrittr_2.0.2      codetools_0.2-18   </span>
-<span class="co">## [40] htmltools_0.5.2     MASS_7.3-55         ragg_1.2.2         </span>
-<span class="co">## [43] stringi_1.7.6       cachem_1.0.6        crayon_1.5.0</span></code></pre>
+<span class="co">## [10] jsonlite_1.8.0      evaluate_0.15       memoise_2.0.1      </span>
+<span class="co">## [13] clue_0.3-60         rlang_1.0.2         cli_3.3.0          </span>
+<span class="co">## [16] yaml_2.3.5          parallel_4.2.0      pkgdown_2.0.3.9000 </span>
+<span class="co">## [19] xfun_0.31           fastmap_1.1.0       cluster_2.1.3      </span>
+<span class="co">## [22] stringr_1.4.0       knitr_1.39          desc_1.4.1         </span>
+<span class="co">## [25] fs_1.5.2            sass_0.4.1          systemfonts_1.0.4  </span>
+<span class="co">## [28] IRanges_2.30.0      MsCoreUtils_1.8.0   rprojroot_2.0.3    </span>
+<span class="co">## [31] Biobase_2.56.0      R6_2.5.1            textshaping_0.3.6  </span>
+<span class="co">## [34] rmarkdown_2.14      bookdown_0.26       mzR_2.30.0         </span>
+<span class="co">## [37] purrr_0.3.4         magrittr_2.0.3      codetools_0.2-18   </span>
+<span class="co">## [40] htmltools_0.5.2     MASS_7.3-57         ragg_1.2.2         </span>
+<span class="co">## [43] stringi_1.7.6       cachem_1.0.6</span></code></pre>
 </div>
   </div>
 
@@ -678,14 +679,12 @@ MassQL query into the following combination of function calls:</p>
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by RforMassSpectrometry Package Maintainer, Johannes
-Rainer, Andrea Vicini.</p>
+<p>Developed by RforMassSpectrometry Package Maintainer, Johannes Rainer, Andrea Vicini.</p>
 </div>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
-2.0.2.9000.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.9000.</p>
 </div>
 
       </footer>

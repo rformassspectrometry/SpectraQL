@@ -227,7 +227,7 @@ for conditions).</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> file(s):</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> PestMix1_DDA.mzML</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Filter: select retention time [300..400] on MS level(s) 1 2 [Mon Feb 21 13:31:04 2022] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Filter: select retention time [300..400] on MS level(s) 1 2 [Fri May 27 12:12:38 2022] </span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co">## To extract peaks data from MS1 or MS2 spectra use "MS1DATA" or "MS2DATA"</span></span>
 <span class="r-in"><span class="co">## instead of *. Note also that queries are case-insensitive.</span></span>
@@ -256,7 +256,7 @@ for conditions).</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> file(s):</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> PestMix1_DDA.mzML</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Filter: select spectra with precursor m/z matching 99.967 [Mon Feb 21 13:31:04 2022] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Filter: select spectra with precursor m/z matching 99.967 [Fri May 27 12:12:38 2022] </span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co">## It is also possible to specify multiple precursor m/z values:</span></span>
 <span class="r-in"><span class="fu">query</span><span class="op">(</span><span class="va">sps_dda</span>, <span class="st">"QUERY * WHERE MS2PREC = (99.967 OR 428.88):TOLERANCEPPM=10"</span><span class="op">)</span></span>
@@ -270,7 +270,7 @@ for conditions).</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> file(s):</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> PestMix1_DDA.mzML</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Filter: select spectra with precursor m/z matching 99.967, 428.88 [Mon Feb 21 13:31:04 2022] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Filter: select spectra with precursor m/z matching 99.967, 428.88 [Fri May 27 12:12:38 2022] </span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co">## To select all MS1 spectra that contain a peak with a certain m/z we can</span></span>
 <span class="r-in"><span class="co">## use the MS1MZ condition. Below we combine this with an absolute tolerance</span></span>
@@ -295,7 +295,7 @@ for conditions).</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> file(s):</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> PestMix1_DDA.mzML</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Filter: select MS level(s) 1 [Mon Feb 21 13:31:04 2022] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Filter: select MS level(s) 1 [Fri May 27 12:12:38 2022] </span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co">## Using MS2DATA in combination with MS1MZ will not return any spectra.</span></span>
 <span class="r-in"><span class="fu">query</span><span class="op">(</span><span class="va">sps_dda</span>, <span class="st">"QUERY MS2DATA WHERE MS1MZ = 100:TOLERANCEMZ=1"</span><span class="op">)</span></span>
@@ -323,7 +323,7 @@ for conditions).</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> file(s):</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> PestMix1_DDA.mzML</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Filter: select MS level(s) 2 [Mon Feb 21 13:31:06 2022] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Filter: select MS level(s) 2 [Fri May 27 12:12:40 2022] </span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co">## MS2MZ can be used as alternative to MS2PROD</span></span>
 <span class="r-in"><span class="fu">query</span><span class="op">(</span><span class="va">sps_dda</span>, <span class="st">"QUERY * WHERE MS2MZ = 100:TOLERANCEMZ=1"</span><span class="op">)</span></span>
@@ -363,13 +363,11 @@ for conditions).</p></li>
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by RforMassSpectrometry Package Maintainer, Johannes
-Rainer, Andrea Vicini.</p>
+  <p></p><p>Developed by RforMassSpectrometry Package Maintainer, Johannes Rainer, Andrea Vicini.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
-2.0.2.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.9000.</p>
 </div>
 
       </footer></div>
