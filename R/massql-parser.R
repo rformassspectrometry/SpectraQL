@@ -1,5 +1,7 @@
 #' @title Parsing an MassQL query
 #'
+#' @description
+#'
 #' Various functions are used to parse and extract the various elements from an
 #' MassQL query:
 #'

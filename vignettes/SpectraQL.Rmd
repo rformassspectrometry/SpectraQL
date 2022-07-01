@@ -45,7 +45,7 @@ install `BiocManager` use `install.packages("BiocManager")` and, after that,
 The `SpectraQL` package adds support for most of the Mass Spec Query Language
 functionality to `Spectra` objects hence allowing to filter and extract data
 using platform independent and data storage agnostic queries. At present,
-`SpectraQL` supports most but not all of the conditions and expressions of the
+`SpectraQL` supports most, but not all of the conditions and expressions of the
 MassQL definition. In particular, numeric operations in query fields such as
 `MS2PROD=100+14` are not yet supported.
 
@@ -74,33 +74,35 @@ A MassQL query consists of several parts: `"QUERY <type of data> WHERE
 <condition> AND <condition> FILTER <filter> AND <filter>"` (see its
 [definition](https://mwang87.github.io/MassQueryLanguage_Documentation/#definition-of-a-query)
 for more details). `"<type of data>"` defines which data should be extracted
-from the selected data, `"<condition>"` defines which spectra should be selected
-and `"<filter>"` allows to subset each individual spectrum (i.e. to which peaks
-in each spectrum the data should be subsetted). See the following sections for
-more information on each part of such an MassQL query. `SpectraQL` in general
-supports the MassQL query schema is however case insensitive (i.e. both
-`"query"` and `"QUERY"` are accepted) and is insensitive to white spaces (i.e.
-both `"RTMIN=10"` and `"RTMIN = 10"` are supported). Also, it should be
-mentioned that at present not all keywords, filters and operations are supported
-by `SpectraQL`. The supported types of data, conditions and filters are listed
-in the sections below.
+from the selected data set, `"<condition>"` defines which spectra should be
+selected and `"<filter>"` allows to subset each individual spectrum (i.e. to
+which mass peaks each spectrum should be subsetted). See the following sections
+for more information on each part of such an MassQL query. `SpectraQL` supports
+the MassQL query schema is however case insensitive (i.e. both `"query"` and
+`"QUERY"` are accepted) and is insensitive to white spaces (i.e.  both
+`"RTMIN=10"` and `"RTMIN = 10"` are supported). Also, it should be noted that
+not all keywords, filters and operations defined by MassQL are yet supported by
+`SpectraQL`. The supported types of data, conditions and filters are listed in
+the sections below.
 
 ### Type of data
 
-The `"<type of data>"` defines what should be returned by the `query`
-function. The types of data that are currently supported by `SpectraQL` are:
+The `"<type of data>"` defines *what* should be returned by the `query`
+function. In addition, functions can be specified and applied to `"<type of
+data>"` to summarize the results. The types of data that are currently supported
+by `SpectraQL` are:
 
 - `"*"`: returns the full data, i.e. returns a `Spectra` object.
-- `"MS1DATA"` (case insensitive): returns (if no function is defined) the peaks
-  data for selected MS1 scans (i.e. a `list` of matrices with m/z and intensity
-  values).
+- `"MS1DATA"` (case insensitive): returns (if no function is defined; see
+  further below) the peaks data for selected MS1 scans (i.e. a `list` of
+  matrices with m/z and intensity values).
 - `"MS2DATA"` (case insensitive): returns (if no function is defined) the peaks
   data for selected MS2 scans (i.e. a `list` of matrices with m/z and intensity
   values).
 
-In addition functions can be used to extract specific information from the
-spectra. `SpectraQL` supports at present the following functions defined by
-MassQL:
+In addition, functions can be used to extract specific information from the
+selected spectra. `SpectraQL` supports at present the following functions
+defined by MassQL:
 
 - `"scaninfo"`: e.g. `"scaninfo(MS1DATA)"` or `"scaninfo(MS2DATA)"` to extract
   spectra information for MS1 or MS2 scans, respectively. This returns the
@@ -160,6 +162,7 @@ user-defined m/z value. `SpectraQL` supports the following filters:
   minutes.
 - Default for `"TOLERANCEMZ"` is `0` instead of `0.1`.
 
+
 ## Examples
 
 In this section we use MassQL queries to subset and extract data from our
@@ -173,6 +176,7 @@ table(msLevel(dda))
 #' retention time range
 range(rtime(dda))
 ```
+
 
 ### Filtering and subsetting
 
@@ -318,6 +322,7 @@ ionCount()
 
 plot(res, type = "l", xlab = "scan index")
 ```
+
 
 # Session information {-}
 
