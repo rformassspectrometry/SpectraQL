@@ -91,7 +91,7 @@ document.addEventListener("DOMContentLoaded", function() {
       links[i].target = '_blank';
 });
 </script><p><strong>Package</strong>: <em><a href="https://bioconductor.org/packages/3.20/SpectraQL" class="external-link">SpectraQL</a></em><br><strong>Authors</strong>: Johannes Rainer [aut, cre] (<a href="https://orcid.org/0000-0002-6977-7147" class="external-link uri">https://orcid.org/0000-0002-6977-7147</a>), Andrea Vicini
-[aut], Sebastian Gibb [ctb] (<a href="https://orcid.org/0000-0001-7406-4443" class="external-link uri">https://orcid.org/0000-0001-7406-4443</a>)<br><strong>Compiled</strong>: Fri Aug 9 07:25:52 2024</p>
+[aut], Sebastian Gibb [ctb] (<a href="https://orcid.org/0000-0001-7406-4443" class="external-link uri">https://orcid.org/0000-0001-7406-4443</a>)<br><strong>Compiled</strong>: Fri Aug 9 07:31:00 2024</p>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
@@ -325,7 +325,7 @@ of the measurement run we can use a MassQL query with the
 <span><span class="co">## file(s):</span></span>
 <span><span class="co">## PestMix1_DDA.mzML</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Filter: select retention time [200..300] on MS level(s) 1 2 [Fri Aug  9 07:25:55 2024]</span></span></code></pre>
+<span><span class="co">##  Filter: select retention time [200..300] on MS level(s) 1 2 [Fri Aug  9 07:31:04 2024]</span></span></code></pre>
 <p>Internally, <em>SpectraQL</em> translates the MassQL query into
 filter functions that are applied to the <code>Spectra</code> object.
 The returned result is now a <code>Spectra</code> object with all
@@ -367,7 +367,7 @@ in lower case below.</p>
 <span><span class="co">## file(s):</span></span>
 <span><span class="co">## PestMix1_DDA.mzML</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Filter: select spectra with precursor m/z matching 278.093 [Fri Aug  9 07:25:56 2024]</span></span></code></pre>
+<span><span class="co">##  Filter: select spectra with precursor m/z matching 278.093 [Fri Aug  9 07:31:04 2024]</span></span></code></pre>
 <p>We thus selected 9 spectra from the data set with a precursor m/z
 matching our filter criteria.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
@@ -393,8 +393,8 @@ set that anyway to a value of 0.</p>
 <span><span class="co">## file(s):</span></span>
 <span><span class="co">## PestMix1_DDA.mzML</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Filter: select retention time [200..300] on MS level(s) 1 2 [Fri Aug  9 07:25:56 2024]</span></span>
-<span><span class="co">##  Filter: select spectra with precursor m/z matching 278.093 [Fri Aug  9 07:25:56 2024]</span></span></code></pre>
+<span><span class="co">##  Filter: select retention time [200..300] on MS level(s) 1 2 [Fri Aug  9 07:31:04 2024]</span></span>
+<span><span class="co">##  Filter: select spectra with precursor m/z matching 278.093 [Fri Aug  9 07:31:04 2024]</span></span></code></pre>
 <p>For conditions <code>"MS2PROD"</code>, <code>"MS2PREC"</code> and
 <code>"MS1MZ"</code> it is also possible to provide multiple values to
 select spectra that match any of the provided m/z values. These values
@@ -423,7 +423,7 @@ applied to each of these. Below we select all spectra that contain an
 <span><span class="co">## file(s):</span></span>
 <span><span class="co">## PestMix1_DDA.mzML</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Filter: select MS level(s) 1 [Fri Aug  9 07:25:56 2024]</span></span></code></pre>
+<span><span class="co">##  Filter: select MS level(s) 1 [Fri Aug  9 07:31:04 2024]</span></span></code></pre>
 <p>Note that using <code>"MS1MZ"</code> will return only MS1 spectra and
 <code>"MS2PROD"</code>, <code>"MS2MZ"</code> and <code>"MS2PREC"</code>
 only MS2 spectra.</p>
