@@ -1,5 +1,9 @@
 # SpectraQL 0.98
 
+## Changes in 0.98.6
+
+- Update README, DESCRIPTION.
+
 ## Changes in 0.98.4
 
 - Add support for `"FILTER MS1MZ"` and `"FILTER MS2MZ"`.

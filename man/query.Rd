@@ -40,8 +40,8 @@ the selected spectra. MassQL defines \emph{type of data} being \code{"MS1DATA"} 
 \code{"MS2DATA"} to retrieve data from MS1 or MS2 scans. By default peak data will
 be returned, but in addition, MASSQL defines additional functions that can
 be applied to modify the data or select different data to be returned. In
-addition \code{SpectraQL} defines the special type of data \code{"*"} which will return
-the results as a \code{Spectra} object. \code{SpectraQL} supports:
+addition \emph{SpectraQL} defines the special type of data \code{"*"} which will return
+the results as a \code{Spectra} object. \emph{SpectraQL} supports:
 \itemize{
 \item \code{"*"}: select all data and return the data subset as a \code{\link[=Spectra]{Spectra()}} object.
 \item \code{"MS1DATA"}: return the \code{\link[=peaksData]{peaksData()}} from all selected \strong{MS1} spectra,
@@ -99,7 +99,7 @@ is 0 for all calls.
 
 
 Filters subset the data within spectra, i.e. select which peaks within
-spectra should be retrieved. \code{SpectraQL} supports the following filters:
+spectra should be retrieved. \emph{SpectraQL} supports the following filters:
 \itemize{
 \item \code{"MS1MZ"}: filters MS1 spectra keeping only peaks with matching m/z values
 (tolerance can be specified with \code{"TOLERANCEMZ"} and \code{"TOLERANCEPPM"} as

@@ -9,10 +9,11 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %%\VignetteKeywords{Mass Spectrometry, MS, MSMS, Metabolomics, Infrastructure}
   %\VignetteEncoding{UTF-8}
-  %\VignetteDepends{Spectra,SpectraQL,msdata}
+  %\VignetteDepends{Spectra,SpectraQL,msdata,BiocStyle}
 ---
 
 ```{r style, echo = FALSE, results = 'asis'}
+library(BiocStyle)
 BiocStyle::markdown()
 ```
 
@@ -23,11 +24,15 @@ BiocStyle::markdown()
 
 # Introduction
 
-The `SpectraQL` package adds support for the Mass Spec Query Language
-[MassQL](https://mwang87.github.io/MassQueryLanguage_Documentation/) to the
-[`Spectra`](https://rformassspectrometry.github.io/Spectra) package. `Spectra`
-objects can thus be filtered and data extracted using queries expressed in the
-`MassQL` language.
+The Mass Spec Query Language
+([MassQL](https://mwang87.github.io/MassQueryLanguage_Documentation/)) is a
+domain specific language meant to be a succinct way to express a query in a mass
+spectrometry (MS) centric fashion. It is inspired by SQL, but it attempts to
+bake in assumptions of MS to make querying much more natural for MS users.
+
+The *SpectraQL* package provides support for the MassQL language in R,
+for MS data represented by `Spectra` objects defined in Bioconductor's
+[Spectra](https://bioconductor.org/packages/Spectra) package.
 
 
 # Installation
@@ -42,10 +47,10 @@ install `BiocManager` use `install.packages("BiocManager")` and, after that,
 
 # Extracting data from `Spectra` objects with MassQL
 
-The `SpectraQL` package adds support for most of the Mass Spec Query Language
+The *SpectraQL* package adds support for most of the Mass Spec Query Language
 functionality to `Spectra` objects hence allowing to filter and extract data
 using platform independent and data storage agnostic queries. At present,
-`SpectraQL` supports most, but not all of the conditions and expressions of the
+*SpectraQL* supports most, but not all of the conditions and expressions of the
 MassQL definition. In particular, numeric operations in query fields such as
 `MS2PROD=100+14` are not yet supported.
 
@@ -55,8 +60,8 @@ not limited to mzML or mzXML files, databases
 (e.g. [MsBackendMassbank](https://rformassspectrometry.github.io/MsBackendMassbank/))
 or MGF files
 ([MsBackendMgf](https://rformassspectrometry.github.io/MsBackendMgf/)). The use
-of the `Spectra` an hence `SpectraQL` package is thus not restricted to
-mzML-backed MS data.
+of the `r Biocpkg("Spectra")` an hence *SpectraQL* package is thus not
+restricted to mzML-backed MS data.
 
 ```{r, message = FALSE}
 library(Spectra)
@@ -77,12 +82,12 @@ for more details). `"<type of data>"` defines which data should be extracted
 from the selected data set, `"<condition>"` defines which spectra should be
 selected and `"<filter>"` allows to subset each individual spectrum (i.e. to
 which mass peaks each spectrum should be subsetted). See the following sections
-for more information on each part of such an MassQL query. `SpectraQL` supports
+for more information on each part of such an MassQL query. *SpectraQL* supports
 the MassQL query schema is however case insensitive (i.e. both `"query"` and
 `"QUERY"` are accepted) and is insensitive to white spaces (i.e.  both
 `"RTMIN=10"` and `"RTMIN = 10"` are supported). Also, it should be noted that
 not all keywords, filters and operations defined by MassQL are yet supported by
-`SpectraQL`. The supported types of data, conditions and filters are listed in
+*SpectraQL*. The supported types of data, conditions and filters are listed in
 the sections below.
 
 ### Type of data
@@ -90,7 +95,7 @@ the sections below.
 The `"<type of data>"` defines *what* should be returned by the `query`
 function. In addition, functions can be specified and applied to `"<type of
 data>"` to summarize the results. The types of data that are currently supported
-by `SpectraQL` are:
+by *SpectraQL* are:
 
 - `"*"`: returns the full data, i.e. returns a `Spectra` object.
 - `"MS1DATA"` (case insensitive): returns (if no function is defined; see
@@ -101,7 +106,7 @@ by `SpectraQL` are:
   values).
 
 In addition, functions can be used to extract specific information from the
-selected spectra. `SpectraQL` supports at present the following functions
+selected spectra. *SpectraQL* supports at present the following functions
 defined by MassQL:
 
 - `"scaninfo"`: e.g. `"scaninfo(MS1DATA)"` or `"scaninfo(MS2DATA)"` to extract
@@ -145,7 +150,7 @@ calls.
 ### Filter
 
 Filters allow to subset individual spectra keeping e.g. only peaks that match a
-user-defined m/z value. `SpectraQL` supports the following filters:
+user-defined m/z value. *SpectraQL* supports the following filters:
 
 - `"MS1MZ"`: filters MS1 spectra keeping only peaks with matching m/z values
   (tolerance can be specified as above with `"TOLERANCEMZ"` and
@@ -189,7 +194,7 @@ dda_rt <- query(dda, "QUERY * WHERE RTMIN = 200 AND RTMAX = 300")
 dda_rt
 ```
 
-Internally, `SpectraQL` translates the MassQL query into filter functions that
+Internally, *SpectraQL* translates the MassQL query into filter functions that
 are applied to the `Spectra` object. The returned result is now a `Spectra`
 object with all spectra measured between 200 and 300 seconds.
 
@@ -202,7 +207,7 @@ can use the `"MS2PREC"` condition. Conditions on m/z values support also
 accuracy specifications. Using `"TOLERANCEMZ"` and `"TOLERANCEPPM"` it is thus
 possible to define an absolute and m/z relative acceptable difference. Below we
 use such a condition to select MS2 spectra with a precursor m/z matching 278.093
-with a tolerance of 0 and ppm of 20. Since `SpectraQL` is case insensitive, we
+with a tolerance of 0 and ppm of 20. Since *SpectraQL* is case insensitive, we
 write the full MassQL query in lower case below.
 
 ```{r}
@@ -277,7 +282,7 @@ Please note that the x-axis does **not** represent the retention times but the
 scan indices.
 
 The function `"scaninfo"` extracts all information from the selected
-spectra. For `SpectraQL` this means that the result from `spectraData` are
+spectra. For *SpectraQL* this means that the result from `spectraData()` are
 returned:
 
 ```{r}
@@ -310,7 +315,7 @@ ic <- query(dda,
 plot(ic, type = "l", xlab = "scan index")
 ```
 
-Internally, `SpectraQL`'s function *translates* the MassQL query into the
+Internally, *SpectraQL*'s function *translates* the MassQL query into the
 following combination of function calls:
 
 ```{r}
