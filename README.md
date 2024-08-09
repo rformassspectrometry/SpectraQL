@@ -2,7 +2,7 @@
 
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![R-CMD-check-bioc](https://github.com/RforMassSpectrometry/SpectraQL/workflows/R-CMD-check-bioc/badge.svg)](https://github.com/RforMassSpectrometry/SpectraQL/actions?query=workflow%3AR-CMD-check-bioc)
-[![codecov.io](http://codecov.io/github/rformassspectrometry/SpectraQL/coverage.svg?branch=main)](http://codecov.io/github/rformassspectrometry/SpectraQL?branch=main)
+[![codecov](https://codecov.io/github/rformassspectrometry/SpectraQL/branch/main/graph/badge.svg?token=PSUEEOF0GH)](https://codecov.io/github/rformassspectrometry/SpectraQL)
 [![:name status badge](https://rformassspectrometry.r-universe.dev/badges/:name)](https://rformassspectrometry.r-universe.dev/)
 [![license](https://img.shields.io/badge/license-Artistic--2.0-brightgreen.svg)](https://opensource.org/licenses/Artistic-2.0)
 
