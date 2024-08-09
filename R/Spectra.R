@@ -28,8 +28,8 @@
 #' `"MS2DATA"` to retrieve data from MS1 or MS2 scans. By default peak data will
 #' be returned, but in addition, MASSQL defines additional functions that can
 #' be applied to modify the data or select different data to be returned. In
-#' addition `SpectraQL` defines the special type of data `"*"` which will return
-#' the results as a `Spectra` object. `SpectraQL` supports:
+#' addition *SpectraQL* defines the special type of data `"*"` which will return
+#' the results as a `Spectra` object. *SpectraQL* supports:
 #'
 #' - `"*"`: select all data and return the data subset as a [Spectra()] object.
 #' - `"MS1DATA"`: return the [peaksData()] from all selected **MS1** spectra,
@@ -81,7 +81,7 @@
 #' @section Filters:
 #'
 #' Filters subset the data within spectra, i.e. select which peaks within
-#' spectra should be retrieved. `SpectraQL` supports the following filters:
+#' spectra should be retrieved. *SpectraQL* supports the following filters:
 #'
 #' - `"MS1MZ"`: filters MS1 spectra keeping only peaks with matching m/z values
 #'   (tolerance can be specified with `"TOLERANCEMZ"` and `"TOLERANCEPPM"` as
