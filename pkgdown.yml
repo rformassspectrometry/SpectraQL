@@ -1,7 +1,6 @@
-pandoc: 2.17.1.1
-pkgdown: 2.0.5.9000
-pkgdown_sha: b4096aa376773d7dee98a267fd0b5a025975a3dc
+pandoc: '3.2'
+pkgdown: 2.1.0.9000
+pkgdown_sha: 1d40a80e6b3564a6d7da0ce467b0a4570aa5665e
 articles:
   SpectraQL: SpectraQL.html
-last_built: 2022-07-01T13:14Z
-
+last_built: 2024-08-09T07:12Z
