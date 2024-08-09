@@ -31,7 +31,7 @@ vignette](https://rformassspectrometry.github.io/RforMassSpectrometry/articles/R
 
 # License
 
-The *MsIO* code is provided under a permissive [Artistic 2.0
+The *SpectraQL* code is provided under a permissive [Artistic 2.0
 license](https://opensource.org/licenses/Artistic-2.0). The
 documentation, including the manual pages and the vignettes, are
 distributed under a [CC BY-SA
