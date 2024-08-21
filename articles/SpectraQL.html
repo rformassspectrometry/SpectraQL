@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">SpectraQL</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.98.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.0</span>
       </span>
     </div>
 
@@ -91,7 +91,7 @@ document.addEventListener("DOMContentLoaded", function() {
       links[i].target = '_blank';
 });
 </script><p><strong>Package</strong>: <em><a href="https://bioconductor.org/packages/3.20/SpectraQL" class="external-link">SpectraQL</a></em><br><strong>Authors</strong>: Johannes Rainer [aut, cre] (<a href="https://orcid.org/0000-0002-6977-7147" class="external-link uri">https://orcid.org/0000-0002-6977-7147</a>), Andrea Vicini
-[aut], Sebastian Gibb [ctb] (<a href="https://orcid.org/0000-0001-7406-4443" class="external-link uri">https://orcid.org/0000-0001-7406-4443</a>)<br><strong>Compiled</strong>: Fri Aug 9 07:31:00 2024</p>
+[aut], Sebastian Gibb [ctb] (<a href="https://orcid.org/0000-0001-7406-4443" class="external-link uri">https://orcid.org/0000-0001-7406-4443</a>)<br><strong>Compiled</strong>: Wed Aug 21 09:39:12 2024</p>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
@@ -108,8 +108,6 @@ package.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>Until added to Bioconductor, the package can be installed with
-<code>devtools::install_github("RforMassSpectrometry/SpectraQL")</code>.</p>
 <p>The package can be installed with the <code>BiocManager</code>
 package. To install <code>BiocManager</code> use
 <code>install.packages("BiocManager")</code> and, after that,
@@ -325,7 +323,7 @@ of the measurement run we can use a MassQL query with the
 <span><span class="co">## file(s):</span></span>
 <span><span class="co">## PestMix1_DDA.mzML</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Filter: select retention time [200..300] on MS level(s) 1 2 [Fri Aug  9 07:31:04 2024]</span></span></code></pre>
+<span><span class="co">##  Filter: select retention time [200..300] on MS level(s) 1 2 [Wed Aug 21 09:39:15 2024]</span></span></code></pre>
 <p>Internally, <em>SpectraQL</em> translates the MassQL query into
 filter functions that are applied to the <code>Spectra</code> object.
 The returned result is now a <code>Spectra</code> object with all
@@ -367,7 +365,7 @@ in lower case below.</p>
 <span><span class="co">## file(s):</span></span>
 <span><span class="co">## PestMix1_DDA.mzML</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Filter: select spectra with precursor m/z matching 278.093 [Fri Aug  9 07:31:04 2024]</span></span></code></pre>
+<span><span class="co">##  Filter: select spectra with precursor m/z matching 278.093 [Wed Aug 21 09:39:16 2024]</span></span></code></pre>
 <p>We thus selected 9 spectra from the data set with a precursor m/z
 matching our filter criteria.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
@@ -393,8 +391,8 @@ set that anyway to a value of 0.</p>
 <span><span class="co">## file(s):</span></span>
 <span><span class="co">## PestMix1_DDA.mzML</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Filter: select retention time [200..300] on MS level(s) 1 2 [Fri Aug  9 07:31:04 2024]</span></span>
-<span><span class="co">##  Filter: select spectra with precursor m/z matching 278.093 [Fri Aug  9 07:31:04 2024]</span></span></code></pre>
+<span><span class="co">##  Filter: select retention time [200..300] on MS level(s) 1 2 [Wed Aug 21 09:39:16 2024]</span></span>
+<span><span class="co">##  Filter: select spectra with precursor m/z matching 278.093 [Wed Aug 21 09:39:16 2024]</span></span></code></pre>
 <p>For conditions <code>"MS2PROD"</code>, <code>"MS2PREC"</code> and
 <code>"MS1MZ"</code> it is also possible to provide multiple values to
 select spectra that match any of the provided m/z values. These values
@@ -423,7 +421,7 @@ applied to each of these. Below we select all spectra that contain an
 <span><span class="co">## file(s):</span></span>
 <span><span class="co">## PestMix1_DDA.mzML</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Filter: select MS level(s) 1 [Fri Aug  9 07:31:04 2024]</span></span></code></pre>
+<span><span class="co">##  Filter: select MS level(s) 1 [Wed Aug 21 09:39:16 2024]</span></span></code></pre>
 <p>Note that using <code>"MS1MZ"</code> will return only MS1 spectra and
 <code>"MS2PROD"</code>, <code>"MS2MZ"</code> and <code>"MS2PREC"</code>
 only MS2 spectra.</p>
@@ -606,19 +604,20 @@ extract the ion count for that.</p>
 certain retention time range to generate an extracted ion chromatogram
 (XIC).</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ic</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/query.html">query</a></span><span class="op">(</span><span class="va">dda</span>,</span>
-<span>            <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"query scansum(ms1data) where rtmin = 235 and rtmax = 250"</span>,</span>
-<span>                   <span class="st">" filter ms1mz = 219.095:tolerancemz=0.1"</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">ic</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/query.html">query</a></span><span class="op">(</span></span>
+<span>    <span class="va">dda</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"query scansum(ms1data) where rtmin = 235 and rtmax = 250"</span>,</span>
+<span>           <span class="st">" filter ms1mz = 219.095:tolerancemz=0.1"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">ic</span>, type <span class="op">=</span> <span class="st">"l"</span>, xlab <span class="op">=</span> <span class="st">"scan index"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="SpectraQL_files/figure-html/unnamed-chunk-14-1.png" width="700"></p>
 <p>Internally, <em>SpectraQL</em>’s function <em>translates</em> the
 MassQL query into the following combination of function calls:</p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="va">dda</span> <span class="op">|&gt;</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">filterMsLevel</a></span><span class="op">(</span><span class="fl">1L</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">filterRt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">235</span>, <span class="fl">250</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">filterMzValues</a></span><span class="op">(</span><span class="fl">219.095</span>, tolerance <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">ionCount</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">filterMsLevel</a></span><span class="op">(</span><span class="fl">1L</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">filterRt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">235</span>, <span class="fl">250</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">filterMzValues</a></span><span class="op">(</span><span class="fl">219.095</span>, tolerance <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">ionCount</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span>, type <span class="op">=</span> <span class="st">"l"</span>, xlab <span class="op">=</span> <span class="st">"scan index"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="SpectraQL_files/figure-html/unnamed-chunk-15-1.png" width="700"></p>
@@ -652,7 +651,7 @@ MassQL query into the following combination of function calls:</p>
 <span><span class="co">## [8] base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">## [1] msdata_0.45.0       SpectraQL_0.98.6    Spectra_1.15.7     </span></span>
+<span><span class="co">## [1] msdata_0.45.0       SpectraQL_0.99.0    Spectra_1.15.7     </span></span>
 <span><span class="co">## [4] ProtGenerics_1.37.1 BiocParallel_1.39.0 S4Vectors_0.43.2   </span></span>
 <span><span class="co">## [7] BiocGenerics_0.51.0 BiocStyle_2.33.1   </span></span>
 <span><span class="co">## </span></span>
@@ -664,12 +663,12 @@ MassQL query into the following combination of function calls:</p>
 <span><span class="co">## [13] yaml_2.3.10            fastmap_1.2.0          R6_2.5.1              </span></span>
 <span><span class="co">## [16] knitr_1.48             htmlwidgets_1.6.4      MASS_7.3-61           </span></span>
 <span><span class="co">## [19] bookdown_0.40          desc_1.4.3             bslib_0.8.0           </span></span>
-<span><span class="co">## [22] rlang_1.1.4            cachem_1.1.0           xfun_0.46             </span></span>
+<span><span class="co">## [22] rlang_1.1.4            cachem_1.1.0           xfun_0.47             </span></span>
 <span><span class="co">## [25] fs_1.6.4               MsCoreUtils_1.17.1     sass_0.4.9            </span></span>
-<span><span class="co">## [28] cli_3.6.3              pkgdown_2.1.0.9000     ncdf4_1.22            </span></span>
-<span><span class="co">## [31] digest_0.6.36          mzR_2.39.0             MetaboCoreUtils_1.13.0</span></span>
+<span><span class="co">## [28] cli_3.6.3              pkgdown_2.1.0.9000     ncdf4_1.23            </span></span>
+<span><span class="co">## [31] digest_0.6.37          mzR_2.39.0             MetaboCoreUtils_1.13.0</span></span>
 <span><span class="co">## [34] lifecycle_1.0.4        clue_0.3-65            evaluate_0.24.0       </span></span>
-<span><span class="co">## [37] codetools_0.2-20       ragg_1.3.2             rmarkdown_2.27        </span></span>
+<span><span class="co">## [37] codetools_0.2-20       ragg_1.3.2             rmarkdown_2.28        </span></span>
 <span><span class="co">## [40] tools_4.4.1            htmltools_0.5.8.1</span></span></code></pre>
 </div>
   </div>
