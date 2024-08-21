@@ -37,9 +37,6 @@ for MS data represented by `Spectra` objects defined in Bioconductor's
 
 # Installation
 
-Until added to Bioconductor, the package can be installed with
-`devtools::install_github("RforMassSpectrometry/SpectraQL")`.
-
 The package can be installed with the `BiocManager` package. To
 install `BiocManager` use `install.packages("BiocManager")` and, after that,
 `BiocManager::install("SpectraQL")` to install this package.
@@ -309,9 +306,10 @@ We can also combine that with `"QUERY"` to restrict to a certain retention time
 range to generate an extracted ion chromatogram (XIC).
 
 ```{r}
-ic <- query(dda,
-            paste0("query scansum(ms1data) where rtmin = 235 and rtmax = 250",
-                   " filter ms1mz = 219.095:tolerancemz=0.1"))
+ic <- query(
+    dda,
+    paste0("query scansum(ms1data) where rtmin = 235 and rtmax = 250",
+           " filter ms1mz = 219.095:tolerancemz=0.1"))
 plot(ic, type = "l", xlab = "scan index")
 ```
 
@@ -320,10 +318,10 @@ following combination of function calls:
 
 ```{r}
 res <- dda |>
-filterMsLevel(1L) |>
-filterRt(c(235, 250)) |>
-filterMzValues(219.095, tolerance = 0.1) |>
-ionCount()
+    filterMsLevel(1L) |>
+    filterRt(c(235, 250)) |>
+    filterMzValues(219.095, tolerance = 0.1) |>
+    ionCount()
 
 plot(res, type = "l", xlab = "scan index")
 ```

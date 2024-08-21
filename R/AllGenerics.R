@@ -1,2 +1,2 @@
 setGeneric("query", function(x, ...)
-           standardGeneric("query"))
+    standardGeneric("query"))
