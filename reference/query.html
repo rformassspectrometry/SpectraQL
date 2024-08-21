@@ -9,7 +9,7 @@ the MassQL definition, conditions subsets the data to specific spectra
 while filter restricts the data within a spectrum. Note that at present
 MassQL filters are not supported. Also note that MassQL queries are
 interpreted case insensitive in SpectraQL.
-See also the package vignette for more details.'><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
+See also the package vignette for more details.'><meta property="og:image" content="/logo.png"><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]--></head><body data-spy="scroll" data-target="#toc">
@@ -232,7 +232,7 @@ for conditions).</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> file(s):</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> PestMix1_DDA.mzML</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Filter: select retention time [300..400] on MS level(s) 1 2 [Wed Aug 21 09:39:08 2024] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Filter: select retention time [300..400] on MS level(s) 1 2 [Wed Aug 21 09:41:20 2024] </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## To extract peaks data from MS1 or MS2 spectra use "MS1DATA" or "MS2DATA"</span></span></span>
 <span class="r-in"><span><span class="co">## instead of *. Note also that queries are case-insensitive.</span></span></span>
@@ -261,7 +261,7 @@ for conditions).</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> file(s):</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> PestMix1_DDA.mzML</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Filter: select spectra with precursor m/z matching 99.967 [Wed Aug 21 09:39:08 2024] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Filter: select spectra with precursor m/z matching 99.967 [Wed Aug 21 09:41:21 2024] </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## It is also possible to specify multiple precursor m/z values:</span></span></span>
 <span class="r-in"><span><span class="fu">query</span><span class="op">(</span><span class="va">sps_dda</span>, <span class="st">"QUERY * WHERE MS2PREC = (99.967 OR 428.88):TOLERANCEPPM=10"</span><span class="op">)</span></span></span>
@@ -275,7 +275,7 @@ for conditions).</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> file(s):</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> PestMix1_DDA.mzML</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Filter: select spectra with precursor m/z matching 99.967, 428.88 [Wed Aug 21 09:39:08 2024] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Filter: select spectra with precursor m/z matching 99.967, 428.88 [Wed Aug 21 09:41:21 2024] </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## To select all MS1 spectra that contain a peak with a certain m/z we can</span></span></span>
 <span class="r-in"><span><span class="co">## use the MS1MZ condition. Below we combine this with an absolute tolerance</span></span></span>
@@ -300,7 +300,7 @@ for conditions).</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> file(s):</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> PestMix1_DDA.mzML</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Filter: select MS level(s) 1 [Wed Aug 21 09:39:08 2024] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Filter: select MS level(s) 1 [Wed Aug 21 09:41:21 2024] </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Using MS2DATA in combination with MS1MZ will not return any spectra.</span></span></span>
 <span class="r-in"><span><span class="fu">query</span><span class="op">(</span><span class="va">sps_dda</span>, <span class="st">"QUERY MS2DATA WHERE MS1MZ = 100:TOLERANCEMZ=1"</span><span class="op">)</span></span></span>
@@ -328,7 +328,7 @@ for conditions).</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> file(s):</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> PestMix1_DDA.mzML</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Filter: select MS level(s) 2 [Wed Aug 21 09:39:09 2024] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Filter: select MS level(s) 2 [Wed Aug 21 09:41:22 2024] </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## MS2MZ can be used as alternative to MS2PROD</span></span></span>
 <span class="r-in"><span><span class="fu">query</span><span class="op">(</span><span class="va">sps_dda</span>, <span class="st">"QUERY * WHERE MS2MZ = 100:TOLERANCEMZ=1"</span><span class="op">)</span></span></span>
