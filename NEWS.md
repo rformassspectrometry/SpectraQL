@@ -1,3 +1,13 @@
+# SpectraQL 0.99
+
+## Changes in 0.99.1
+
+- Add S4Vectors package to Suggests as it's used in the unit tests.
+
+## Changes in 0.99.0
+
+- Prepare and clean package for Bioconductor submission.
+
 # SpectraQL 0.98
 
 ## Changes in 0.98.6

@@ -1,6 +1,6 @@
 Package: SpectraQL
 Title: MassQL support for Spectra
-Version: 0.99.0
+Version: 0.99.1
 Description: The Mass Spec Query Language (MassQL) is a domain-specific
     language enabling to express a query and retrieve mass spectrometry (MS)
     data in a more natural and understandable way for MS users. It is inspired
@@ -33,6 +33,7 @@ Suggests:
     roxygen2,
     rmarkdown,
     knitr,
+    S4Vectors,
     BiocStyle,
     mzR
 License: Artistic-2.0
@@ -41,5 +42,6 @@ VignetteBuilder: knitr
 BugReports: https://github.com/RforMassSpectrometry/SpectraQL/issues
 URL: https://github.com/RforMassSpectrometry/SpectraQL
 biocViews: Infrastructure, Proteomics, MassSpectrometry, Metabolomics
+Encoding: UTF-8
 Roxygen: list(markdown=TRUE)
 RoxygenNote: 7.3.2
