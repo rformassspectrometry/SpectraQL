@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">SpectraQL</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", function() {
       links[i].target = '_blank';
 });
 </script><p><strong>Package</strong>: <em><a href="https://bioconductor.org/packages/3.20/SpectraQL" class="external-link">SpectraQL</a></em><br><strong>Authors</strong>: Johannes Rainer [aut, cre] (<a href="https://orcid.org/0000-0002-6977-7147" class="external-link uri">https://orcid.org/0000-0002-6977-7147</a>), Andrea Vicini
-[aut], Sebastian Gibb [ctb] (<a href="https://orcid.org/0000-0001-7406-4443" class="external-link uri">https://orcid.org/0000-0001-7406-4443</a>)<br><strong>Compiled</strong>: Wed Aug 21 11:06:54 2024</p>
+[aut], Sebastian Gibb [ctb] (<a href="https://orcid.org/0000-0001-7406-4443" class="external-link uri">https://orcid.org/0000-0001-7406-4443</a>)<br><strong>Compiled</strong>: Thu Sep 5 08:33:03 2024</p>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
@@ -303,7 +303,7 @@ of the measurement run we can use a MassQL query with the
 <span><span class="co">## file(s):</span></span>
 <span><span class="co">## PestMix1_DDA.mzML</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Filter: select retention time [200..300] on MS level(s) 1 2 [Wed Aug 21 11:06:57 2024]</span></span></code></pre>
+<span><span class="co">##  Filter: select retention time [200..300] on MS level(s) 1 2 [Thu Sep  5 08:33:06 2024]</span></span></code></pre>
 <p>Internally, <em>SpectraQL</em> translates the MassQL query into
 filter functions that are applied to the <code>Spectra</code> object.
 The returned result is now a <code>Spectra</code> object with all
@@ -345,7 +345,7 @@ in lower case below.</p>
 <span><span class="co">## file(s):</span></span>
 <span><span class="co">## PestMix1_DDA.mzML</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Filter: select spectra with precursor m/z matching 278.093 [Wed Aug 21 11:06:58 2024]</span></span></code></pre>
+<span><span class="co">##  Filter: select spectra with precursor m/z matching 278.093 [Thu Sep  5 08:33:06 2024]</span></span></code></pre>
 <p>We thus selected 9 spectra from the data set with a precursor m/z
 matching our filter criteria.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
@@ -371,8 +371,8 @@ set that anyway to a value of 0.</p>
 <span><span class="co">## file(s):</span></span>
 <span><span class="co">## PestMix1_DDA.mzML</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Filter: select retention time [200..300] on MS level(s) 1 2 [Wed Aug 21 11:06:58 2024]</span></span>
-<span><span class="co">##  Filter: select spectra with precursor m/z matching 278.093 [Wed Aug 21 11:06:58 2024]</span></span></code></pre>
+<span><span class="co">##  Filter: select retention time [200..300] on MS level(s) 1 2 [Thu Sep  5 08:33:06 2024]</span></span>
+<span><span class="co">##  Filter: select spectra with precursor m/z matching 278.093 [Thu Sep  5 08:33:06 2024]</span></span></code></pre>
 <p>For conditions <code>"MS2PROD"</code>, <code>"MS2PREC"</code> and
 <code>"MS1MZ"</code> it is also possible to provide multiple values to
 select spectra that match any of the provided m/z values. These values
@@ -401,7 +401,7 @@ applied to each of these. Below we select all spectra that contain an
 <span><span class="co">## file(s):</span></span>
 <span><span class="co">## PestMix1_DDA.mzML</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Filter: select MS level(s) 1 [Wed Aug 21 11:06:58 2024]</span></span></code></pre>
+<span><span class="co">##  Filter: select MS level(s) 1 [Thu Sep  5 08:33:06 2024]</span></span></code></pre>
 <p>Note that using <code>"MS1MZ"</code> will return only MS1 spectra and
 <code>"MS2PROD"</code>, <code>"MS2MZ"</code> and <code>"MS2PREC"</code>
 only MS2 spectra.</p>
@@ -631,13 +631,13 @@ MassQL query into the following combination of function calls:</p>
 <span><span class="co">## [8] base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">## [1] msdata_0.45.0       SpectraQL_0.99.0    Spectra_1.15.7     </span></span>
+<span><span class="co">## [1] msdata_0.45.0       SpectraQL_0.99.1    Spectra_1.15.7     </span></span>
 <span><span class="co">## [4] ProtGenerics_1.37.1 BiocParallel_1.39.0 S4Vectors_0.43.2   </span></span>
-<span><span class="co">## [7] BiocGenerics_0.51.0 BiocStyle_2.33.1   </span></span>
+<span><span class="co">## [7] BiocGenerics_0.51.1 BiocStyle_2.33.1   </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
 <span><span class="co">##  [1] jsonlite_1.8.8         highr_0.11             compiler_4.4.1        </span></span>
-<span><span class="co">##  [4] BiocManager_1.30.24    Rcpp_1.0.13            Biobase_2.65.0        </span></span>
+<span><span class="co">##  [4] BiocManager_1.30.25    Rcpp_1.0.13            Biobase_2.65.1        </span></span>
 <span><span class="co">##  [7] parallel_4.4.1         cluster_2.1.6          jquerylib_0.1.4       </span></span>
 <span><span class="co">## [10] systemfonts_1.1.0      IRanges_2.39.2         textshaping_0.4.0     </span></span>
 <span><span class="co">## [13] yaml_2.3.10            fastmap_1.2.0          R6_2.5.1              </span></span>
