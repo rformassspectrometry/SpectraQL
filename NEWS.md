@@ -1,5 +1,9 @@
 # SpectraQL 0.99
 
+## Changes in 0.99.2
+
+- Add man/figures folder to Rbuildignore.
+
 ## Changes in 0.99.1
 
 - Add S4Vectors package to Suggests as it's used in the unit tests.
