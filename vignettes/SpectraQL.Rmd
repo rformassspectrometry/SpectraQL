@@ -37,9 +37,14 @@ for MS data represented by `Spectra` objects defined in Bioconductor's
 
 # Installation
 
-The package can be installed with the `BiocManager` package. To
-install `BiocManager` use `install.packages("BiocManager")` and, after that,
-`BiocManager::install("SpectraQL")` to install this package.
+The package can be installed with the `BiocManager` package using:
+
+```{r, eval = FALSE}
+## Install BiocManager, if not already installed
+install.packages("BiocManager")
+## Install the package
+BiocManager::install("SpectraQL")
+```
 
 
 # Extracting data from `Spectra` objects with MassQL
