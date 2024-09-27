@@ -330,21 +330,9 @@ NULL
 #' @noRd
 .translate_condition_peak_mz <- function(..., msLevel = 2L, value = "MS2PROD") {
     parms <- list(...)[[1L]]
-    pmz <- numeric(0)
-    ppm <- 0
-    tolerance <- 0
-    if (any(names(parms) == value))
-        pmz <- as.numeric(.parse_or(parms[value]))
-    if(anyNA(pmz))
-        stop("Missing or non-numeric value(s) for '", value, "'")
-    if (any(names(parms) == "TOLERANCEMZ"))
-        tolerance <- as.numeric(parms["TOLERANCEMZ"])
-    if(is.na(tolerance))
-        stop("Non-numeric value for 'TOLERANCEMZ'")
-    if (any(names(parms) == "TOLERANCEPPM"))
-        ppm <- as.numeric(parms["TOLERANCEPPM"])
-    if(is.na(ppm))
-        stop("Non-numeric value for 'TOLERANCEPPM'")
+    pmz <- .ms2(parms, value)
+    ppm <- .value_for_name(parms, "TOLERANCEPPM")
+    tolerance <- .value_for_name(parms, "TOLERANCEMZ")
     if (length(pmz)) {
         filt_peak_mz <- function(x, mz, tolerance, ppm, msLevel) {
             x <- filterMsLevel(x, msLevel = msLevel)
@@ -365,25 +353,31 @@ NULL
 #' @noRd
 .translate_condition_ms2prec <- function(...) {
     parms <- list(...)[[1L]]
-    pmz <- numeric()
-    ppm <- 0
-    tolerance <- 0
-    if (any(names(parms) == "MS2PREC"))
-        pmz <- as.numeric(.parse_or(parms["MS2PREC"]))
-    if (anyNA(pmz))
-        stop("Missing or non-numeric value(s) for 'MS2PREC'")
-    if (any(names(parms) == "TOLERANCEMZ"))
-        tolerance <- as.numeric(parms["TOLERANCEMZ"])
-    if (is.na(tolerance))
-        stop("Non-numeric value for 'TOLERANCEMZ'")
-    if (any(names(parms) == "TOLERANCEPPM"))
-        ppm <- as.numeric(parms["TOLERANCEPPM"])
-    if (is.na(ppm))
-        stop("Non-numeric value for 'TOLERANCEPPM'")
+    pmz <- .ms2(parms, "MS2PREC")
+    ppm <- .value_for_name(parms, "TOLERANCEPPM")
+    tolerance <- .value_for_name(parms, "TOLERANCEMZ")
     if (length(pmz)) {
         ProcessingStep(filterPrecursorMzValues,
                        ARGS = list(mz = pmz, ppm = ppm, tolerance = tolerance))
     } else ProcessingStep(identity)
+}
+
+.ms2 <- function(x, name = "MS2PREC") {
+    res <- numeric()
+    if (any(names(x) == name))
+        res <- as.numeric(.parse_or(x[name]))
+    if (anyNA(res))
+        stop("Non-numeric or missing value(s) for '", name, "'")
+    res
+}
+
+.value_for_name <- function(x, name = "TOLERANCEMZ") {
+    res <- 0
+    if (any(names(x) == name))
+        res <- as.numeric(x[name])
+    if (is.na(res))
+        stop("Non-numeric value for '", name,"'")
+    res
 }
 
 #' @author Johannes Rainer
@@ -395,21 +389,9 @@ NULL
 #' @noRd
 .translate_condition_ms2nl <- function(...) {
     parms <- list(...)[[1L]]
-    nl <- numeric(0)
-    ppm <- 0
-    tolerance <- 0
-    if (any(names(parms) == "MS2NL"))
-        nl <- as.numeric(.parse_or(parms["MS2NL"]))
-    if (anyNA(nl))
-        stop("Non-numeric value/s for 'MS2NL'")
-    if (any(names(parms) == "TOLERANCEMZ"))
-        tolerance <- as.numeric(parms["TOLERANCEMZ"])
-    if (is.na(tolerance))
-        stop("Non-numeric value for 'TOLERANCEMZ'")
-    if (any(names(parms) == "TOLERANCEPPM"))
-        ppm <- as.numeric(parms["TOLERANCEPPM"])
-    if (is.na(ppm))
-        stop("Non-numeric value for 'TOLERANCEPPM'")
+    nl <- .ms2(parms, "MS2NL")
+    ppm <- .value_for_name(parms, "TOLERANCEPPM")
+    tolerance <- .value_for_name(parms, "TOLERANCEMZ")
     if (length(nl)) {
         if(length(nl) > 1)
             stop("OR not yet supported for 'MS2NL'")
@@ -417,8 +399,8 @@ NULL
             x[containsNeutralLoss(x, neutralLoss, tolerance, ppm)]
         }
         ProcessingStep(filt_ms2nl, ARGS = list(neutralLoss = nl,
-                                                        tolerance = tolerance,
-                                                        ppm = ppm))
+                                               tolerance = tolerance,
+                                               ppm = ppm))
     } else ProcessingStep(identity)
 }
 
@@ -471,21 +453,9 @@ NULL
 #' @noRd
 .translate_filter_mz_value <- function(..., msLevel = 2L, value = "MS2MZ") {
     parms <- list(...)[[1L]]
-    mz <- numeric(0)
-    ppm <- 0
-    tolerance <- 0
-    if (any(names(parms) == value))
-        mz <- as.numeric(.parse_or(parms[value]))
-    if(anyNA(mz))
-        stop("Missing or non-numeric value(s) for '", value, "'")
-    if (any(names(parms) == "TOLERANCEMZ"))
-        tolerance <- as.numeric(parms["TOLERANCEMZ"])
-    if(is.na(tolerance))
-        stop("Non-numeric value for 'TOLERANCEMZ'")
-    if (any(names(parms) == "TOLERANCEPPM"))
-        ppm <- as.numeric(parms["TOLERANCEPPM"])
-    if(is.na(ppm))
-        stop("Non-numeric value for 'TOLERANCEPPM'")
+    mz <- .ms2(parms, value)
+    ppm <- .value_for_name(parms, "TOLERANCEPPM")
+    tolerance <- .value_for_name(parms, "TOLERANCEMZ")
     if (length(mz))
         ProcessingStep(
             filterMzValues, ARGS = list(mz = mz, tolerance = tolerance,

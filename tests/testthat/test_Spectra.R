@@ -29,9 +29,9 @@ test_that(".query_spectra works", {
     expect_true(all(acquisitionNum(res) >= 9 & acquisitionNum(res) <= 400))
 
     expect_error(.query_spectra(sps_dda, "QUERY * WHERE MS2PREC"),
-                 "non-numeric value")
+                 "Non-numeric")
     expect_error(.query_spectra(sps_dda, "QUERY * WHERE MS2PREC = a"),
-                 "non-numeric value")
+                 "Non-numeric")
 
     ex_mz <- 304.1131
     mzr <- ex_mz + c(-1, 1) * ppm(ex_mz, 20)

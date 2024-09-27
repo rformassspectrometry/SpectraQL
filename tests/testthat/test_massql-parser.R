@@ -107,7 +107,8 @@ test_that(".translate_condition_scan works", {
     expect_true(inherits(res, "ProcessingStep"))
     expect_equal(res@ARGS, list(scan = c(23, 124)))
 
-    expect_error(.translate_condition_scan(SCAN = c(SCANMAX = "b")), "Non-numeric")
+    expect_error(.translate_condition_scan(SCAN = c(SCANMAX = "b")),
+                 "Non-numeric")
 })
 
 test_that(".query_to_filters works", {
@@ -199,7 +200,7 @@ test_that(".translate_condition_peak_mz works", {
                                 ppm = 10, msLevel = 2L))
 
     expect_error(.translate_condition_peak_mz(MS2PROD = c(MS2PROD = "b")),
-                 "non-numeric")
+                 "Non-numeric")
 
     ## MS1MZ
     res <- .translate_condition_ms1mz(MS1MZ = c(MS1MZ = 123, TOLERANCEPPM = 10))
@@ -221,7 +222,8 @@ test_that(".translate_condition_ms2prec works", {
     expect_equal(res@FUN, filterPrecursorMzValues)
     expect_equal(res@ARGS, list(mz = 123, ppm = 0, tolerance = 0))
 
-    res <- .translate_condition_ms2prec(MS2PREC = c(MS2PREC = 123, TOLERANCEMZ = 2))
+    res <- .translate_condition_ms2prec(
+        MS2PREC = c(MS2PREC = 123, TOLERANCEMZ = 2))
     expect_true(inherits(res, "ProcessingStep"))
     expect_equal(res@FUN, filterPrecursorMzValues)
     expect_equal(res@ARGS, list(mz = 123, ppm = 0, tolerance = 2))
@@ -233,7 +235,7 @@ test_that(".translate_condition_ms2prec works", {
     expect_equal(res@ARGS, list(mz = 123, ppm = 10, tolerance = 2))
 
     expect_error(.translate_condition_ms2prec(MS2PREC = c(MS2PREC = "b")),
-                 "non-numeric")
+                 "Non-numeric")
     ## Or
     res <- .translate_condition_ms2prec(
         MS2PREC = c(MS2PREC = "(123 OR 125 or 129)", TOLERANCEMZ = 2,
@@ -385,7 +387,7 @@ test_that(".translate_filter_mz_value works", {
                                 ppm = 10, msLevel. = 2L))
 
     expect_error(.translate_filter_mz_value(MS2MZ = c(MS2MZ = "b")),
-                 "non-numeric")
+                 "Non-numeric")
 
     ## MS1MZ
     res <- .translate_filter_ms1mz(MS1MZ = c(MS1MZ = 123, TOLERANCEPPM = 10))
@@ -400,4 +402,22 @@ test_that(".translate_filter_mz_value works", {
     expect_equal(res@FUN, filterMzValues)
     expect_equal(res@ARGS, list(mz = 123, tolerance = 0,
                                 ppm = 13, msLevel. = 2L))
+})
+
+test_that(".ms2 works", {
+    expect_equal(.ms2(list()), numeric())
+
+    expect_equal(.ms2(list(MS2PREC = "114.3")), 114.3)
+    expect_equal(.ms2(list(MS2PREC = "114.3 or 12.1")), c(114.3, 12.1))
+    expect_error(.ms2(list(MS2PREC = "123.23 or b")), "Non-numeric")
+
+    expect_equal(.ms2(list(MS = "114.3"), "MS"), 114.3)
+    expect_equal(.ms2(list(MS = "114.3 or 12.1"), "MS"), c(114.3, 12.1))
+})
+
+test_that(".value_for_name works", {
+    expect_equal(.value_for_name(list()), 0)
+    expect_equal(.value_for_name(list(a = 12, b = 3), "a"), 12)
+    expect_equal(.value_for_name(list(a = 12, b = 3), "b"), 3)
+    expect_error(.value_for_name(list(a = "a"), "a"), "Non-numeric")
 })
