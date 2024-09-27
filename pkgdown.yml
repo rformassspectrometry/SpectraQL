@@ -1,9 +1,9 @@
 pandoc: '3.3'
-pkgdown: 2.1.0.9000
-pkgdown_sha: ee72108bc3a9827dcf313817525652dbd9d4284d
+pkgdown: 2.1.1.9000
+pkgdown_sha: 0a18bc718640aee7160a0ebbcdef5ecaae2ac4a4
 articles:
   SpectraQL: SpectraQL.html
-last_built: 2024-09-05T10:10Z
+last_built: 2024-09-27T10:35Z
 urls:
   reference: https://rformassspectrometry.github.io/SpectraQL/reference
   article: https://rformassspectrometry.github.io/SpectraQL/articles
