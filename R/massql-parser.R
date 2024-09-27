@@ -52,15 +52,12 @@ NULL
 #'
 #' @noRd
 .what <- function(x) {
-    res <- sub(".*?query[[:space:]]*(.*?)[[:space:]]*(where.*|filter.*|$)",
-               "\\1", x, ignore.case = TRUE)
-    res[res == x] <- NA_character_
-    res
+    .parse_query(x, "query", "where.*|filter", split = FALSE)
 }
 
 .validate_what <- function(x) {
     if (anyNA(x) || !length(x))
-        stop("Syntax error: unable to extract type of data from query",
+        stop("Wrong syntax: unable to extract type of data from query",
              call. = FALSE)
     x
 }
@@ -147,11 +144,7 @@ NULL
 #'
 #' @noRd
 .where <- function(x) {
-    res <- sub(".*?where[[:space:]]*(.*?)[[:space:]]*(filter.*|$)",
-               "\\1", x, ignore.case = TRUE)
-    res[res == x] <- NA_character_
-    res <- unlist(strsplit(res, split = "[[:space:]]*(and|AND)[[:space:]]*"))
-    res[nchar(res) > 0 & !is.na(res)]
+    .parse_query(x, "where", "filter", split = TRUE)
 }
 
 #' group elements with name `*MIN` and `*MAX` into pairs of two.
@@ -434,6 +427,18 @@ NULL
                          gsub("\\s+", " ", x)), split = " (OR|or) "))
 }
 
+.parse_query <- function(x, from = "filter", to = "where", split = TRUE) {
+    res <- sub(paste0(".*?", from, "[[:space:]]*(.*?)[[:space:]]*(",
+                      to, ".*|$)"),
+               "\\1", x, ignore.case = TRUE)
+    res[res == x] <- NA_character_
+    if (split) {
+        res <- unlist(
+            strsplit(res, split = "[[:space:]]*(and|AND)[[:space:]]*"))
+        res[nchar(res) > 0 & !is.na(res)]
+    } else res
+}
+
 #' filter(s): everything between FILTER and end of line or WHERE (?).
 #' individual filters are additionally split by `AND`.
 #'
@@ -441,11 +446,7 @@ NULL
 #'
 #' @noRd
 .filter <- function(x) {
-    res <- sub(".*?filter[[:space:]]*(.*?)[[:space:]]*(where.*|$)",
-               "\\1", x, ignore.case = TRUE)
-    res[res == x] <- NA_character_
-    res <- unlist(strsplit(res, split = "[[:space:]]*(and|AND)[[:space:]]*"))
-    res[nchar(res) > 0 & !is.na(res)]
+    .parse_query(x, "filter", "where", split = TRUE)
 }
 
 .FILTER_FUNCTIONS <- c(

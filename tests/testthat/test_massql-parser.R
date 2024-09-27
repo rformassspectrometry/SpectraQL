@@ -19,6 +19,19 @@ test_that(".validate_what works", {
     expect_error(.validate_what(NA), "unable")
 })
 
+test_that(".parse_query works", {
+    expect_equal(.parse_query(""), character())
+    expect_equal(.parse_query("", split = FALSE), NA_character_)
+
+    expect_equal(.parse_query("get some words in between"), character())
+    expect_equal(.parse_query("get some words in between", split = FALSE),
+                 NA_character_)
+    expect_equal(.parse_query("get some words in between", "om", "in"),
+                 "e words")
+    expect_equal(.parse_query("get some words in between", "om", "in", FALSE),
+                 "e words")
+})
+
 test_that(".where works", {
     res <- .where("query bla where a < 5")
     expect_equal(res, "a < 5")
