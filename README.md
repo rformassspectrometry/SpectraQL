@@ -5,6 +5,10 @@
 [![codecov](https://codecov.io/github/rformassspectrometry/SpectraQL/branch/main/graph/badge.svg?token=PSUEEOF0GH)](https://codecov.io/github/rformassspectrometry/SpectraQL)
 [![:name status badge](https://rformassspectrometry.r-universe.dev/badges/:name)](https://rformassspectrometry.r-universe.dev/)
 [![license](https://img.shields.io/badge/license-Artistic--2.0-brightgreen.svg)](https://opensource.org/licenses/Artistic-2.0)
+[![years in bioc](http://bioconductor.org/shields/years-in-bioc/SpectraQL.svg)](https://bioconductor.org/packages/SpectraQL)
+[![Ranking by downloads](http://bioconductor.org/shields/downloads/release/SpectraQL.svg)](https://bioconductor.org/packages/stats/bioc/SpectraQL/)
+[![build release](http://bioconductor.org/shields/build/release/bioc/SpectraQL.svg)](https://bioconductor.org/checkResults/release/bioc-LATEST/SpectraQL/)
+[![build devel](http://bioconductor.org/shields/build/devel/bioc/SpectraQL.svg)](https://bioconductor.org/checkResults/devel/bioc-LATEST/SpectraQL/)
 
 The Mass Spec Query Language
 ([MassQL](https://mwang87.github.io/MassQueryLanguage_Documentation/)) is a
