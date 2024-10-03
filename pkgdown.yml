@@ -3,7 +3,7 @@ pkgdown: 2.1.1.9000
 pkgdown_sha: 0cb9d38d1dc25946f01ee7500be9665985d8784e
 articles:
   SpectraQL: SpectraQL.html
-last_built: 2024-10-02T06:37Z
+last_built: 2024-10-03T13:12Z
 urls:
   reference: https://rformassspectrometry.github.io/SpectraQL/reference
   article: https://rformassspectrometry.github.io/SpectraQL/articles
