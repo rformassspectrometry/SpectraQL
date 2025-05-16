@@ -1,3 +1,9 @@
+# SpectraQL 1.3
+
+## Changes in 1.3.1
+
+- Add citation.
+
 # SpectraQL 0.99
 
 ## Changes in 0.99.2
