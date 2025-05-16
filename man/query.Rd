@@ -43,15 +43,16 @@ be applied to modify the data or select different data to be returned. In
 addition \emph{SpectraQL} defines the special type of data \code{"*"} which will return
 the results as a \code{Spectra} object. \emph{SpectraQL} supports:
 \itemize{
-\item \code{"*"}: select all data and return the data subset as a \code{\link[=Spectra]{Spectra()}} object.
-\item \code{"MS1DATA"}: return the \code{\link[=peaksData]{peaksData()}} from all selected \strong{MS1} spectra,
-i.e. a \code{list} with two column matrices with the peaks' m/z and intensity
-values.
-\item \code{"MS2DATA"}: return the \code{\link[=peaksData]{peaksData()}} from all selected \strong{MS2} spectra,
-i.e. a \code{list} with two column matrices with the peaks' m/z and intensity
-values.
-\item \code{"scaninfo(MS1DATA)"}, \code{"scaninfo(MS2DATA)"}: return the \code{\link[=spectraData]{spectraData()}}
-of all selected spectra.
+\item \code{"*"}: select all data and return the data subset as a
+\code{\link[Spectra:Spectra]{Spectra::Spectra()}} object.
+\item \code{"MS1DATA"}: return the \code{\link[Spectra:spectraData]{Spectra::peaksData()}} from all selected \strong{MS1}
+spectra, i.e. a \code{list} with two column matrices with the peaks' m/z and
+intensity values.
+\item \code{"MS2DATA"}: return the \code{\link[Spectra:spectraData]{Spectra::peaksData()}} from all selected \strong{MS2}
+spectra, i.e. a \code{list} with two column matrices with the peaks' m/z and
+intensity values.
+\item \code{"scaninfo(MS1DATA)"}, \code{"scaninfo(MS2DATA)"}: return the
+\code{\link[Spectra:spectraData]{Spectra::spectraData()}} of all selected spectra.
 \item \code{"scansum(MS1DATA)"}, \code{"scansum(MS2DATA)"}: sum of the peak intensities of
 the selected spectra (TIC, or XIC if combined with \code{"FILTER"}).
 }

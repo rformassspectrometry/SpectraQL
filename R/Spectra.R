@@ -31,15 +31,16 @@
 #' addition *SpectraQL* defines the special type of data `"*"` which will return
 #' the results as a `Spectra` object. *SpectraQL* supports:
 #'
-#' - `"*"`: select all data and return the data subset as a [Spectra()] object.
-#' - `"MS1DATA"`: return the [peaksData()] from all selected **MS1** spectra,
-#'   i.e. a `list` with two column matrices with the peaks' m/z and intensity
-#'   values.
-#' - `"MS2DATA"`: return the [peaksData()] from all selected **MS2** spectra,
-#'   i.e. a `list` with two column matrices with the peaks' m/z and intensity
-#'   values.
-#' - `"scaninfo(MS1DATA)"`, `"scaninfo(MS2DATA)"`: return the [spectraData()]
-#'   of all selected spectra.
+#' - `"*"`: select all data and return the data subset as a
+#'   [Spectra::Spectra()] object.
+#' - `"MS1DATA"`: return the [Spectra::peaksData()] from all selected **MS1**
+#'   spectra, i.e. a `list` with two column matrices with the peaks' m/z and
+#'   intensity values.
+#' - `"MS2DATA"`: return the [Spectra::peaksData()] from all selected **MS2**
+#'   spectra, i.e. a `list` with two column matrices with the peaks' m/z and
+#'   intensity values.
+#' - `"scaninfo(MS1DATA)"`, `"scaninfo(MS2DATA)"`: return the
+#'   [Spectra::spectraData()] of all selected spectra.
 #' - `"scansum(MS1DATA)"`, `"scansum(MS2DATA)"`: sum of the peak intensities of
 #'   the selected spectra (TIC, or XIC if combined with `"FILTER"`).
 #'
