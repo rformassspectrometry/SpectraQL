@@ -1,10 +1,9 @@
 library(testthat)
 library(SpectraQL)
 library(Spectra)
-library(msdata)
+library(MsDataHub)
 
-fls <- dir(system.file("TripleTOF-SWATH", package = "msdata"),
-           full.names = TRUE)
-sps_dda <- Spectra(fls[1L])
+fls <- MsDataHub::PestMix1_DDA.mzML()
+sps_dda <- Spectra(fls)
 
 test_check("SpectraQL")

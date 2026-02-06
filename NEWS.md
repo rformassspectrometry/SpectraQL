@@ -1,3 +1,10 @@
+# SpectraQL 1.5
+
+## Changes in 1.5.1
+
+- Load test and example files from *MsDataHub* dropping the dependency from
+  *msdata*.
+
 # SpectraQL 1.3
 
 ## Changes in 1.3.1

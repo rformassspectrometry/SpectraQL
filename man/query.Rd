@@ -114,11 +114,10 @@ for conditions).
 \examples{
 
 ## Read a data file with MS1 and MS2 spectra
-library(msdata)
+library(MsDataHub)
 library(Spectra)
-fls <- dir(system.file("TripleTOF-SWATH", package = "msdata"),
-    full.names = TRUE)
-sps_dda <- Spectra(fls[1L])
+fls <- MsDataHub::PestMix1_DDA.mzML()
+sps_dda <- Spectra(fls)
 
 ## Subset to spectra measured between 300 and 400 seconds
 query(sps_dda, "QUERY * WHERE RTMIN = 300 AND RTMAX = 400")
