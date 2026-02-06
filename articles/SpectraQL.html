@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">SpectraQL</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -70,8 +70,8 @@ document.addEventListener("DOMContentLoaded", function() {
     if (links[i].hostname != window.location.hostname)
       links[i].target = '_blank';
 });
-</script><p><strong>Package</strong>: <em><a href="https://bioconductor.org/packages/3.22/SpectraQL" class="external-link">SpectraQL</a></em><br><strong>Authors</strong>: Johannes Rainer [aut, cre] (ORCID: <a href="https://orcid.org/0000-0002-6977-7147" class="external-link uri">https://orcid.org/0000-0002-6977-7147</a>), Andrea Vicini
-[aut], Sebastian Gibb [ctb] (ORCID: <a href="https://orcid.org/0000-0001-7406-4443" class="external-link uri">https://orcid.org/0000-0001-7406-4443</a>)<br><strong>Compiled</strong>: Fri May 16 19:49:52 2025</p>
+</script><p><strong>Package</strong>: <em><a href="https://bioconductor.org/packages/3.23/SpectraQL" class="external-link">SpectraQL</a></em><br><strong>Authors</strong>: Johannes Rainer [aut, cre] (ORCID: <a href="https://orcid.org/0000-0002-6977-7147" class="external-link uri">https://orcid.org/0000-0002-6977-7147</a>), Andrea Vicini
+[aut], Sebastian Gibb [ctb] (ORCID: <a href="https://orcid.org/0000-0001-7406-4443" class="external-link uri">https://orcid.org/0000-0001-7406-4443</a>)<br><strong>Compiled</strong>: Fri Feb 6 08:00:34 2026</p>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
@@ -106,20 +106,20 @@ storage agnostic queries. At present, <em>SpectraQL</em> supports most,
 but not all of the conditions and expressions of the MassQL definition.
 In particular, numeric operations in query fields such as
 <code>MS2PROD=100+14</code> are not yet supported.</p>
-<p>Below we load MS data from an example mzML file. Note also that
-<code>Spectra</code> objects can represent MS data from a very large
-variety of sources including but not limited to mzML or mzXML files,
-databases (e.g. <a href="https://rformassspectrometry.github.io/MsBackendMassbank/" class="external-link">MsBackendMassbank</a>)
+<p>Below we load MS data from an example mzML file from Bioconductor’s
+<em>MsDataHub</em>. Note also that <code>Spectra</code> objects can
+represent MS data from a very large variety of sources including but not
+limited to mzML or mzXML files, databases (e.g. <a href="https://rformassspectrometry.github.io/MsBackendMassbank/" class="external-link">MsBackendMassbank</a>)
 or MGF files (<a href="https://rformassspectrometry.github.io/MsBackendMgf/" class="external-link">MsBackendMgf</a>).
-The use of the <em><a href="https://bioconductor.org/packages/3.22/Spectra" class="external-link">Spectra</a></em>
+The use of the <em><a href="https://bioconductor.org/packages/3.23/Spectra" class="external-link">Spectra</a></em>
 an hence <em>SpectraQL</em> package is thus not restricted to
 mzML-backed MS data.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/RforMassSpectrometry/Spectra" class="external-link">Spectra</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/RforMassSpectrometry/SpectraQL" class="external-link">SpectraQL</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">msdata</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rformassspectrometry.github.io/MsDataHub" class="external-link">MsDataHub</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">fl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"TripleTOF-SWATH"</span>, <span class="st">"PestMix1_DDA.mzML"</span>, package <span class="op">=</span> <span class="st">"msdata"</span><span class="op">)</span></span>
+<span><span class="va">fl</span> <span class="op">&lt;-</span> <span class="fu">MsDataHub</span><span class="fu">::</span><span class="fu"><a href="https://rformassspectrometry.github.io/MsDataHub/reference/TripleTOF.html" class="external-link">PestMix1_DDA.mzML</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">dda</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Spectra/man/Spectra.html" class="external-link">Spectra</a></span><span class="op">(</span><span class="va">fl</span><span class="op">)</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="massql-definition">MassQL definition<a class="anchor" aria-label="anchor" href="#massql-definition"></a>
@@ -303,9 +303,9 @@ of the measurement run we can use a MassQL query with the
 <span><span class="co">##  ... 34 more variables/columns.</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## file(s):</span></span>
-<span><span class="co">## PestMix1_DDA.mzML</span></span>
+<span><span class="co">## c5b57aca02b_7861</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Filter: select retention time [200..300] on MS level(s)  [Fri May 16 19:49:56 2025]</span></span></code></pre>
+<span><span class="co">##  Filter: select retention time [200..300] on MS level(s)  [Fri Feb  6 08:00:41 2026]</span></span></code></pre>
 <p>Internally, <em>SpectraQL</em> translates the MassQL query into
 filter functions that are applied to the <code>Spectra</code> object.
 The returned result is now a <code>Spectra</code> object with all
@@ -345,9 +345,9 @@ in lower case below.</p>
 <span><span class="co">##  ... 34 more variables/columns.</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## file(s):</span></span>
-<span><span class="co">## PestMix1_DDA.mzML</span></span>
+<span><span class="co">## c5b57aca02b_7861</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Filter: select spectra with precursor m/z matching 278.093 [Fri May 16 19:49:56 2025]</span></span></code></pre>
+<span><span class="co">##  Filter: select spectra with precursor m/z matching 278.093 [Fri Feb  6 08:00:41 2026]</span></span></code></pre>
 <p>We thus selected 9 spectra from the data set with a precursor m/z
 matching our filter criteria.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
@@ -371,10 +371,10 @@ set that anyway to a value of 0.</p>
 <span><span class="co">##  ... 34 more variables/columns.</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## file(s):</span></span>
-<span><span class="co">## PestMix1_DDA.mzML</span></span>
+<span><span class="co">## c5b57aca02b_7861</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Filter: select retention time [200..300] on MS level(s)  [Fri May 16 19:49:56 2025]</span></span>
-<span><span class="co">##  Filter: select spectra with precursor m/z matching 278.093 [Fri May 16 19:49:56 2025]</span></span></code></pre>
+<span><span class="co">##  Filter: select retention time [200..300] on MS level(s)  [Fri Feb  6 08:00:41 2026]</span></span>
+<span><span class="co">##  Filter: select spectra with precursor m/z matching 278.093 [Fri Feb  6 08:00:41 2026]</span></span></code></pre>
 <p>For conditions <code>"MS2PROD"</code>, <code>"MS2PREC"</code> and
 <code>"MS1MZ"</code> it is also possible to provide multiple values to
 select spectra that match any of the provided m/z values. These values
@@ -401,9 +401,9 @@ applied to each of these. Below we select all spectra that contain an
 <span><span class="co">##  ... 34 more variables/columns.</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## file(s):</span></span>
-<span><span class="co">## PestMix1_DDA.mzML</span></span>
+<span><span class="co">## c5b57aca02b_7861</span></span>
 <span><span class="co">## Processing:</span></span>
-<span><span class="co">##  Filter: select MS level(s) 1 [Fri May 16 19:49:56 2025]</span></span></code></pre>
+<span><span class="co">##  Filter: select MS level(s) 1 [Fri Feb  6 08:00:41 2026]</span></span></code></pre>
 <p>Note that using <code>"MS1MZ"</code> will return only MS1 spectra and
 <code>"MS2PROD"</code>, <code>"MS2MZ"</code> and <code>"MS2PREC"</code>
 only MS2 spectra.</p>
@@ -440,7 +440,7 @@ chromatogram:</p>
 <code class="sourceCode R"><span><span class="va">tic</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/query.html">query</a></span><span class="op">(</span><span class="va">dda</span>, <span class="st">"query scansum(ms1data)"</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">tic</span>, type <span class="op">=</span> <span class="st">"l"</span>, xlab <span class="op">=</span> <span class="st">"scan index"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="SpectraQL_files/figure-html/unnamed-chunk-12-1.png" width="700"></p>
+<p><img src="SpectraQL_files/figure-html/unnamed-chunk-12-1.png" class="r-plt" alt="" width="700"></p>
 <p>Please note that the x-axis does <strong>not</strong> represent the
 retention times but the scan indices.</p>
 <p>The function <code>"scaninfo"</code> extracts all information from
@@ -452,30 +452,30 @@ from <code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" clas
 <pre><code><span><span class="co">## DataFrame with 2236 rows and 35 columns</span></span>
 <span><span class="co">##        msLevel     rtime acquisitionNum scanIndex            dataStorage</span></span>
 <span><span class="co">##      &lt;integer&gt; &lt;numeric&gt;      &lt;integer&gt; &lt;integer&gt;            &lt;character&gt;</span></span>
-<span><span class="co">## 1            1   300.123           2271      2271 /__w/_temp/Library/m..</span></span>
-<span><span class="co">## 2            2   300.395           2272      2272 /__w/_temp/Library/m..</span></span>
-<span><span class="co">## 3            1   300.533           2273      2273 /__w/_temp/Library/m..</span></span>
-<span><span class="co">## 4            1   300.654           2274      2274 /__w/_temp/Library/m..</span></span>
-<span><span class="co">## 5            1   300.775           2275      2275 /__w/_temp/Library/m..</span></span>
+<span><span class="co">## 1            1   300.123           2271      2271 /github/home/.cache/..</span></span>
+<span><span class="co">## 2            2   300.395           2272      2272 /github/home/.cache/..</span></span>
+<span><span class="co">## 3            1   300.533           2273      2273 /github/home/.cache/..</span></span>
+<span><span class="co">## 4            1   300.654           2274      2274 /github/home/.cache/..</span></span>
+<span><span class="co">## 5            1   300.775           2275      2275 /github/home/.cache/..</span></span>
 <span><span class="co">## ...        ...       ...            ...       ...                    ...</span></span>
-<span><span class="co">## 2232         2   499.391           4502      4502 /__w/_temp/Library/m..</span></span>
-<span><span class="co">## 2233         1   499.529           4503      4503 /__w/_temp/Library/m..</span></span>
-<span><span class="co">## 2234         2   499.691           4504      4504 /__w/_temp/Library/m..</span></span>
-<span><span class="co">## 2235         2   499.811           4505      4505 /__w/_temp/Library/m..</span></span>
-<span><span class="co">## 2236         1   499.948           4506      4506 /__w/_temp/Library/m..</span></span>
+<span><span class="co">## 2232         2   499.391           4502      4502 /github/home/.cache/..</span></span>
+<span><span class="co">## 2233         1   499.529           4503      4503 /github/home/.cache/..</span></span>
+<span><span class="co">## 2234         2   499.691           4504      4504 /github/home/.cache/..</span></span>
+<span><span class="co">## 2235         2   499.811           4505      4505 /github/home/.cache/..</span></span>
+<span><span class="co">## 2236         1   499.948           4506      4506 /github/home/.cache/..</span></span>
 <span><span class="co">##                  dataOrigin centroided  smoothed  polarity precScanNum</span></span>
 <span><span class="co">##                 &lt;character&gt;  &lt;logical&gt; &lt;logical&gt; &lt;integer&gt;   &lt;integer&gt;</span></span>
-<span><span class="co">## 1    /__w/_temp/Library/m..       TRUE        NA         1          NA</span></span>
-<span><span class="co">## 2    /__w/_temp/Library/m..       TRUE        NA         1          NA</span></span>
-<span><span class="co">## 3    /__w/_temp/Library/m..       TRUE        NA         1          NA</span></span>
-<span><span class="co">## 4    /__w/_temp/Library/m..       TRUE        NA         1          NA</span></span>
-<span><span class="co">## 5    /__w/_temp/Library/m..       TRUE        NA         1          NA</span></span>
+<span><span class="co">## 1    /github/home/.cache/..       TRUE        NA         1          NA</span></span>
+<span><span class="co">## 2    /github/home/.cache/..       TRUE        NA         1          NA</span></span>
+<span><span class="co">## 3    /github/home/.cache/..       TRUE        NA         1          NA</span></span>
+<span><span class="co">## 4    /github/home/.cache/..       TRUE        NA         1          NA</span></span>
+<span><span class="co">## 5    /github/home/.cache/..       TRUE        NA         1          NA</span></span>
 <span><span class="co">## ...                     ...        ...       ...       ...         ...</span></span>
-<span><span class="co">## 2232 /__w/_temp/Library/m..       TRUE        NA         1          NA</span></span>
-<span><span class="co">## 2233 /__w/_temp/Library/m..       TRUE        NA         1          NA</span></span>
-<span><span class="co">## 2234 /__w/_temp/Library/m..       TRUE        NA         1          NA</span></span>
-<span><span class="co">## 2235 /__w/_temp/Library/m..       TRUE        NA         1          NA</span></span>
-<span><span class="co">## 2236 /__w/_temp/Library/m..       TRUE        NA         1          NA</span></span>
+<span><span class="co">## 2232 /github/home/.cache/..       TRUE        NA         1          NA</span></span>
+<span><span class="co">## 2233 /github/home/.cache/..       TRUE        NA         1          NA</span></span>
+<span><span class="co">## 2234 /github/home/.cache/..       TRUE        NA         1          NA</span></span>
+<span><span class="co">## 2235 /github/home/.cache/..       TRUE        NA         1          NA</span></span>
+<span><span class="co">## 2236 /github/home/.cache/..       TRUE        NA         1          NA</span></span>
 <span><span class="co">##      precursorMz precursorIntensity precursorCharge collisionEnergy</span></span>
 <span><span class="co">##        &lt;numeric&gt;          &lt;numeric&gt;       &lt;integer&gt;       &lt;numeric&gt;</span></span>
 <span><span class="co">## 1             NA                 NA              NA              NA</span></span>
@@ -502,32 +502,32 @@ from <code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" clas
 <span><span class="co">## 2234                172.579                 173.079                173.579</span></span>
 <span><span class="co">## 2235                367.682                 368.182                368.682</span></span>
 <span><span class="co">## 2236                     NA                      NA                     NA</span></span>
-<span><span class="co">##      peaksCount totIonCurrent basePeakMZ basePeakIntensity ionisationEnergy</span></span>
-<span><span class="co">##       &lt;integer&gt;     &lt;numeric&gt;  &lt;numeric&gt;         &lt;numeric&gt;        &lt;numeric&gt;</span></span>
-<span><span class="co">## 1           327        236402    54.0089             44069                0</span></span>
-<span><span class="co">## 2            52          5440   233.0023               288                0</span></span>
-<span><span class="co">## 3           348        221394    54.0089             39904                0</span></span>
-<span><span class="co">## 4           198        211449    54.0089             43642                0</span></span>
-<span><span class="co">## 5           377        248240    54.0099             32575                0</span></span>
-<span><span class="co">## ...         ...           ...        ...               ...              ...</span></span>
-<span><span class="co">## 2232          2          1025    98.9837                32                0</span></span>
-<span><span class="co">## 2233        370        307324    54.0088             24136                0</span></span>
-<span><span class="co">## 2234         10          1360    55.0552                42                0</span></span>
-<span><span class="co">## 2235          4          1103   368.1747                42                0</span></span>
-<span><span class="co">## 2236        426        318309    54.0088             25913                0</span></span>
-<span><span class="co">##          lowMZ    highMZ mergedScan mergedResultScanNum</span></span>
-<span><span class="co">##      &lt;numeric&gt; &lt;numeric&gt;  &lt;integer&gt;           &lt;integer&gt;</span></span>
-<span><span class="co">## 1            0         0         NA                  NA</span></span>
-<span><span class="co">## 2            0         0         NA                  NA</span></span>
-<span><span class="co">## 3            0         0         NA                  NA</span></span>
-<span><span class="co">## 4            0         0         NA                  NA</span></span>
-<span><span class="co">## 5            0         0         NA                  NA</span></span>
-<span><span class="co">## ...        ...       ...        ...                 ...</span></span>
-<span><span class="co">## 2232         0         0         NA                  NA</span></span>
-<span><span class="co">## 2233         0         0         NA                  NA</span></span>
-<span><span class="co">## 2234         0         0         NA                  NA</span></span>
-<span><span class="co">## 2235         0         0         NA                  NA</span></span>
-<span><span class="co">## 2236         0         0         NA                  NA</span></span>
+<span><span class="co">##      peaksCount totIonCurrent basePeakMZ basePeakIntensity electronBeamEnergy</span></span>
+<span><span class="co">##       &lt;integer&gt;     &lt;numeric&gt;  &lt;numeric&gt;         &lt;numeric&gt;          &lt;numeric&gt;</span></span>
+<span><span class="co">## 1           327        236402    54.0089             44069                 NA</span></span>
+<span><span class="co">## 2            52          5440   233.0023               288                 NA</span></span>
+<span><span class="co">## 3           348        221394    54.0089             39904                 NA</span></span>
+<span><span class="co">## 4           198        211449    54.0089             43642                 NA</span></span>
+<span><span class="co">## 5           377        248240    54.0099             32575                 NA</span></span>
+<span><span class="co">## ...         ...           ...        ...               ...                ...</span></span>
+<span><span class="co">## 2232          2          1025    98.9837                32                 NA</span></span>
+<span><span class="co">## 2233        370        307324    54.0088             24136                 NA</span></span>
+<span><span class="co">## 2234         10          1360    55.0552                42                 NA</span></span>
+<span><span class="co">## 2235          4          1103   368.1747                42                 NA</span></span>
+<span><span class="co">## 2236        426        318309    54.0088             25913                 NA</span></span>
+<span><span class="co">##      ionisationEnergy     lowMZ    highMZ mergedScan mergedResultScanNum</span></span>
+<span><span class="co">##             &lt;numeric&gt; &lt;numeric&gt; &lt;numeric&gt;  &lt;integer&gt;           &lt;integer&gt;</span></span>
+<span><span class="co">## 1                   0         0         0         NA                  NA</span></span>
+<span><span class="co">## 2                   0         0         0         NA                  NA</span></span>
+<span><span class="co">## 3                   0         0         0         NA                  NA</span></span>
+<span><span class="co">## 4                   0         0         0         NA                  NA</span></span>
+<span><span class="co">## 5                   0         0         0         NA                  NA</span></span>
+<span><span class="co">## ...               ...       ...       ...        ...                 ...</span></span>
+<span><span class="co">## 2232                0         0         0         NA                  NA</span></span>
+<span><span class="co">## 2233                0         0         0         NA                  NA</span></span>
+<span><span class="co">## 2234                0         0         0         NA                  NA</span></span>
+<span><span class="co">## 2235                0         0         0         NA                  NA</span></span>
+<span><span class="co">## 2236                0         0         0         NA                  NA</span></span>
 <span><span class="co">##      mergedResultStartScanNum mergedResultEndScanNum injectionTime filterString</span></span>
 <span><span class="co">##                     &lt;integer&gt;              &lt;integer&gt;     &lt;numeric&gt;  &lt;character&gt;</span></span>
 <span><span class="co">## 1                          NA                     NA             0           NA</span></span>
@@ -554,19 +554,19 @@ from <code><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" clas
 <span><span class="co">## 2234 sample=1 period=1 cy..                   NA                   50</span></span>
 <span><span class="co">## 2235 sample=1 period=1 cy..                   NA                   50</span></span>
 <span><span class="co">## 2236 sample=1 period=1 cy..                   NA                   50</span></span>
-<span><span class="co">##      scanWindowUpperLimit electronBeamEnergy</span></span>
-<span><span class="co">##                 &lt;numeric&gt;          &lt;numeric&gt;</span></span>
-<span><span class="co">## 1                    2000                 NA</span></span>
-<span><span class="co">## 2                    2000                 NA</span></span>
-<span><span class="co">## 3                    2000                 NA</span></span>
-<span><span class="co">## 4                    2000                 NA</span></span>
-<span><span class="co">## 5                    2000                 NA</span></span>
-<span><span class="co">## ...                   ...                ...</span></span>
-<span><span class="co">## 2232                 2000                 NA</span></span>
-<span><span class="co">## 2233                 2000                 NA</span></span>
-<span><span class="co">## 2234                 2000                 NA</span></span>
-<span><span class="co">## 2235                 2000                 NA</span></span>
-<span><span class="co">## 2236                 2000                 NA</span></span></code></pre>
+<span><span class="co">##      scanWindowUpperLimit</span></span>
+<span><span class="co">##                 &lt;numeric&gt;</span></span>
+<span><span class="co">## 1                    2000</span></span>
+<span><span class="co">## 2                    2000</span></span>
+<span><span class="co">## 3                    2000</span></span>
+<span><span class="co">## 4                    2000</span></span>
+<span><span class="co">## 5                    2000</span></span>
+<span><span class="co">## ...                   ...</span></span>
+<span><span class="co">## 2232                 2000</span></span>
+<span><span class="co">## 2233                 2000</span></span>
+<span><span class="co">## 2234                 2000</span></span>
+<span><span class="co">## 2235                 2000</span></span>
+<span><span class="co">## 2236                 2000</span></span></code></pre>
 </div>
 <div class="section level4">
 <h4 id="filtering-peaks-within-spectra">Filtering peaks within spectra<a class="anchor" aria-label="anchor" href="#filtering-peaks-within-spectra"></a>
@@ -581,7 +581,7 @@ extract the ion count for that.</p>
 <code class="sourceCode R"><span><span class="va">ic</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/query.html">query</a></span><span class="op">(</span></span>
 <span>    <span class="va">dda</span>, <span class="st">"query scansum(ms1data) filter ms1mz = 219.095:tolerancemz=0.1"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">ic</span>, type <span class="op">=</span> <span class="st">"l"</span>, xlab <span class="op">=</span> <span class="st">"scan index"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="SpectraQL_files/figure-html/unnamed-chunk-14-1.png" width="700"></p>
+<p><img src="SpectraQL_files/figure-html/unnamed-chunk-14-1.png" class="r-plt" alt="" width="700"></p>
 <p>We can also combine that with <code>"QUERY"</code> to restrict to a
 certain retention time range to generate an extracted ion chromatogram
 (XIC).</p>
@@ -591,7 +591,7 @@ certain retention time range to generate an extracted ion chromatogram
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"query scansum(ms1data) where rtmin = 235 and rtmax = 250"</span>,</span>
 <span>           <span class="st">" filter ms1mz = 219.095:tolerancemz=0.1"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">ic</span>, type <span class="op">=</span> <span class="st">"l"</span>, xlab <span class="op">=</span> <span class="st">"scan index"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="SpectraQL_files/figure-html/unnamed-chunk-15-1.png" width="700"></p>
+<p><img src="SpectraQL_files/figure-html/unnamed-chunk-15-1.png" class="r-plt" alt="" width="700"></p>
 <p>Internally, <em>SpectraQL</em>’s function <em>translates</em> the
 MassQL query into the following combination of function calls:</p>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
@@ -602,16 +602,16 @@ MassQL query into the following combination of function calls:</p>
 <span>    <span class="fu"><a href="https://rdrr.io/pkg/ProtGenerics/man/protgenerics.html" class="external-link">ionCount</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span>, type <span class="op">=</span> <span class="st">"l"</span>, xlab <span class="op">=</span> <span class="st">"scan index"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="SpectraQL_files/figure-html/unnamed-chunk-16-1.png" width="700"></p>
+<p><img src="SpectraQL_files/figure-html/unnamed-chunk-16-1.png" class="r-plt" alt="" width="700"></p>
 </div>
 </div>
 </div>
 <div class="section level2">
 <h2 class="unnumbered" id="session-information">Session information<a class="anchor" aria-label="anchor" href="#session-information"></a>
 </h2>
-<pre><code><span><span class="co">## R version 4.5.0 (2025-04-11)</span></span>
+<pre><code><span><span class="co">## R Under development (unstable) (2026-02-01 r89366)</span></span>
 <span><span class="co">## Platform: x86_64-pc-linux-gnu</span></span>
-<span><span class="co">## Running under: Ubuntu 24.04.2 LTS</span></span>
+<span><span class="co">## Running under: Ubuntu 24.04.3 LTS</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Matrix products: default</span></span>
 <span><span class="co">## BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 </span></span>
@@ -633,25 +633,36 @@ MassQL query into the following combination of function calls:</p>
 <span><span class="co">## [8] base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">## [1] msdata_0.49.0       SpectraQL_1.3.1     ProtGenerics_1.39.2</span></span>
-<span><span class="co">## [4] Spectra_1.19.0      BiocParallel_1.43.0 S4Vectors_0.47.0   </span></span>
-<span><span class="co">## [7] BiocGenerics_0.55.0 generics_0.1.4      BiocStyle_2.37.0   </span></span>
+<span><span class="co">## [1] MsDataHub_1.11.0    SpectraQL_1.5.1     ProtGenerics_1.39.2</span></span>
+<span><span class="co">## [4] Spectra_1.21.1      BiocParallel_1.45.0 S4Vectors_0.49.0   </span></span>
+<span><span class="co">## [7] BiocGenerics_0.57.0 generics_0.1.4      BiocStyle_2.39.0   </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
-<span><span class="co">##  [1] jsonlite_2.0.0         compiler_4.5.0         BiocManager_1.30.25   </span></span>
-<span><span class="co">##  [4] Rcpp_1.0.14            Biobase_2.69.0         parallel_4.5.0        </span></span>
-<span><span class="co">##  [7] cluster_2.1.8.1        jquerylib_0.1.4        systemfonts_1.2.3     </span></span>
-<span><span class="co">## [10] IRanges_2.43.0         textshaping_1.0.1      yaml_2.3.10           </span></span>
-<span><span class="co">## [13] fastmap_1.2.0          R6_2.6.1               knitr_1.50            </span></span>
-<span><span class="co">## [16] htmlwidgets_1.6.4      MASS_7.3-65            bookdown_0.43         </span></span>
-<span><span class="co">## [19] desc_1.4.3             bslib_0.9.0            rlang_1.1.6           </span></span>
-<span><span class="co">## [22] cachem_1.1.0           xfun_0.52              fs_1.6.6              </span></span>
-<span><span class="co">## [25] MsCoreUtils_1.21.0     sass_0.4.10            cli_3.6.5             </span></span>
-<span><span class="co">## [28] pkgdown_2.1.2.9000     ncdf4_1.24             digest_0.6.37         </span></span>
-<span><span class="co">## [31] mzR_2.43.0             MetaboCoreUtils_1.17.1 lifecycle_1.0.4       </span></span>
-<span><span class="co">## [34] clue_0.3-66            evaluate_1.0.3         codetools_0.2-20      </span></span>
-<span><span class="co">## [37] ragg_1.4.0             rmarkdown_2.29         tools_4.5.0           </span></span>
-<span><span class="co">## [40] htmltools_0.5.8.1</span></span></code></pre>
+<span><span class="co">##  [1] KEGGREST_1.51.1        xfun_0.56              bslib_0.10.0          </span></span>
+<span><span class="co">##  [4] httr2_1.2.2            htmlwidgets_1.6.4      Biobase_2.71.0        </span></span>
+<span><span class="co">##  [7] vctrs_0.7.1            tools_4.6.0            curl_7.0.0            </span></span>
+<span><span class="co">## [10] parallel_4.6.0         tibble_3.3.1           AnnotationDbi_1.73.0  </span></span>
+<span><span class="co">## [13] RSQLite_2.4.5          cluster_2.1.8.2        blob_1.3.0            </span></span>
+<span><span class="co">## [16] pkgconfig_2.0.3        dbplyr_2.5.1           desc_1.4.3            </span></span>
+<span><span class="co">## [19] lifecycle_1.0.5        compiler_4.6.0         Biostrings_2.79.4     </span></span>
+<span><span class="co">## [22] textshaping_1.0.4      Seqinfo_1.1.0          codetools_0.2-20      </span></span>
+<span><span class="co">## [25] ncdf4_1.24             clue_0.3-66            htmltools_0.5.9       </span></span>
+<span><span class="co">## [28] sass_0.4.10            yaml_2.3.12            crayon_1.5.3          </span></span>
+<span><span class="co">## [31] pkgdown_2.2.0.9000     pillar_1.11.1          jquerylib_0.1.4       </span></span>
+<span><span class="co">## [34] MASS_7.3-65            cachem_1.1.0           MetaboCoreUtils_1.19.1</span></span>
+<span><span class="co">## [37] ExperimentHub_3.1.0    AnnotationHub_4.1.0    tidyselect_1.2.1      </span></span>
+<span><span class="co">## [40] digest_0.6.39          purrr_1.2.1            dplyr_1.2.0           </span></span>
+<span><span class="co">## [43] bookdown_0.46          BiocVersion_3.23.1     fastmap_1.2.0         </span></span>
+<span><span class="co">## [46] cli_3.6.5              magrittr_2.0.4         withr_3.0.2           </span></span>
+<span><span class="co">## [49] filelock_1.0.3         rappdirs_0.3.4         bit64_4.6.0-1         </span></span>
+<span><span class="co">## [52] XVector_0.51.0         httr_1.4.7             rmarkdown_2.30        </span></span>
+<span><span class="co">## [55] bit_4.6.0              otel_0.2.0             png_0.1-8             </span></span>
+<span><span class="co">## [58] ragg_1.5.0             memoise_2.0.1          evaluate_1.0.5        </span></span>
+<span><span class="co">## [61] knitr_1.51             IRanges_2.45.0         BiocFileCache_3.1.0   </span></span>
+<span><span class="co">## [64] rlang_1.1.7            Rcpp_1.1.1             glue_1.8.0            </span></span>
+<span><span class="co">## [67] DBI_1.2.3              mzR_2.45.0             BiocManager_1.30.27   </span></span>
+<span><span class="co">## [70] jsonlite_2.0.0         R6_2.6.1               systemfonts_1.3.1     </span></span>
+<span><span class="co">## [73] fs_1.6.6               MsCoreUtils_1.23.2</span></span></code></pre>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
@@ -664,7 +675,7 @@ MassQL query into the following combination of function calls:</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.9000.</p>
 </div>
 
     </footer>
