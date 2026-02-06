@@ -9,7 +9,7 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %%\VignetteKeywords{Mass Spectrometry, MS, MSMS, Metabolomics, Infrastructure}
   %\VignetteEncoding{UTF-8}
-  %\VignetteDepends{Spectra,SpectraQL,msdata,BiocStyle}
+  %\VignetteDepends{Spectra,SpectraQL,MsDataHub,BiocStyle}
 ---
 
 ```{r style, echo = FALSE, results = 'asis'}
@@ -56,9 +56,10 @@ using platform independent and data storage agnostic queries. At present,
 MassQL definition. In particular, numeric operations in query fields such as
 `MS2PROD=100+14` are not yet supported.
 
-Below we load MS data from an example mzML file. Note also that `Spectra`
-objects can represent MS data from a very large variety of sources including but
-not limited to mzML or mzXML files, databases
+Below we load MS data from an example mzML file from Bioconductor's
+*MsDataHub*. Note also that `Spectra` objects can represent MS data from a very
+large variety of sources including but not limited to mzML or mzXML files,
+databases
 (e.g. [MsBackendMassbank](https://rformassspectrometry.github.io/MsBackendMassbank/))
 or MGF files
 ([MsBackendMgf](https://rformassspectrometry.github.io/MsBackendMgf/)). The use
@@ -68,9 +69,9 @@ restricted to mzML-backed MS data.
 ```{r, message = FALSE}
 library(Spectra)
 library(SpectraQL)
-library(msdata)
+library(MsDataHub)
 
-fl <- system.file("TripleTOF-SWATH", "PestMix1_DDA.mzML", package = "msdata")
+fl <- MsDataHub::PestMix1_DDA.mzML()
 dda <- Spectra(fl)
 ```
 
