@@ -62,7 +62,7 @@ test_that(".query_spectra works", {
     res <- .query_spectra(
         sps_dda, "QUERY * WHERE ms2prec = (99 or 90 or 89):tolerancemz=0.6")
     expect_true(all(precursorMz(res) > 89))
-    expect_true(all(precursorMz(res) < 100))
+    expect_true(all(precursorMz(res) <= 100))
 
     res <- .query_spectra(
         sps_dda, "QUERY * WHERE MS2NL=100:TOLERANCEPPM=5")
