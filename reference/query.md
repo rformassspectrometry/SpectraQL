@@ -198,9 +198,9 @@ query(sps_dda, "QUERY * WHERE RTMIN = 300 AND RTMAX = 400")
 #>  ... 34 more variables/columns.
 #> 
 #> file(s):
-#> c5b57aca02b_7861
+#> 27b23e3002b4_7861
 #> Processing:
-#>  Filter: select retention time [300..400] on MS level(s)  [Fri Feb  6 08:00:30 2026] 
+#>  Filter: select retention time [300..400] on MS level(s)  [Thu Apr 30 07:17:59 2026] 
 
 ## To extract peaks data from MS1 or MS2 spectra use "MS1DATA" or "MS2DATA"
 ## instead of *. Note also that queries are case-insensitive.
@@ -227,9 +227,9 @@ query(sps_dda, "QUERY * WHERE MS2PREC = 99.967:TOLERANCEPPM=10")
 #>  ... 34 more variables/columns.
 #> 
 #> file(s):
-#> c5b57aca02b_7861
+#> 27b23e3002b4_7861
 #> Processing:
-#>  Filter: select spectra with precursor m/z matching 99.967 [Fri Feb  6 08:00:30 2026] 
+#>  Filter: select spectra with precursor m/z matching 99.967 [Thu Apr 30 07:18:00 2026] 
 
 ## It is also possible to specify multiple precursor m/z values:
 query(sps_dda, "QUERY * WHERE MS2PREC = (99.967 OR 428.88):TOLERANCEPPM=10")
@@ -241,9 +241,9 @@ query(sps_dda, "QUERY * WHERE MS2PREC = (99.967 OR 428.88):TOLERANCEPPM=10")
 #>  ... 34 more variables/columns.
 #> 
 #> file(s):
-#> c5b57aca02b_7861
+#> 27b23e3002b4_7861
 #> Processing:
-#>  Filter: select spectra with precursor m/z matching 99.967, 428.88 [Fri Feb  6 08:00:30 2026] 
+#>  Filter: select spectra with precursor m/z matching 99.967, 428.88 [Thu Apr 30 07:18:00 2026] 
 
 ## To select all MS1 spectra that contain a peak with a certain m/z we can
 ## use the MS1MZ condition. Below we combine this with an absolute tolerance
@@ -266,9 +266,9 @@ query(sps_dda, "QUERY * WHERE MS1MZ = 100:TOLERANCEMZ=1")
 #>  ... 34 more variables/columns.
 #> 
 #> file(s):
-#> c5b57aca02b_7861
+#> 27b23e3002b4_7861
 #> Processing:
-#>  Filter: select MS level(s) 1 [Fri Feb  6 08:00:30 2026] 
+#>  Filter: select MS level(s) 1 [Thu Apr 30 07:18:00 2026] 
 
 ## Using MS2DATA in combination with MS1MZ will not return any spectra.
 query(sps_dda, "QUERY MS2DATA WHERE MS1MZ = 100:TOLERANCEMZ=1")
@@ -294,9 +294,9 @@ query(sps_dda, "QUERY * WHERE MS2PROD = 100:TOLERANCEMZ=1")
 #>  ... 34 more variables/columns.
 #> 
 #> file(s):
-#> c5b57aca02b_7861
+#> 27b23e3002b4_7861
 #> Processing:
-#>  Filter: select MS level(s) 2 [Fri Feb  6 08:00:31 2026] 
+#>  Filter: select MS level(s) 2 [Thu Apr 30 07:18:00 2026] 
 
 ## MS2MZ can be used as alternative to MS2PROD
 query(sps_dda, "QUERY * WHERE MS2MZ = 100:TOLERANCEMZ=1")
@@ -317,7 +317,7 @@ query(sps_dda, "QUERY * WHERE MS2MZ = 100:TOLERANCEMZ=1")
 #>  ... 34 more variables/columns.
 #> 
 #> file(s):
-#> c5b57aca02b_7861
+#> 27b23e3002b4_7861
 
 ## Select MS2 spectra containing a peak with neutral loss from
 ## precursor of 100 allowing a m/z relative ppm tolerance of 5)

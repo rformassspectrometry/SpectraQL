@@ -1,12 +1,11 @@
 # Mass Spec Query Language Support to the Spectra Package
 
 **Package**:
-*[SpectraQL](https://bioconductor.org/packages/3.23/SpectraQL)*  
+*[SpectraQL](https://bioconductor.org/packages/3.24/SpectraQL)*\
 **Authors**: Johannes Rainer \[aut, cre\] (ORCID:
 <https://orcid.org/0000-0002-6977-7147>), Andrea Vicini \[aut\],
-Sebastian Gibb \[ctb\] (ORCID:
-<https://orcid.org/0000-0001-7406-4443>)  
-**Compiled**: Fri Feb 6 08:00:34 2026
+Sebastian Gibb \[ctb\] (ORCID: <https://orcid.org/0000-0001-7406-4443>)\
+**Compiled**: Thu Apr 30 07:18:04 2026
 
 ## Introduction
 
@@ -51,7 +50,7 @@ mzXML files, databases
 or MGF files
 ([MsBackendMgf](https://rformassspectrometry.github.io/MsBackendMgf/)).
 The use of the
-*[Spectra](https://bioconductor.org/packages/3.23/Spectra)* an hence
+*[Spectra](https://bioconductor.org/packages/3.24/Spectra)* an hence
 *SpectraQL* package is thus not restricted to mzML-backed MS data.
 
 ``` r
@@ -215,9 +214,9 @@ dda_rt
     ##  ... 34 more variables/columns.
     ## 
     ## file(s):
-    ## c5b57aca02b_7861
+    ## 27b23e3002b4_7861
     ## Processing:
-    ##  Filter: select retention time [200..300] on MS level(s)  [Fri Feb  6 08:00:41 2026]
+    ##  Filter: select retention time [200..300] on MS level(s)  [Thu Apr 30 07:18:11 2026]
 
 Internally, *SpectraQL* translates the MassQL query into filter
 functions that are applied to the `Spectra` object. The returned result
@@ -270,9 +269,9 @@ dda_pmz
     ##  ... 34 more variables/columns.
     ## 
     ## file(s):
-    ## c5b57aca02b_7861
+    ## 27b23e3002b4_7861
     ## Processing:
-    ##  Filter: select spectra with precursor m/z matching 278.093 [Fri Feb  6 08:00:41 2026]
+    ##  Filter: select spectra with precursor m/z matching 278.093 [Thu Apr 30 07:18:11 2026]
 
 We thus selected 9 spectra from the data set with a precursor m/z
 matching our filter criteria.
@@ -306,10 +305,10 @@ dda_rt
     ##  ... 34 more variables/columns.
     ## 
     ## file(s):
-    ## c5b57aca02b_7861
+    ## 27b23e3002b4_7861
     ## Processing:
-    ##  Filter: select retention time [200..300] on MS level(s)  [Fri Feb  6 08:00:41 2026]
-    ##  Filter: select spectra with precursor m/z matching 278.093 [Fri Feb  6 08:00:41 2026]
+    ##  Filter: select retention time [200..300] on MS level(s)  [Thu Apr 30 07:18:11 2026]
+    ##  Filter: select spectra with precursor m/z matching 278.093 [Thu Apr 30 07:18:11 2026]
 
 For conditions `"MS2PROD"`, `"MS2PREC"` and `"MS1MZ"` it is also
 possible to provide multiple values to select spectra that match any of
@@ -340,9 +339,9 @@ query(dda, "QUERY * WHERE MS1MZ = (123 OR 234.1 OR 300):TOLERANCEMZ=0.05")
     ##  ... 34 more variables/columns.
     ## 
     ## file(s):
-    ## c5b57aca02b_7861
+    ## 27b23e3002b4_7861
     ## Processing:
-    ##  Filter: select MS level(s) 1 [Fri Feb  6 08:00:41 2026]
+    ##  Filter: select MS level(s) 1 [Thu Apr 30 07:18:11 2026]
 
 Note that using `"MS1MZ"` will return only MS1 spectra and `"MS2PROD"`,
 `"MS2MZ"` and `"MS2PREC"` only MS2 spectra.
@@ -576,9 +575,9 @@ plot(res, type = "l", xlab = "scan index")
 
 ## Session information
 
-    ## R Under development (unstable) (2026-02-01 r89366)
+    ## R version 4.6.0 (2026-04-24)
     ## Platform: x86_64-pc-linux-gnu
-    ## Running under: Ubuntu 24.04.3 LTS
+    ## Running under: Ubuntu 24.04.4 LTS
     ## 
     ## Matrix products: default
     ## BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
@@ -600,33 +599,33 @@ plot(res, type = "l", xlab = "scan index")
     ## [8] base     
     ## 
     ## other attached packages:
-    ## [1] MsDataHub_1.11.0    SpectraQL_1.5.1     ProtGenerics_1.39.2
-    ## [4] Spectra_1.21.1      BiocParallel_1.45.0 S4Vectors_0.49.0   
-    ## [7] BiocGenerics_0.57.0 generics_0.1.4      BiocStyle_2.39.0   
+    ## [1] MsDataHub_1.13.0    SpectraQL_1.7.1     ProtGenerics_1.39.2
+    ## [4] Spectra_1.23.0      BiocParallel_1.47.0 S4Vectors_0.51.0   
+    ## [7] BiocGenerics_0.59.0 generics_0.1.4      BiocStyle_2.41.0   
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] KEGGREST_1.51.1        xfun_0.56              bslib_0.10.0          
-    ##  [4] httr2_1.2.2            htmlwidgets_1.6.4      Biobase_2.71.0        
-    ##  [7] vctrs_0.7.1            tools_4.6.0            curl_7.0.0            
-    ## [10] parallel_4.6.0         tibble_3.3.1           AnnotationDbi_1.73.0  
-    ## [13] RSQLite_2.4.5          cluster_2.1.8.2        blob_1.3.0            
-    ## [16] pkgconfig_2.0.3        dbplyr_2.5.1           desc_1.4.3            
-    ## [19] lifecycle_1.0.5        compiler_4.6.0         Biostrings_2.79.4     
-    ## [22] textshaping_1.0.4      Seqinfo_1.1.0          codetools_0.2-20      
-    ## [25] ncdf4_1.24             clue_0.3-66            htmltools_0.5.9       
-    ## [28] sass_0.4.10            yaml_2.3.12            crayon_1.5.3          
-    ## [31] pkgdown_2.2.0.9000     pillar_1.11.1          jquerylib_0.1.4       
-    ## [34] MASS_7.3-65            cachem_1.1.0           MetaboCoreUtils_1.19.1
-    ## [37] ExperimentHub_3.1.0    AnnotationHub_4.1.0    tidyselect_1.2.1      
-    ## [40] digest_0.6.39          purrr_1.2.1            dplyr_1.2.0           
-    ## [43] bookdown_0.46          BiocVersion_3.23.1     fastmap_1.2.0         
-    ## [46] cli_3.6.5              magrittr_2.0.4         withr_3.0.2           
-    ## [49] filelock_1.0.3         rappdirs_0.3.4         bit64_4.6.0-1         
-    ## [52] XVector_0.51.0         httr_1.4.7             rmarkdown_2.30        
-    ## [55] bit_4.6.0              otel_0.2.0             png_0.1-8             
-    ## [58] ragg_1.5.0             memoise_2.0.1          evaluate_1.0.5        
-    ## [61] knitr_1.51             IRanges_2.45.0         BiocFileCache_3.1.0   
-    ## [64] rlang_1.1.7            Rcpp_1.1.1             glue_1.8.0            
-    ## [67] DBI_1.2.3              mzR_2.45.0             BiocManager_1.30.27   
-    ## [70] jsonlite_2.0.0         R6_2.6.1               systemfonts_1.3.1     
-    ## [73] fs_1.6.6               MsCoreUtils_1.23.2
+    ##  [1] KEGGREST_1.53.0        xfun_0.57              bslib_0.10.0          
+    ##  [4] httr2_1.2.2            htmlwidgets_1.6.4      Biobase_2.73.0        
+    ##  [7] vctrs_0.7.3            tools_4.6.0            curl_7.1.0            
+    ## [10] parallel_4.6.0         AnnotationDbi_1.75.0   tibble_3.3.1          
+    ## [13] RSQLite_2.4.6          cluster_2.1.8.2        blob_1.3.0            
+    ## [16] pkgconfig_2.0.3        data.table_1.18.2.1    dbplyr_2.5.2          
+    ## [19] desc_1.4.3             lifecycle_1.0.5        compiler_4.6.0        
+    ## [22] Biostrings_2.81.0      textshaping_1.0.5      Seqinfo_1.3.0         
+    ## [25] codetools_0.2-20       ncdf4_1.24             clue_0.3-68           
+    ## [28] htmltools_0.5.9        sass_0.4.10            yaml_2.3.12           
+    ## [31] crayon_1.5.3           pkgdown_2.2.0.9000     pillar_1.11.1         
+    ## [34] jquerylib_0.1.4        MASS_7.3-65            cachem_1.1.0          
+    ## [37] MetaboCoreUtils_1.21.0 ExperimentHub_3.3.0    AnnotationHub_4.1.0   
+    ## [40] tidyselect_1.2.1       digest_0.6.39          purrr_1.2.2           
+    ## [43] dplyr_1.2.1            bookdown_0.46          BiocVersion_3.24.0    
+    ## [46] fastmap_1.2.0          cli_3.6.6              magrittr_2.0.5        
+    ## [49] withr_3.0.2            filelock_1.0.3         rappdirs_0.3.4        
+    ## [52] bit64_4.8.0            XVector_0.53.0         httr_1.4.8            
+    ## [55] rmarkdown_2.31         bit_4.6.0              otel_0.2.0            
+    ## [58] png_0.1-9              ragg_1.5.2             memoise_2.0.1         
+    ## [61] evaluate_1.0.5         knitr_1.51             IRanges_2.47.0        
+    ## [64] BiocFileCache_3.3.0    rlang_1.2.0            Rcpp_1.1.1-1.1        
+    ## [67] glue_1.8.1             DBI_1.3.0              mzR_2.47.0            
+    ## [70] BiocManager_1.30.27    jsonlite_2.0.0         R6_2.6.1              
+    ## [73] systemfonts_1.3.2      fs_2.1.0               MsCoreUtils_1.25.0

@@ -1,5 +1,11 @@
 # Changelog
 
+## SpectraQL 1.7
+
+### Changes in 1.7.1
+
+- Fix unit test.
+
 ## SpectraQL 1.5
 
 ### Changes in 1.5.1
